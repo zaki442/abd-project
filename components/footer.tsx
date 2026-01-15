@@ -17,7 +17,7 @@ export function Footer() {
               <DiscordIcon className="w-6 h-6 text-[#5865F2]" />
             </a>
             <a
-              href="https://wa.me"
+              href="https://chat.whatsapp.com/JMRseHyNyHH9qAm1AXb6xS"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full bg-[#25D366]/20 hover:bg-[#25D366]/30 flex items-center justify-center transition-colors"
