@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Circle, Clock, CheckCircle2, List } from "lucide-react"
 
 // Trello Constants
-const API_KEY = "f44537de70960f362a351e902ea8d1c3"
-const TOKEN = "ATTA5257116d6e6015ec0bea378148349221625217740932b4730ca38e538789ee9c4664F295"
-const BOARD_ID = "695e3b33949f9336b399e67b"
+const API_KEY = process.env.NEXT_PUBLIC_TRELLO_API_KEY
+const TOKEN = process.env.NEXT_PUBLIC_TRELLO_TOKEN
+const BOARD_ID = process.env.NEXT_PUBLIC_TRELLO_BOARD_ID
 
 interface TrelloList {
   id: string

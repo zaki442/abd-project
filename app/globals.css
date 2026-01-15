@@ -120,6 +120,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -151,10 +152,42 @@
 }
 
 .gradient-bg {
-  background: linear-gradient(
-    135deg,
-    rgba(168, 85, 247, 0.15) 0%,
-    rgba(236, 72, 153, 0.15) 50%,
-    rgba(59, 130, 246, 0.15) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.15) 0%,
+      rgba(236, 72, 153, 0.15) 50%,
+      rgba(59, 130, 246, 0.15) 100%);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 40s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse var(--duration, 40s) linear infinite;
+}
+
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+
+/* Pause animation on hover if desired */
+.hover\:pause:hover .animate-marquee,
+.hover\:pause:hover .animate-marquee-reverse {
+  animation-play-state: paused;
 }
