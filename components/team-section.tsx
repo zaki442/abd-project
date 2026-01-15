@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card"
 const team = [
   { name: "Youness", role: "Community Lead", initials: "YN" },
   { name: "Siham", role: "Operations", initials: "SH" },
-  { name: "Zakaria", role: "Tech", initials: "ZK" },
   { name: "Ayoub", role: "Tech", initials: "AY" },
   { name: "Anass", role: "Content", initials: "AN" },
   { name: "Khadija", role: "Events", initials: "KH" },
