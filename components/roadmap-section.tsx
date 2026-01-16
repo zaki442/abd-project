@@ -70,8 +70,10 @@ export function RoadmapSection() {
     fetchData()
   }, [])
 
-  // Sort lists by position
-  const sortedLists = [...lists].sort((a, b) => a.pos - b.pos)
+  // Sort lists by position and filter for specific ABD lists
+  const sortedLists = [...lists]
+    .sort((a, b) => a.pos - b.pos)
+    .filter((list) => ["ABD Departments", "ABD Activities"].includes(list.name))
 
   return (
     <section id="roadmap" className="py-24 px-4 sm:px-6 lg:px-8">
@@ -90,7 +92,7 @@ export function RoadmapSection() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {sortedLists.map((list, index) => {
               const listCards = cards.filter((card) => card.idList === list.id)
               // Cycle through styles
