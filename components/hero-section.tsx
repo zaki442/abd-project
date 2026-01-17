@@ -28,7 +28,7 @@ export function HeroSection() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="bg-[#5865F2] hover:bg-[#4752c4] text-white px-8 py-6 text-lg">
-            <a href="https://discord.gg" target="_blank" rel="noopener noreferrer">
+            <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
               <DiscordIcon className="w-5 h-5 mr-2" />
               Join Discord
             </a>
