@@ -8,7 +8,7 @@ export function Footer() {
           {/* Social Links */}
           <div className="flex items-center gap-6">
             <a
-              href="https://discord.gg"
+              href="https://discord.gg/RrkV93G4Pt"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full bg-[#5865F2]/20 hover:bg-[#5865F2]/30 flex items-center justify-center transition-colors"

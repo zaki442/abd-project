@@ -36,7 +36,7 @@ export function Navbar() {
               </a>
             ))}
             <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white">
-              <a href="https://discord.gg" target="_blank" rel="noopener noreferrer">
+              <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
                 <DiscordIcon className="w-4 h-4 mr-2" />
                 Join Discord
               </a>
@@ -64,7 +64,7 @@ export function Navbar() {
                 </a>
               ))}
               <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white w-fit">
-                <a href="https://discord.gg" target="_blank" rel="noopener noreferrer">
+                <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
                   <DiscordIcon className="w-4 h-4 mr-2" />
                   Join Discord
                 </a>
