@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
+import Image from "next/image"
 
 const navLinks = [
   { href: "#vision", label: "Vision" },
@@ -16,12 +17,18 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-24">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center gradient-border">
-              <span className="text-lg font-bold gradient-text">A</span>
+            <div className="relative w-72 h-20 mr-2 overflow-hidden">
+              <Image
+                src="/logo.png"
+                alt="Agile B Darija Logo"
+                fill
+                className="object-contain scale-[2.5]"
+                priority
+              />
             </div>
-            <span className="text-lg font-semibold text-foreground">Agile B Darija</span>
+
           </div>
 
           {/* Desktop Navigation */}

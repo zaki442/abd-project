@@ -1,10 +1,21 @@
 import { Heart } from "lucide-react"
+import Image from "next/image"
 
 export function Footer() {
   return (
     <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center gap-8">
+          {/* Logo */}
+          <div className="relative w-72 h-20 overflow-hidden">
+            <Image
+              src="/logo.png"
+              alt="Agile B Darija Logo"
+              fill
+              className="object-contain scale-[2.5]"
+            />
+          </div>
+
           {/* Social Links */}
           <div className="flex items-center gap-6">
             <a
