@@ -82,7 +82,7 @@ export function RegistrationModal({
                             <Input
                                 id="full_name"
                                 name="full_name"
-                                placeholder="Zaki Abid"
+                                placeholder="Zaki AD"
                                 className="pl-10 bg-zinc-900/50 border-zinc-700 focus:border-primary focus:ring-primary/20 transition-all"
                                 required
                             />
