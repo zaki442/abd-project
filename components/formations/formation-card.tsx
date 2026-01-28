@@ -14,7 +14,7 @@ interface FormationCardProps {
 export function FormationCard({ id, title, description, imageSrc, date, price }: FormationCardProps) {
     return (
         <Card className="group h-full flex flex-col justify-between overflow-hidden border-0 bg-background/60 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
-            <div className="relative aspect-[4/3] w-full overflow-hidden">
+            <div className="relative aspect-square w-full overflow-hidden">
                 <Image
                     src={imageSrc}
                     alt={title}
