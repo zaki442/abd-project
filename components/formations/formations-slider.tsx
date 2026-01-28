@@ -17,7 +17,7 @@ const FORMATIONS = [
         description: 'T3allem lmethode Agile w Scrum b darija maghribiya. Fahm kifach teams kikhdmo b sor3a w efficacité.',
         date: '2 Fevrier 2026',
         price: 'Majjanan',
-        imageSrc: '/formations/agile-darija.png',
+        imageSrc: '/formations/agile-darija-v2.png',
     },
     {
         id: 'mindset',
@@ -64,7 +64,8 @@ export function FormationsSlider() {
                         }}
                         plugins={[
                             Autoplay({
-                                delay: 4000,
+                                delay: 3000,
+                                stopOnInteraction: false,
                             }) as any,
                         ]}
                         className="w-full max-w-6xl"
