@@ -12,11 +12,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { deleteRegistration } from '@/app/actions/admin'
+import { RegistrationDialog } from './registration-dialog'
 import { toast } from 'sonner'
 import { Trash2, Search, Loader2, Download } from 'lucide-react'
-
-// If date-fns is not available, I'll fallback to native.
-// I'll assume native for now to be safe.
 
 interface Registration {
     id: string
@@ -28,6 +26,14 @@ interface Registration {
 
 interface RegistrationsTableProps {
     initialRegistrations: Registration[]
+}
+
+// Formation names for display
+const FORMATION_NAMES: Record<string, string> = {
+    'agile-darija': 'Agile B Darija',
+    'mindset': 'Mindset & Soft Skills',
+    'agile-teamwork': 'Agile Teamwork',
+    'design-thinking': 'Design Thinking',
 }
 
 export function RegistrationsTable({ initialRegistrations }: RegistrationsTableProps) {
@@ -58,6 +64,17 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
         })
     }
 
+    const handleCreateSuccess = () => {
+        // Trigger a page refresh to get fresh data
+        window.location.reload()
+    }
+
+    const handleEditSuccess = (updated: Registration) => {
+        setRegistrations((prev) =>
+            prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r))
+        )
+    }
+
     const exportToCSV = () => {
         const headers = ['ID,Date,Full Name,Email,Formation ID']
         const rows = filteredRegistrations.map(reg =>
@@ -75,7 +92,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="relative flex-1 max-w-sm">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -85,13 +102,16 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                         className="pl-9"
                     />
                 </div>
-                <div className="text-sm text-muted-foreground">
-                    Total: {filteredRegistrations.length}
+                <div className="flex items-center gap-2">
+                    <div className="text-sm text-muted-foreground">
+                        Total: {filteredRegistrations.length}
+                    </div>
+                    <Button variant="outline" size="sm" onClick={exportToCSV}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Export CSV
+                    </Button>
+                    <RegistrationDialog mode="create" onSuccess={handleCreateSuccess} />
                 </div>
-                <Button variant="outline" size="sm" onClick={exportToCSV}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
-                </Button>
             </div>
 
             <div className="rounded-md border bg-zinc-950">
@@ -120,21 +140,32 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                                     </TableCell>
                                     <TableCell>{reg.full_name}</TableCell>
                                     <TableCell>{reg.email}</TableCell>
-                                    <TableCell>{reg.formation_id}</TableCell>
+                                    <TableCell>
+                                        <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                                            {FORMATION_NAMES[reg.formation_id] || reg.formation_id}
+                                        </span>
+                                    </TableCell>
                                     <TableCell className="text-right">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDelete(reg.id)}
-                                            disabled={isPending && deletingId === reg.id}
-                                            className="text-red-500 hover:text-red-600 hover:bg-red-950/20"
-                                        >
-                                            {isPending && deletingId === reg.id ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            ) : (
-                                                <Trash2 className="h-4 w-4" />
-                                            )}
-                                        </Button>
+                                        <div className="flex justify-end gap-1">
+                                            <RegistrationDialog
+                                                mode="edit"
+                                                registration={reg}
+                                                onSuccess={handleEditSuccess}
+                                            />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleDelete(reg.id)}
+                                                disabled={isPending && deletingId === reg.id}
+                                                className="text-red-500 hover:text-red-600 hover:bg-red-950/20"
+                                            >
+                                                {isPending && deletingId === reg.id ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Trash2 className="h-4 w-4" />
+                                                )}
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))

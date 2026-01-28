@@ -22,6 +22,18 @@ on registrations
 for select
 using (true);
 
+-- Allow update for dashboard
+create policy "Enable update for all"
+on registrations
+for update
+using (true);
+
+-- Allow delete for dashboard
+create policy "Enable delete for all"
+on registrations
+for delete
+using (true);
+
 -- =============================================
 -- ADMINS TABLE
 -- =============================================

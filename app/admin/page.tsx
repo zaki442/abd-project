@@ -1,17 +1,11 @@
-import { getRegistrations, verifyAdminPassword, logoutAdmin } from '@/app/actions/admin' // verify/logout handled in client component usually for interactivity but here I need server check
+import { getRegistrations, getStatsByFormation, logoutAdmin } from '@/app/actions/admin'
 import { RegistrationsTable } from '@/components/admin/registrations-table'
+import { StatsCards } from '@/components/admin/stats-cards'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Lock } from 'lucide-react'
 
 import { AdminLoginForm } from '../../components/admin/admin-login-form'
-
-// Login component to stay in the same file for simplicity since it's a small app
-// Actually I need a client component for the login form to handle state/interactivity.
-// I'll make a separate client component for login.
 
 export default async function AdminPage() {
     const cookieStore = await cookies()
@@ -21,14 +15,16 @@ export default async function AdminPage() {
         return (
             <div className="flex min-h-screen items-center justify-center bg-black p-4">
                 <div className="w-full max-w-md">
-                    {/* I'll import a client side login form here */}
                     <AdminLoginForm />
                 </div>
             </div>
         )
     }
 
-    const registrations = await getRegistrations()
+    const [registrations, stats] = await Promise.all([
+        getRegistrations(),
+        getStatsByFormation(),
+    ])
 
     return (
         <div className="min-h-screen bg-black p-8 text-white">
@@ -47,11 +43,10 @@ export default async function AdminPage() {
                     </form>
                 </div>
 
+                <StatsCards stats={stats} />
+
                 <RegistrationsTable initialRegistrations={registrations} />
             </div>
         </div>
     )
 }
-
-// Client component for Login
-

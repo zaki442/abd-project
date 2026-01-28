@@ -84,3 +84,73 @@ export async function deleteRegistration(id: string) {
     return { success: true, message: 'Tems7 b naja7.' }
 }
 
+export async function createRegistration(data: {
+    full_name: string
+    email: string
+    formation_id: string
+}) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('registrations')
+        .insert({
+            full_name: data.full_name,
+            email: data.email,
+            formation_id: data.formation_id,
+        })
+
+    if (error) {
+        console.error('Error creating registration:', error)
+        return { success: false, message: 'Fchel f creation.' }
+    }
+
+    revalidatePath('/admin')
+    return { success: true, message: 'Tzad b naja7!' }
+}
+
+export async function updateRegistration(
+    id: string,
+    data: {
+        full_name?: string
+        email?: string
+        formation_id?: string
+    }
+) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('registrations')
+        .update(data)
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error updating registration:', error)
+        return { success: false, message: 'Fchel f update.' }
+    }
+
+    revalidatePath('/admin')
+    return { success: true, message: 'Tbeddel b naja7!' }
+}
+
+export async function getStatsByFormation() {
+    const supabase = await createServerSupabaseClient()
+
+    const { data, error } = await supabase
+        .from('registrations')
+        .select('formation_id')
+
+    if (error) {
+        console.error('Error fetching stats:', error)
+        return { total: 0, byFormation: {} }
+    }
+
+    const byFormation: Record<string, number> = {}
+    data.forEach((reg) => {
+        byFormation[reg.formation_id] = (byFormation[reg.formation_id] || 0) + 1
+    })
+
+    return {
+        total: data.length,
+        byFormation,
+    }
+}
