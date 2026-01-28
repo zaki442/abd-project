@@ -69,7 +69,7 @@ export function RegistrationModal({
                         <Input
                             id="full_name"
                             name="full_name"
-                            placeholder="Zaki Abidi"
+                            placeholder="Zaki Abid"
                             className="col-span-3"
                             required
                         />

@@ -13,30 +13,38 @@ interface FormationCardProps {
 
 export function FormationCard({ id, title, description, imageSrc, date, price }: FormationCardProps) {
     return (
-        <Card className="h-full flex flex-col justify-between overflow-hidden border-2 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-all duration-300">
+        <Card className="group h-full flex flex-col justify-between overflow-hidden border-0 bg-background/60 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
             <div className="relative aspect-video w-full overflow-hidden">
-                {/* Placeholder image logic - using dynamic generation for now if no src provided */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10" />
-                <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
-                    {/* In a real app we'd use Next.js Image with real assets, using placeholder for now */}
-                    <span className="text-4xl font-bold opacity-20">{title.charAt(0)}</span>
+                <Image
+                    src={imageSrc}
+                    alt={title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <p className="font-bold">{price}</p>
                 </div>
             </div>
 
-            <CardHeader>
-                <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-                <CardDescription className="text-lg font-medium text-primary">
-                    {date} • {price}
-                </CardDescription>
+            <CardHeader className="space-y-1">
+                <div className="flex items-center justify-between">
+                    <CardDescription className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        {date}
+                    </CardDescription>
+                </div>
+                <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+                    {title}
+                </CardTitle>
             </CardHeader>
 
             <CardContent className="flex-grow">
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
                     {description}
                 </p>
             </CardContent>
 
-            <CardFooter>
+            <CardFooter className="pt-0">
                 <RegistrationModal formationId={id} formationName={title} />
             </CardFooter>
         </Card>

@@ -17,7 +17,7 @@ const FORMATIONS = [
         description: 'T3allem lmethode Agile w Scrum b darija maghribiya. Fahm kifach teams kikhdmo b sor3a w efficacité.',
         date: '2 Fevrier 2026',
         price: 'Majjanan',
-        imageSrc: '', // TODO: Add real image
+        imageSrc: '/formations/agile-darija.png',
     },
     {
         id: 'mindset',
@@ -25,7 +25,7 @@ const FORMATIONS = [
         description: 'Twer chakhsiya dyalk w l3aqliya li tnefa3k f hyatk lmihaniya. Communication, leadership, w tadbir lweqt.',
         date: '9 Fevrier 2026',
         price: 'Majjanan',
-        imageSrc: '',
+        imageSrc: '/formations/mindset.png',
     },
     {
         id: 'agile-teamwork',
@@ -33,7 +33,7 @@ const FORMATIONS = [
         description: 'Kifach tkhdem m3a lferqa dyalk b naja7. Workshops w tamarin 3amaliya bach tfehmu dinamyat lferqa.',
         date: '16 Fevrier 2026',
         price: 'Majjanan',
-        imageSrc: '',
+        imageSrc: '/formations/agile-teamwork.png',
     },
     {
         id: 'design-thinking',
@@ -41,7 +41,7 @@ const FORMATIONS = [
         description: 'Mharet hall lmachakil b tariqa ibda3iya. T3allem kifach tfekker bhal designer bach tlqa hulul mobtakara.',
         date: '23 Fevrier 2026',
         price: 'Majjanan',
-        imageSrc: '',
+        imageSrc: '/formations/design-thinking.png',
     },
 ]
 
@@ -65,7 +65,7 @@ export function FormationsSlider() {
                         plugins={[
                             Autoplay({
                                 delay: 4000,
-                            }),
+                            }) as any,
                         ]}
                         className="w-full max-w-6xl"
                     >
