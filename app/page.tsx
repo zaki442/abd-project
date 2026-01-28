@@ -5,6 +5,7 @@ import { TeamSection } from "@/components/team-section"
 import { RoadmapSection } from "@/components/roadmap-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { Footer } from "@/components/footer"
+import { FormationsSlider } from "@/components/formations/formations-slider"
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <FeaturesSection />
+      <FormationsSlider />
       <TeamSection />
       <RoadmapSection />
       <TestimonialsSection />
