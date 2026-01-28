@@ -42,6 +42,7 @@ using (true);
 create table admins (
   id uuid default gen_random_uuid() primary key,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  name text not null,
   email text unique not null,
   password_hash text not null
 );

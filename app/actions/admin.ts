@@ -13,13 +13,20 @@ export async function verifyAdminPassword(password: string) {
         const supabase = await createServerSupabaseClient()
         const { data: admins, error } = await supabase
             .from('admins')
-            .select('password_hash')
+            .select('name, password_hash')
 
         if (!error && admins && admins.length > 0) {
             // Check if password matches any admin's password_hash
-            const isValid = admins.some(admin => admin.password_hash === password)
-            if (isValid) {
-                (await cookies()).set('admin_authenticated', 'true', {
+            const matchedAdmin = admins.find(admin => admin.password_hash === password)
+            if (matchedAdmin) {
+                const cookieStore = await cookies()
+                cookieStore.set('admin_authenticated', 'true', {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    maxAge: 60 * 60 * 24, // 1 day
+                    path: '/',
+                })
+                cookieStore.set('admin_name', matchedAdmin.name || 'Admin', {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     maxAge: 60 * 60 * 24, // 1 day
@@ -34,7 +41,14 @@ export async function verifyAdminPassword(password: string) {
 
     // Fallback to environment variable password
     if (password === ADMIN_PASSWORD) {
-        (await cookies()).set('admin_authenticated', 'true', {
+        const cookieStore = await cookies()
+        cookieStore.set('admin_authenticated', 'true', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24, // 1 day
+            path: '/',
+        })
+        cookieStore.set('admin_name', 'Admin', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24, // 1 day
@@ -47,7 +61,9 @@ export async function verifyAdminPassword(password: string) {
 }
 
 export async function logoutAdmin() {
-    (await cookies()).delete('admin_authenticated')
+    const cookieStore = await cookies()
+    cookieStore.delete('admin_authenticated')
+    cookieStore.delete('admin_name')
     return { success: true }
 }
 

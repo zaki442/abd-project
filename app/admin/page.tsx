@@ -4,12 +4,14 @@ import { StatsCards } from '@/components/admin/stats-cards'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { User } from 'lucide-react'
 
 import { AdminLoginForm } from '../../components/admin/admin-login-form'
 
 export default async function AdminPage() {
     const cookieStore = await cookies()
     const isAuthenticated = cookieStore.get('admin_authenticated')?.value === 'true'
+    const adminName = cookieStore.get('admin_name')?.value || 'Admin'
 
     if (!isAuthenticated) {
         return (
@@ -34,13 +36,19 @@ export default async function AdminPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
                         <p className="text-muted-foreground">Manage formation registrations.</p>
                     </div>
-                    <form action={async () => {
-                        'use server'
-                        await logoutAdmin()
-                        redirect('/admin')
-                    }}>
-                        <Button variant="outline">Logout</Button>
-                    </form>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <User className="h-4 w-4" />
+                            <span>Mrhba, <span className="text-white font-medium">{adminName}</span></span>
+                        </div>
+                        <form action={async () => {
+                            'use server'
+                            await logoutAdmin()
+                            redirect('/admin')
+                        }}>
+                            <Button variant="outline">Logout</Button>
+                        </form>
+                    </div>
                 </div>
 
                 <StatsCards stats={stats} />
