@@ -97,5 +97,47 @@
         "email": "البريد الإلكتروني",
         "registering": "جاري التسجيل...",
         "sendInfo": "إرسال المعلومات"
+    },
+    "Admin": {
+        "dashboard": "لوحة التحكم",
+        "manageRegistrations": "إدارة تسجلات التكوينات.",
+        "welcome": "مرحباً",
+        "logout": "خروج",
+        "login": {
+            "access": "دخول المشرف",
+            "enterPassword": "أدخل كلمة المرور للوصول إلى لوحة التحكم",
+            "passwordLabel": "كلمة المرور",
+            "loginButton": "تسجيل الدخول"
+        },
+        "table": {
+            "search": "البحث عن المستخدمين...",
+            "total": "المجموع",
+            "exportCSV": "تصدير CSV",
+            "date": "التاريخ",
+            "fullName": "الاسم الكامل",
+            "email": "البريد الإلكتروني",
+            "formation": "التكوين",
+            "actions": "إجراءات",
+            "noResults": "لا توجد نتائج.",
+            "confirmDelete": "واش متأكد بغيتي تمسح هاد المستخدم؟"
+        },
+        "stats": {
+            "totalRegistrations": "إجمالي التسجيلات",
+            "allRegistered": "كاع المسجلين",
+            "registrants": "مسجلين"
+        },
+        "dialog": {
+            "addRegistration": "زيد تسجيل",
+            "addNew": "زيد تسجيل جديد",
+            "edit": "بدل التسجيل",
+            "enterInfo": "دخل المعلومات ديال المستخدم الجديد.",
+            "modifyInfo": "بدل المعلومات ديال هاد المستخدم.",
+            "fullName": "السمية الكاملة",
+            "email": "البريد الإلكتروني",
+            "formation": "التكوين",
+            "saving": "جاري الحفظ...",
+            "add": "زيد",
+            "save": "حفظ"
+        }
     }
 }

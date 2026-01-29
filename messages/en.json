@@ -97,5 +97,47 @@
         "email": "Email",
         "registering": "Registering...",
         "sendInfo": "Send Information"
+    },
+    "Admin": {
+        "dashboard": "Admin Dashboard",
+        "manageRegistrations": "Manage formation registrations.",
+        "welcome": "Welcome",
+        "logout": "Logout",
+        "login": {
+            "access": "Admin Access",
+            "enterPassword": "Enter password to access dashboard",
+            "passwordLabel": "Password",
+            "loginButton": "Login"
+        },
+        "table": {
+            "search": "Search users...",
+            "total": "Total",
+            "exportCSV": "Export CSV",
+            "date": "Date",
+            "fullName": "Full Name",
+            "email": "Email",
+            "formation": "Formation",
+            "actions": "Actions",
+            "noResults": "No results.",
+            "confirmDelete": "Are you sure you want to delete this user?"
+        },
+        "stats": {
+            "totalRegistrations": "Total Registrations",
+            "allRegistered": "All registered",
+            "registrants": "registrants"
+        },
+        "dialog": {
+            "addRegistration": "Add Registration",
+            "addNew": "Add New Registration",
+            "edit": "Edit Registration",
+            "enterInfo": "Enter new user information.",
+            "modifyInfo": "Modify user information.",
+            "fullName": "Full Name",
+            "email": "Email",
+            "formation": "Formation",
+            "saving": "Saving...",
+            "add": "Add",
+            "save": "Save"
+        }
     }
 }

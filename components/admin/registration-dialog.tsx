@@ -16,14 +16,7 @@ import { Label } from '@/components/ui/label'
 import { createRegistration, updateRegistration } from '@/app/actions/admin'
 import { toast } from 'sonner'
 import { Plus, Pencil, Loader2 } from 'lucide-react'
-
-// Formation options
-const FORMATIONS = [
-    { id: 'agile-darija', name: 'Agile B Darija' },
-    { id: 'mindset', name: 'Mindset & Soft Skills' },
-    { id: 'agile-teamwork', name: 'Agile Teamwork' },
-    { id: 'design-thinking', name: 'Design Thinking' },
-]
+import { useTranslations } from 'next-intl'
 
 interface Registration {
     id: string
@@ -42,6 +35,16 @@ interface RegistrationDialogProps {
 export function RegistrationDialog({ mode, registration, onSuccess }: RegistrationDialogProps) {
     const [open, setOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
+    const t = useTranslations('Admin.dialog')
+    const ft = useTranslations('Formations.items')
+
+    const FORMATIONS = [
+        { id: 'agile-darija', name: ft('agile-darija.title') },
+        { id: 'mindset', name: ft('mindset.title') },
+        { id: 'agile-teamwork', name: ft('teamwork.title') },
+        { id: 'design-thinking', name: ft('design-thinking.title') },
+    ]
+
     const [formData, setFormData] = useState({
         full_name: registration?.full_name || '',
         email: registration?.email || '',
@@ -81,7 +84,7 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                 {mode === 'create' ? (
                     <Button size="sm" className="gap-2">
                         <Plus className="h-4 w-4" />
-                        Zid Registration
+                        {t('addRegistration')}
                     </Button>
                 ) : (
                     <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-600 hover:bg-blue-950/20">
@@ -93,17 +96,17 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>
-                            {mode === 'create' ? 'Zid Registration Jdida' : 'Beddel Registration'}
+                            {mode === 'create' ? t('addNew') : t('edit')}
                         </DialogTitle>
                         <DialogDescription>
                             {mode === 'create'
-                                ? 'Dkhel lm3lomat dyal user jdid.'
-                                : 'Beddel lm3lomat dyal had user.'}
+                                ? t('enterInfo')
+                                : t('modifyInfo')}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="full_name">Smiya Kamla</Label>
+                            <Label htmlFor="full_name">{t('fullName')}</Label>
                             <Input
                                 id="full_name"
                                 value={formData.full_name}
@@ -113,7 +116,7 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">{t('email')}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -124,7 +127,7 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="formation">Formation</Label>
+                            <Label htmlFor="formation">{t('formation')}</Label>
                             <select
                                 id="formation"
                                 value={formData.formation_id}
@@ -143,13 +146,13 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                         <Button type="submit" disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Kaytsjel...
+                                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                                    {t('saving')}
                                 </>
                             ) : mode === 'create' ? (
-                                'Zid'
+                                t('add')
                             ) : (
-                                'Sauvegarder'
+                                t('save')
                             )}
                         </Button>
                     </DialogFooter>

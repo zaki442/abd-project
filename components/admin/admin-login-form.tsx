@@ -13,12 +13,14 @@ import {
 } from '@/components/ui/card'
 import { Lock, Loader2, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 export function AdminLoginForm() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
+    const t = useTranslations('Admin.login')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -42,9 +44,9 @@ export function AdminLoginForm() {
                         <Lock className="h-6 w-6 text-primary" />
                     </div>
                 </div>
-                <CardTitle className="text-2xl font-bold text-center text-white">Admin Access</CardTitle>
+                <CardTitle className="text-2xl font-bold text-center text-white">{t('access')}</CardTitle>
                 <CardDescription className="text-center text-zinc-400">
-                    Enter password to access dashboard
+                    {t('enterPassword')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -52,7 +54,7 @@ export function AdminLoginForm() {
                     <div className="space-y-2">
                         <Input
                             type="password"
-                            placeholder="Password"
+                            placeholder={t('passwordLabel')}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-500"
@@ -69,7 +71,7 @@ export function AdminLoginForm() {
                         className="w-full"
                         disabled={isPending || !password}
                     >
-                        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Login'}
+                        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t('loginButton')}
                     </Button>
                 </form>
             </CardContent>

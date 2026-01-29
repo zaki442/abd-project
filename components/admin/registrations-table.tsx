@@ -15,6 +15,7 @@ import { deleteRegistration } from '@/app/actions/admin'
 import { RegistrationDialog } from './registration-dialog'
 import { toast } from 'sonner'
 import { Trash2, Search, Loader2, Download } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface Registration {
     id: string
@@ -28,19 +29,13 @@ interface RegistrationsTableProps {
     initialRegistrations: Registration[]
 }
 
-// Formation names for display
-const FORMATION_NAMES: Record<string, string> = {
-    'agile-darija': 'Agile B Darija',
-    'mindset': 'Mindset & Soft Skills',
-    'agile-teamwork': 'Agile Teamwork',
-    'design-thinking': 'Design Thinking',
-}
-
 export function RegistrationsTable({ initialRegistrations }: RegistrationsTableProps) {
     const [registrations, setRegistrations] = useState(initialRegistrations)
     const [searchQuery, setSearchQuery] = useState('')
     const [isPending, startTransition] = useTransition()
     const [deletingId, setDeletingId] = useState<string | null>(null)
+    const t = useTranslations('Admin.table')
+    const ft = useTranslations('Formations.items')
 
     const filteredRegistrations = registrations.filter((reg) =>
         reg.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -49,7 +44,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
     )
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Wash mt2ked baghi tms7 had l user?')) return
+        if (!confirm(t('confirmDelete'))) return
 
         setDeletingId(id)
         startTransition(async () => {
@@ -76,7 +71,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
     }
 
     const exportToCSV = () => {
-        const headers = ['ID,Date,Full Name,Email,Formation ID']
+        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('formation')}`]
         const rows = filteredRegistrations.map(reg =>
             `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.formation_id}`
         )
@@ -94,21 +89,21 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
         <div className="space-y-4">
             <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute start-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="Search users..."
+                        placeholder={t('search')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-9"
+                        className="ps-9"
                     />
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="text-sm text-muted-foreground">
-                        Total: {filteredRegistrations.length}
+                        {t('total')}: {filteredRegistrations.length}
                     </div>
                     <Button variant="outline" size="sm" onClick={exportToCSV}>
-                        <Download className="mr-2 h-4 w-4" />
-                        Export CSV
+                        <Download className="me-2 h-4 w-4" />
+                        {t('exportCSV')}
                     </Button>
                     <RegistrationDialog mode="create" onSuccess={handleCreateSuccess} />
                 </div>
@@ -118,18 +113,18 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[100px]">Date</TableHead>
-                            <TableHead>Full Name</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Formation</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="w-[100px]">{t('date')}</TableHead>
+                            <TableHead>{t('fullName')}</TableHead>
+                            <TableHead>{t('email')}</TableHead>
+                            <TableHead>{t('formation')}</TableHead>
+                            <TableHead className="text-right">{t('actions')}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {filteredRegistrations.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={5} className="h-24 text-center">
-                                    No results.
+                                    {t('noResults')}
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -142,7 +137,11 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                                     <TableCell>{reg.email}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                                            {FORMATION_NAMES[reg.formation_id] || reg.formation_id}
+                                            {reg.formation_id === 'agile-darija' ? ft('agile-darija.title') :
+                                                reg.formation_id === 'mindset' ? ft('mindset.title') :
+                                                    reg.formation_id === 'agile-teamwork' ? ft('teamwork.title') :
+                                                        reg.formation_id === 'design-thinking' ? ft('design-thinking.title') :
+                                                            reg.formation_id}
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-right">

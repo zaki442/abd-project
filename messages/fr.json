@@ -97,5 +97,47 @@
         "email": "Email",
         "registering": "Inscription en cours...",
         "sendInfo": "Envoyer les Informations"
+    },
+    "Admin": {
+        "dashboard": "Tableau de Bord",
+        "manageRegistrations": "Gérer les inscriptions aux formations.",
+        "welcome": "Bienvenue",
+        "logout": "Déconnexion",
+        "login": {
+            "access": "Accès Admin",
+            "enterPassword": "Entrez le mot de passe pour accéder au tableau de bord",
+            "passwordLabel": "Mot de passe",
+            "loginButton": "Connexion"
+        },
+        "table": {
+            "search": "Rechercher des utilisateurs...",
+            "total": "Total",
+            "exportCSV": "Exporter en CSV",
+            "date": "Date",
+            "fullName": "Nom Complet",
+            "email": "Email",
+            "formation": "Formation",
+            "actions": "Actions",
+            "noResults": "Aucun résultat.",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+        },
+        "stats": {
+            "totalRegistrations": "Total des Inscriptions",
+            "allRegistered": "Tous les inscrits",
+            "registrants": "inscrits"
+        },
+        "dialog": {
+            "addRegistration": "Ajouter une inscription",
+            "addNew": "Ajouter une nouvelle inscription",
+            "edit": "Modifier l'inscription",
+            "enterInfo": "Entrez les informations du nouvel utilisateur.",
+            "modifyInfo": "Modifier les informations de cet utilisateur.",
+            "fullName": "Nom Complet",
+            "email": "Email",
+            "formation": "Formation",
+            "saving": "Enregistrement...",
+            "add": "Ajouter",
+            "save": "Sauvegarder"
+        }
     }
 }
