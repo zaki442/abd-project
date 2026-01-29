@@ -117,7 +117,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                             <TableHead>{t('fullName')}</TableHead>
                             <TableHead>{t('email')}</TableHead>
                             <TableHead>{t('formation')}</TableHead>
-                            <TableHead className="text-right">{t('actions')}</TableHead>
+                            <TableHead className="text-end">{t('actions')}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -144,7 +144,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                                                             reg.formation_id}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-end">
                                         <div className="flex justify-end gap-1">
                                             <RegistrationDialog
                                                 mode="edit"
