@@ -8,6 +8,7 @@ import { User } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { AdminLoginForm } from '@/components/admin/admin-login-form'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default async function AdminPage() {
     const cookieStore = await cookies()
@@ -39,6 +40,7 @@ export default async function AdminPage() {
                         <p className="text-muted-foreground">{t('manageRegistrations')}</p>
                     </div>
                     <div className="flex items-center gap-4">
+                        <LanguageSwitcher />
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <User className="h-4 w-4" />
                             <span>{t('welcome')}, <span className="text-white font-medium">{adminName}</span></span>
