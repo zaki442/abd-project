@@ -1,0 +1,101 @@
+{
+    "Navbar": {
+        "vision": "Vision",
+        "team": "Équipe",
+        "roadmap": "Feuille de route",
+        "joinDiscord": "Rejoindre Discord"
+    },
+    "Hero": {
+        "community": "Communauté Agile Marocaine",
+        "title": "Agile B Darija :",
+        "slogan": "L'agilité comme réflexe de vie",
+        "description": "Le hub marocain pour les praticiens Agile, les étudiants et les leaders pour collaborer, apprendre et grandir.",
+        "joinDiscord": "Rejoindre Discord",
+        "viewTrello": "Voir le Trello"
+    },
+    "Features": {
+        "mission": "Notre Mission",
+        "description": "Autonomiser la communauté Agile marocaine par la collaboration, l'éducation et l'impact réel.",
+        "culture": {
+            "title": "Culture Communautaire",
+            "desc": "Un espace dynamique où les passionnés d'Agile se connectent, partagent leurs expériences et tissent des liens durables."
+        },
+        "practice": {
+            "title": "Pratique & Expérimentation",
+            "desc": "Ateliers pratiques, sprints et projets réels pour affiner vos compétences Agile par la pratique."
+        },
+        "impact": {
+            "title": "Impact Social",
+            "desc": "Utiliser les méthodologies Agile pour le bien social à travers des projets associatifs et des initiatives communautaires."
+        },
+        "network": {
+            "title": "Réseau Professionnel",
+            "desc": "Connectez-vous avec des leaders de l'industrie, trouvez des mentors et découvrez des opportunités de carrière dans l'écosystème Agile."
+        }
+    },
+    "Formations": {
+        "title": "Nos Formations",
+        "description": "Choisissez la formation qui vous convient et commencez votre parcours d'apprentissage avec nous.",
+        "free": "Gratuit",
+        "register": "S'inscrire",
+        "items": {
+            "agile-darija": {
+                "title": "Agile B Darija",
+                "desc": "Apprenez Agile et Scrum en Darija marocaine. Comprenez comment les équipes travaillent avec rapidité et efficacité.",
+                "date": "2 février 2026"
+            },
+            "mindset": {
+                "title": "Esprit & Soft Skills",
+                "desc": "Développez votre personnalité et votre état d'esprit au profit de votre vie professionnelle. Communication, leadership et gestion du temps.",
+                "date": "9 février 2026"
+            },
+            "teamwork": {
+                "title": "Travail d'Équipe Agile",
+                "desc": "Apprenez à travailler avec succès avec votre équipe. Ateliers et exercices pratiques pour comprendre la dynamique d'équipe.",
+                "date": "16 février 2026"
+            },
+            "design-thinking": {
+                "title": "Design Thinking",
+                "desc": "Compétences en résolution de problèmes de manière créative. Apprenez à penser comme un designer pour trouver des solutions innovantes.",
+                "date": "23 février 2026"
+            }
+        }
+    },
+    "Team": {
+        "title": "Notre Équipe",
+        "description": "Rencontrez les personnes passionnées qui font avancer la communauté Agile B Darija.",
+        "roles": {
+            "Community Lead": "Responsable Communauté",
+            "Operations": "Opérations",
+            "Tech": "Technique",
+            "Content": "Contenu",
+            "Events": "Événements",
+            "Media": "Médias",
+            "Partnerships": "Partenariats",
+            "Coordinator": "Coordinateur"
+        }
+    },
+    "Roadmap": {
+        "title": "Feuille de Route en Direct",
+        "description": "Vue en temps réel de nos progrès directement depuis notre tableau Trello.",
+        "noItems": "Aucun élément actif"
+    },
+    "Community": {
+        "title": "Amour de la Communauté",
+        "description": "Témoignages des membres de la communauté Agile B Darija."
+    },
+    "Footer": {
+        "madeWith": "Fait avec",
+        "inMorocco": "au Maroc",
+        "rights": "Tous droits réservés."
+    },
+    "Registration": {
+        "register": "S'inscrire",
+        "title": "S'inscrire à",
+        "desc": "Fournissez vos informations afin que nous puissions vous contacter et finaliser votre inscription.",
+        "fullName": "Nom Complet",
+        "email": "Email",
+        "registering": "Inscription en cours...",
+        "sendInfo": "Envoyer les Informations"
+    }
+}

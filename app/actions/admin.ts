@@ -57,7 +57,7 @@ export async function verifyAdminPassword(password: string) {
         return { success: true }
     }
 
-    return { success: false, message: 'Password ghalat.' }
+    return { success: false, message: 'Invalid password.' }
 }
 
 export async function logoutAdmin() {
@@ -93,11 +93,11 @@ export async function deleteRegistration(id: string) {
 
     if (error) {
         console.error('Error deleting registration:', error)
-        return { success: false, message: 'Fchel lms7.' }
+        return { success: false, message: 'Failed to delete.' }
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Tems7 b naja7.' }
+    return { success: true, message: 'Deleted successfully.' }
 }
 
 export async function createRegistration(data: {
@@ -117,11 +117,11 @@ export async function createRegistration(data: {
 
     if (error) {
         console.error('Error creating registration:', error)
-        return { success: false, message: 'Fchel f creation.' }
+        return { success: false, message: 'Failed to create.' }
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Tzad b naja7!' }
+    return { success: true, message: 'Added successfully!' }
 }
 
 export async function updateRegistration(
@@ -141,11 +141,11 @@ export async function updateRegistration(
 
     if (error) {
         console.error('Error updating registration:', error)
-        return { success: false, message: 'Fchel f update.' }
+        return { success: false, message: 'Failed to update.' }
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Tbeddel b naja7!' }
+    return { success: true, message: 'Updated successfully!' }
 }
 
 export async function getStatsByFormation() {

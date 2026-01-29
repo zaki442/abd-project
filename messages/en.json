@@ -1,0 +1,101 @@
+{
+    "Navbar": {
+        "vision": "Vision",
+        "team": "Team",
+        "roadmap": "Roadmap",
+        "joinDiscord": "Join Discord"
+    },
+    "Hero": {
+        "community": "Moroccan Agile Community",
+        "title": "Agile B Darija:",
+        "slogan": "Agility as a Way of Life",
+        "description": "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
+        "joinDiscord": "Join Discord",
+        "viewTrello": "View Trello Board"
+    },
+    "Features": {
+        "mission": "Our Mission",
+        "description": "Empowering the Moroccan Agile community through collaboration, education, and real-world impact.",
+        "culture": {
+            "title": "Community Culture",
+            "desc": "A vibrant space where Agile enthusiasts connect, share experiences, and build lasting relationships."
+        },
+        "practice": {
+            "title": "Practice & Experimentation",
+            "desc": "Hands-on workshops, sprints, and real-world projects to sharpen your Agile skills through practice."
+        },
+        "impact": {
+            "title": "Social Impact",
+            "desc": "Leveraging Agile methodologies for social good through associative projects and community initiatives."
+        },
+        "network": {
+            "title": "Professional Network",
+            "desc": "Connect with industry leaders, find mentors, and discover career opportunities in the Agile ecosystem."
+        }
+    },
+    "Formations": {
+        "title": "Our Formations",
+        "description": "Choose the formation that suits you and start your learning journey with us.",
+        "free": "Free",
+        "register": "Register",
+        "items": {
+            "agile-darija": {
+                "title": "Agile B Darija",
+                "desc": "Learn Agile and Scrum in Moroccan Darija. Understand how teams work with speed and efficiency.",
+                "date": "February 2, 2026"
+            },
+            "mindset": {
+                "title": "Mindset & Soft Skills",
+                "desc": "Develop your personality and mindset to benefit your professional life. Communication, leadership, and time management.",
+                "date": "February 9, 2026"
+            },
+            "teamwork": {
+                "title": "Agile Teamwork",
+                "desc": "Learn how to work with your team successfully. Workshops and practical exercises to understand team dynamics.",
+                "date": "February 16, 2026"
+            },
+            "design-thinking": {
+                "title": "Design Thinking",
+                "desc": "Problem-solving skills in a creative way. Learn how to think like a designer to find innovative solutions.",
+                "date": "February 23, 2026"
+            }
+        }
+    },
+    "Team": {
+        "title": "Our Team",
+        "description": "Meet the passionate individuals driving the Agile B Darija community forward.",
+        "roles": {
+            "Community Lead": "Community Lead",
+            "Operations": "Operations",
+            "Tech": "Tech",
+            "Content": "Content",
+            "Events": "Events",
+            "Media": "Media",
+            "Partnerships": "Partnerships",
+            "Coordinator": "Coordinator"
+        }
+    },
+    "Roadmap": {
+        "title": "Live Roadmap",
+        "description": "Real-time view of our progress fetched directly from our Trello board.",
+        "noItems": "No active items"
+    },
+    "Community": {
+        "title": "Community Love",
+        "description": "Hear from members of the Agile B Darija community."
+    },
+    "Footer": {
+        "madeWith": "Made with",
+        "inMorocco": "in Morocco",
+        "rights": "All rights reserved."
+    },
+    "Registration": {
+        "register": "Register",
+        "title": "Register for",
+        "desc": "Provide your information so we can contact you and complete your registration.",
+        "fullName": "Full Name",
+        "email": "Email",
+        "registering": "Registering...",
+        "sendInfo": "Send Information"
+    }
+}

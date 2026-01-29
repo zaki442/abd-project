@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Circle, Clock, CheckCircle2, List } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 // Trello Constants
 const API_KEY = process.env.NEXT_PUBLIC_TRELLO_API_KEY
@@ -38,6 +39,7 @@ export function RoadmapSection() {
   const [lists, setLists] = useState<TrelloList[]>([])
   const [cards, setCards] = useState<TrelloCard[]>([])
   const [loading, setLoading] = useState(true)
+  const t = useTranslations("Roadmap")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,10 +82,10 @@ export function RoadmapSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            <span className="gradient-text">Live Roadmap</span>
+            <span className="gradient-text">{t("title")}</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Real-time view of our progress fetched directly from our Trello board.
+            {t("description")}
           </p>
         </div>
 
@@ -113,7 +115,7 @@ export function RoadmapSection() {
                   <CardContent className="space-y-3 flex-1 overflow-y-auto max-h-[500px] custom-scrollbar">
                     {listCards.length === 0 ? (
                       <div className="text-sm text-muted-foreground/50 text-center py-4 italic">
-                        No active items
+                        {t("noItems")}
                       </div>
                     ) : (
                       listCards.map((card) => (

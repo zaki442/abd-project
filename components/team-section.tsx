@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
+import { useTranslations } from "next-intl"
 
 const team = [
   { name: "Youness", role: "Community Lead", initials: "YN" },
@@ -23,15 +24,17 @@ const roleColors: Record<string, string> = {
 }
 
 export function TeamSection() {
+  const t = useTranslations("Team")
+
   return (
     <section id="team" className="py-24 px-4 sm:px-6 lg:px-8 bg-secondary/30">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            <span className="gradient-text">Our Team</span>
+            <span className="gradient-text">{t("title")}</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Meet the passionate individuals driving the Agile B Darija community forward.
+            {t("description")}
           </p>
         </div>
 
@@ -48,7 +51,7 @@ export function TeamSection() {
                   <span className="text-lg sm:text-xl font-bold text-white">{member.initials}</span>
                 </div>
                 <h3 className="font-semibold text-foreground text-sm sm:text-base">{member.name}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm mt-1">{member.role}</p>
+                <p className="text-muted-foreground text-xs sm:text-sm mt-1">{t(`roles.${member.role}` as any)}</p>
               </CardContent>
             </Card>
           ))}

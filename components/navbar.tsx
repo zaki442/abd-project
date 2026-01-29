@@ -4,22 +4,25 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
-
-const navLinks = [
-  { href: "#vision", label: "Vision" },
-  { href: "#team", label: "Team" },
-  { href: "#roadmap", label: "Roadmap" },
-]
+import { useTranslations } from "next-intl"
+import { LanguageSwitcher } from "./language-switcher"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const t = useTranslations("Navbar")
+
+  const navLinks = [
+    { href: "#vision", label: t("vision") },
+    { href: "#team", label: t("team") },
+    { href: "#roadmap", label: t("roadmap") },
+  ]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24">
           <div className="flex items-center gap-2">
-            <div className="relative w-72 h-20 mr-2 overflow-hidden">
+            <div className="relative w-72 h-20 me-2 overflow-hidden">
               <Image
                 src="/logo.png"
                 alt="Agile B Darija Logo"
@@ -42,18 +45,22 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
+            <LanguageSwitcher />
             <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white">
               <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
-                <DiscordIcon className="w-4 h-4 mr-2" />
-                Join Discord
+                <DiscordIcon className="w-4 h-4 me-2" />
+                {t("joinDiscord")}
               </a>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 text-foreground" aria-label="Toggle menu">
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            <LanguageSwitcher />
+            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-foreground" aria-label="Toggle menu">
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -72,8 +79,8 @@ export function Navbar() {
               ))}
               <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white w-fit">
                 <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
-                  <DiscordIcon className="w-4 h-4 mr-2" />
-                  Join Discord
+                  <DiscordIcon className="w-4 h-4 me-2" />
+                  {t("joinDiscord")}
                 </a>
               </Button>
             </div>

@@ -1,41 +1,42 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, FlaskConical, Heart, Briefcase } from "lucide-react"
-
-const features = [
-  {
-    icon: Users,
-    title: "Community Culture",
-    description: "A vibrant space where Agile enthusiasts connect, share experiences, and build lasting relationships.",
-  },
-  {
-    icon: FlaskConical,
-    title: "Practice & Experimentation",
-    description: "Hands-on workshops, sprints, and real-world projects to sharpen your Agile skills through practice.",
-  },
-  {
-    icon: Heart,
-    title: "Social Impact",
-    description:
-      "Leveraging Agile methodologies for social good through associative projects and community initiatives.",
-  },
-  {
-    icon: Briefcase,
-    title: "Professional Network",
-    description:
-      "Connect with industry leaders, find mentors, and discover career opportunities in the Agile ecosystem.",
-  },
-]
+import { useTranslations } from "next-intl"
 
 export function FeaturesSection() {
+  const t = useTranslations("Features")
+
+  const features = [
+    {
+      icon: Users,
+      title: t("culture.title"),
+      description: t("culture.desc"),
+    },
+    {
+      icon: FlaskConical,
+      title: t("practice.title"),
+      description: t("practice.desc"),
+    },
+    {
+      icon: Heart,
+      title: t("impact.title"),
+      description: t("impact.desc"),
+    },
+    {
+      icon: Briefcase,
+      title: t("network.title"),
+      description: t("network.desc"),
+    },
+  ]
+
   return (
     <section id="vision" className="py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            <span className="gradient-text">Our Mission</span>
+            <span className="gradient-text">{t("mission")}</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Empowering the Moroccan Agile community through collaboration, education, and real-world impact.
+            {t("description")}
           </p>
         </div>
 

@@ -1,7 +1,10 @@
 import { Heart } from "lucide-react"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 
 export function Footer() {
+  const t = useTranslations("Footer")
+
   return (
     <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
       <div className="max-w-7xl mx-auto">
@@ -49,15 +52,15 @@ export function Footer() {
 
           {/* Made in Morocco */}
           <div className="flex items-center gap-2 text-muted-foreground">
-            <span>Made with</span>
+            <span>{t("madeWith")}</span>
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-            <span>in Morocco</span>
+            <span>{t("inMorocco")}</span>
             <span className="ml-1">🇲🇦</span>
           </div>
 
           {/* Copyright */}
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Agile B Darija. All rights reserved.
+            © {new Date().getFullYear()} Agile B Darija. {t("rights")}
           </p>
         </div>
       </div>

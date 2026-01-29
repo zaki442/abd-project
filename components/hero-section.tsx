@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 export function HeroSection() {
+  const t = useTranslations("Hero")
+
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
       {/* Background gradient effects */}
@@ -13,24 +16,24 @@ export function HeroSection() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 border border-border mb-8">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm text-muted-foreground">Moroccan Agile Community</span>
+          <span className="text-sm text-muted-foreground">{t("community")}</span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-          <span className="text-foreground">Agile B Darija:</span>
+          <span className="text-foreground">{t("title")}</span>
           <br />
-          <span className="gradient-text">L&apos;agilité comme réflexe de vie</span>
+          <span className="gradient-text">{t("slogan")}</span>
         </h1>
 
         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-          The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.
+          {t("description")}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="bg-[#5865F2] hover:bg-[#4752c4] text-white px-8 py-6 text-lg">
             <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
-              <DiscordIcon className="w-5 h-5 mr-2" />
-              Join Discord
+              <DiscordIcon className="w-5 h-5 me-2" />
+              {t("joinDiscord")}
             </a>
           </Button>
           <Button
@@ -40,8 +43,8 @@ export function HeroSection() {
             className="px-8 py-6 text-lg border-border hover:bg-secondary bg-transparent"
           >
             <a href="https://trello.com/b/h7XeHtU3/abd-community" target="_blank" rel="noopener noreferrer">
-              <TrelloIcon className="w-5 h-5 mr-2" />
-              View Trello Board
+              <TrelloIcon className="w-5 h-5 me-2" />
+              {t("viewTrello")}
             </a>
           </Button>
         </div>

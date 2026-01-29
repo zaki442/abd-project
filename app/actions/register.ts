@@ -12,7 +12,7 @@ export async function registerUser(prevState: any, formData: FormData) {
     if (!fullName || !email || !formationId) {
         return {
             success: false,
-            message: 'Email w smiya daroryin.',
+            message: 'Email and name are required.',
         }
     }
 
@@ -31,19 +31,19 @@ export async function registerUser(prevState: any, formData: FormData) {
             console.error('Supabase error:', error)
             return {
                 success: false,
-                message: 'Wqe3 mochkil f tasjil. 3awd jerrab men be3d.',
+                message: 'A problem occurred during registration. Please try again later.',
             }
         }
 
         return {
             success: true,
-            message: 'Tssajaliti b naja7! Ghan ttaslo bik qrib.',
+            message: 'Successfully registered! We will contact you soon.',
         }
     } catch (error) {
         console.error('Server error:', error)
         return {
             success: false,
-            message: 'Wqe3 mochkil f system. 3awd jerrab.',
+            message: 'A system error occurred. Please try again.',
         }
     }
 }

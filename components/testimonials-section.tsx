@@ -1,5 +1,6 @@
 import { Marquee } from "@/components/ui/marquee"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 
 // Mock data for testimonials
 const reviews = [
@@ -75,14 +76,16 @@ const ReviewCard = ({
 }
 
 export function TestimonialsSection() {
+    const t = useTranslations("Community")
+
     return (
         <section className="py-24 bg-zinc-950"> {/* Forcing dark bg as requested */}
             <div className="text-center mb-12 px-4">
                 <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
-                    Community <span className="gradient-text">Love</span>
+                    {t("title")} <span className="gradient-text">Love</span>
                 </h2>
                 <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                    Hear from members of the Agile B Darija community.
+                    {t("description")}
                 </p>
             </div>
 
