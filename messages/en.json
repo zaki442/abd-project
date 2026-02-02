@@ -145,6 +145,32 @@
             "saving": "Saving...",
             "add": "Add",
             "save": "Save"
+        },
+        "formations": {
+            "title": "Formations",
+            "add": "Add Formation",
+            "edit": "Edit Formation",
+            "create": "Create Formation",
+            "save": "Save Changes",
+            "delete": "Delete",
+            "confirmDelete": "Are you sure you want to delete this formation?",
+            "uploadImage": "Upload Image",
+            "image": "Image",
+            "category": "Category",
+            "date": "Date",
+            "price": "Price",
+            "description": "Description",
+            "titleLabel": "Title"
+        },
+        "categories": {
+            "title": "Categories",
+            "add": "Add Category",
+            "edit": "Edit Category",
+            "create": "Create Category",
+            "save": "Save Changes",
+            "delete": "Delete",
+            "confirmDelete": "Are you sure you want to delete this category?",
+            "name": "Name"
         }
     }
 }

@@ -231,6 +231,38 @@ export async function createFormation(data: {
     return { success: true, message: 'Formation added successfully!' }
 }
 
+export async function updateFormation(id: string, data: {
+    title: string
+    description: string
+    date: string
+    price: string
+    image_url: string
+    category_id: string
+}) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('formations')
+        .update({
+            title: data.title,
+            description: data.description,
+            date: data.date,
+            price: data.price,
+            image_url: data.image_url,
+            category_id: data.category_id,
+        })
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error updating formation:', error)
+        return { success: false, message: 'Failed to update formation.' }
+    }
+
+    revalidatePath('/admin')
+    revalidatePath('/')
+    return { success: true, message: 'Formation updated successfully!' }
+}
+
 export async function deleteFormation(id: string) {
     const supabase = await createServerSupabaseClient()
 
@@ -283,6 +315,23 @@ export async function createCategory(name: string) {
 
     revalidatePath('/admin')
     return { success: true, message: 'Category added successfully!' }
+}
+
+export async function updateCategory(id: string, name: string) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('formations_category')
+        .update({ name })
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error updating category:', error)
+        return { success: false, message: 'Failed to update category.' }
+    }
+
+    revalidatePath('/admin')
+    return { success: true, message: 'Category updated successfully!' }
 }
 
 export async function deleteCategory(id: string) {

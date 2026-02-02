@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { createFormation, deleteFormation } from '@/app/actions/admin'
+import { createFormation, deleteFormation, updateFormation } from '@/app/actions/admin' // Added updateFormation
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '../ui/textarea'
@@ -28,7 +28,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { Plus, Trash2, Loader2, Image as ImageIcon } from 'lucide-react'
+import { Plus, Trash2, Loader2, Image as ImageIcon, Pencil } from 'lucide-react' // Added Pencil
 import { useTranslations } from 'next-intl'
 import { createBrowserClient } from '@supabase/ssr'
 
@@ -57,7 +57,7 @@ interface FormationsManagerProps {
 export function FormationsManager({ formations, categories }: FormationsManagerProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
-    const t = useTranslations('Admin.formations') // Assuming you'll add these keys
+    const t = useTranslations('Admin.formations')
 
     // Form State
     const [formData, setFormData] = useState({
@@ -69,6 +69,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         image_url: ''
     })
     const [uploading, setUploading] = useState(false)
+    const [editingId, setEditingId] = useState<string | null>(null) // Track editing state
 
     // Handle Image Upload
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +91,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             )
 
             const { error: uploadError } = await supabase.storage
-                .from('formations') // Make sure this bucket exists
+                .from('formations')
                 .upload(filePath, file)
 
             if (uploadError) {
@@ -110,6 +111,39 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         }
     }
 
+    const resetForm = () => {
+        setFormData({
+            title: '',
+            description: '',
+            date: '',
+            price: '',
+            category_id: '',
+            image_url: ''
+        })
+        setEditingId(null)
+    }
+
+    const handleOpenChange = (open: boolean) => {
+        setIsDialogOpen(open)
+        if (!open) {
+            // Delay reset to avoid flickering
+            setTimeout(resetForm, 300)
+        }
+    }
+
+    const handleEdit = (formation: Formation) => {
+        setFormData({
+            title: formation.title,
+            description: formation.description,
+            date: formation.date,
+            price: formation.price,
+            category_id: formation.category_id,
+            image_url: formation.image_url
+        })
+        setEditingId(formation.id)
+        setIsDialogOpen(true)
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -119,17 +153,16 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         }
 
         startTransition(async () => {
-            const result = await createFormation(formData)
+            let result;
+            if (editingId) {
+                result = await updateFormation(editingId, formData)
+            } else {
+                result = await createFormation(formData)
+            }
+
             if (result.success) {
                 setIsDialogOpen(false)
-                setFormData({
-                    title: '',
-                    description: '',
-                    date: '',
-                    price: '',
-                    category_id: '',
-                    image_url: ''
-                })
+                resetForm()
             } else {
                 alert(result.message)
             }
@@ -151,18 +184,18 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-white">Formations</h2>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
                     <DialogTrigger asChild>
-                        <Button>
+                        <Button onClick={resetForm}>
                             <Plus className="mr-2 h-4 w-4" />
                             Add Formation
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-zinc-800 text-white">
                         <DialogHeader>
-                            <DialogTitle>Add New Formation</DialogTitle>
+                            <DialogTitle>{editingId ? 'Edit Formation' : 'Add New Formation'}</DialogTitle>
                             <DialogDescription>
-                                Create a new formation. Upload an image and fill in the details.
+                                {editingId ? 'Modify formation details.' : 'Create a new formation. Upload an image and fill in the details.'}
                             </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 py-4">
@@ -257,7 +290,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                 className="w-full"
                                 disabled={isPending || uploading}
                             >
-                                {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Formation'}
+                                {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : (editingId ? 'Save Changes' : 'Create Formation')}
                             </Button>
                         </form>
                     </DialogContent>
@@ -295,6 +328,14 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                     <TableCell className="text-zinc-300">{f.category?.name || 'Uncategorized'}</TableCell>
                                     <TableCell className="text-zinc-300">{f.date}</TableCell>
                                     <TableCell className="text-right">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => handleEdit(f)}
+                                            className="text-zinc-500 hover:text-white"
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                        </Button>
                                         <Button
                                             variant="ghost"
                                             size="icon"

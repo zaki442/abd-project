@@ -2,6 +2,7 @@ import { getFormations, getCategories, getRegistrations, getStatsByFormation, lo
 import { RegistrationsTable } from '@/components/admin/registrations-table'
 import { StatsCards } from '@/components/admin/stats-cards'
 import { FormationsManager } from '@/components/admin/formations-manager'
+import { CategoriesManager } from '@/components/admin/categories-manager'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -66,6 +67,7 @@ export default async function AdminPage() {
                         <TabsList className="bg-zinc-900 border border-zinc-800">
                             <TabsTrigger value="registrations">Registrations</TabsTrigger>
                             <TabsTrigger value="formations">Formations</TabsTrigger>
+                            <TabsTrigger value="categories">Categories</TabsTrigger>
                         </TabsList>
                     </div>
 
@@ -75,6 +77,10 @@ export default async function AdminPage() {
 
                     <TabsContent value="formations" className="space-y-4">
                         <FormationsManager formations={formations} categories={categories} />
+                    </TabsContent>
+
+                    <TabsContent value="categories" className="space-y-4">
+                        <CategoriesManager categories={categories} />
                     </TabsContent>
                 </Tabs>
             </div>
