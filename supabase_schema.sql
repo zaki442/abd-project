@@ -91,8 +91,7 @@ create table formations (
   description text not null,
   date text not null,
   price text not null,
-  image_url text not null,
-  category_id uuid references formations_category(id) on delete set null
+  image_url text not null
 );
 
 alter table formations enable row level security;
@@ -104,6 +103,28 @@ using (true);
 
 create policy "Enable write for authenticated admins"
 on formations
+for all
+using (true);
+
+-- =============================================
+-- FORMATION CATEGORIES LINK (Junction Table)
+-- =============================================
+
+create table formation_category_link (
+  formation_id uuid references formations(id) on delete cascade,
+  category_id uuid references formations_category(id) on delete cascade,
+  primary key (formation_id, category_id)
+);
+
+alter table formation_category_link enable row level security;
+
+create policy "Enable read for all"
+on formation_category_link
+for select
+using (true);
+
+create policy "Enable write for authenticated admins"
+on formation_category_link
 for all
 using (true);
 

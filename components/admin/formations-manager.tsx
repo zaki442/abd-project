@@ -45,8 +45,7 @@ type Formation = {
     date: string
     price: string
     image_url: string
-    category_id: string
-    category?: Category
+    categories: Category[]
 }
 
 interface FormationsManagerProps {
@@ -60,12 +59,19 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
     const t = useTranslations('Admin.formations')
 
     // Form State
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        title: string
+        description: string
+        date: string
+        price: string
+        category_ids: string[]
+        image_url: string
+    }>({
         title: '',
         description: '',
         date: '',
         price: '',
-        category_id: '',
+        category_ids: [],
         image_url: ''
     })
     const [uploading, setUploading] = useState(false)
@@ -117,7 +123,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             description: '',
             date: '',
             price: '',
-            category_id: '',
+            category_ids: [],
             image_url: ''
         })
         setEditingId(null)
@@ -137,11 +143,22 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             description: formation.description,
             date: formation.date,
             price: formation.price,
-            category_id: formation.category_id,
+            category_ids: formation.categories.map(c => c.id),
             image_url: formation.image_url
         })
         setEditingId(formation.id)
         setIsDialogOpen(true)
+    }
+
+    const handleCategoryToggle = (categoryId: string) => {
+        setFormData(prev => {
+            const current = prev.category_ids
+            if (current.includes(categoryId)) {
+                return { ...prev, category_ids: current.filter(id => id !== categoryId) }
+            } else {
+                return { ...prev, category_ids: [...current, categoryId] }
+            }
+        })
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -191,7 +208,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                             Add Formation
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-zinc-800 text-white">
+                    <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-zinc-800 text-white max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{editingId ? 'Edit Formation' : 'Add New Formation'}</DialogTitle>
                             <DialogDescription>
@@ -233,35 +250,37 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Price</label>
-                                    <Input
-                                        placeholder="e.g. Free or 100 USD"
-                                        value={formData.price}
-                                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                        required
-                                        className="bg-zinc-900 border-zinc-700"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Category</label>
-                                    <Select
-                                        value={formData.category_id}
-                                        onValueChange={(val) => setFormData({ ...formData, category_id: val })}
-                                        required
-                                    >
-                                        <SelectTrigger className="bg-zinc-900 border-zinc-700">
-                                            <SelectValue placeholder="Select Category" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                            {categories.map((cat) => (
-                                                <SelectItem key={cat.id} value={cat.id}>
-                                                    {cat.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Price</label>
+                                <Input
+                                    placeholder="e.g. Free or 100 USD"
+                                    value={formData.price}
+                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                    required
+                                    className="bg-zinc-900 border-zinc-700"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Categories</label>
+                                <div className="grid grid-cols-2 gap-2 bg-zinc-900 p-3 rounded-md border border-zinc-700">
+                                    {categories.map((cat) => (
+                                        <div key={cat.id} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                id={`cat-${cat.id}`}
+                                                className="rounded border-zinc-600 bg-zinc-800 text-primary focus:ring-primary"
+                                                checked={formData.category_ids.includes(cat.id)}
+                                                onChange={() => handleCategoryToggle(cat.id)}
+                                            />
+                                            <label
+                                                htmlFor={`cat-${cat.id}`}
+                                                className="text-sm text-zinc-300 cursor-pointer select-none"
+                                            >
+                                                {cat.name}
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -325,7 +344,11 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                         </div>
                                     </TableCell>
                                     <TableCell className="font-medium text-white">{f.title}</TableCell>
-                                    <TableCell className="text-zinc-300">{f.category?.name || 'Uncategorized'}</TableCell>
+                                    <TableCell className="text-zinc-300">
+                                        {f.categories && f.categories.length > 0
+                                            ? f.categories.map(c => c.name).join(', ')
+                                            : 'Uncategorized'}
+                                    </TableCell>
                                     <TableCell className="text-zinc-300">{f.date}</TableCell>
                                     <TableCell className="text-right">
                                         <Button

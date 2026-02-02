@@ -42,6 +42,11 @@ DECLARE
     cat_agile uuid;
     cat_soft_skills uuid;
     cat_devops uuid;
+    
+    form_agile_darija uuid;
+    form_mindset uuid;
+    form_teamwork uuid;
+    form_dt uuid;
 BEGIN
     -- Get category IDs
     SELECT id INTO cat_ramadan FROM formations_category WHERE name = 'Ramadan Bootcamp';
@@ -49,38 +54,22 @@ BEGIN
     SELECT id INTO cat_soft_skills FROM formations_category WHERE name = 'Soft Skills';
 
     -- Insert Formations
-    INSERT INTO formations (title, description, date, price, image_url, category_id)
-    VALUES
-    (
-        'Agile B Darija',
-        'Learn Agile and Scrum in Moroccan Darija. Understand how teams work with speed and efficiency.',
-        'February 2, 2026',
-        'Free',
-        '/formations/agile-darija-v2.png',
-        cat_agile
-    ),
-    (
-        'Mindset & Soft Skills',
-        'Develop your personality and mindset to benefit your professional life. Communication, leadership, and time management.',
-        'February 9, 2026',
-        'Free',
-        '/formations/mindset.png',
-        cat_soft_skills
-    ),
-    (
-        'Agile Teamwork',
-        'Learn how to work with your team successfully. Workshops and practical exercises to understand team dynamics.',
-        'February 16, 2026',
-        'Free',
-        '/formations/agile-teamwork.png',
-        cat_agile
-    ),
-    (
-        'Design Thinking',
-        'Problem-solving skills in a creative way. Learn how to think like a designer to find innovative solutions.',
-        'February 23, 2026',
-        'Free',
-        '/formations/design-thinking.png',
-        cat_soft_skills
-    );
+    INSERT INTO formations (title, description, date, price, image_url) VALUES
+    ('Agile B Darija', 'Learn Agile & Scrum in Moroccan Darija.', 'February 2, 2026', 'Free', '/formations/agile-darija-v2.png') RETURNING id INTO form_agile_darija;
+    
+    INSERT INTO formations (title, description, date, price, image_url) VALUES
+    ('Mindset & Soft Skills', 'Develop your personality and mindset.', 'February 9, 2026', 'Free', '/formations/mindset.png') RETURNING id INTO form_mindset;
+    
+    INSERT INTO formations (title, description, date, price, image_url) VALUES
+    ('Agile Teamwork', 'Learn how to work with your team successfully.', 'February 16, 2026', 'Free', '/formations/agile-teamwork.png') RETURNING id INTO form_teamwork;
+    
+    INSERT INTO formations (title, description, date, price, image_url) VALUES
+    ('Design Thinking', 'Problem-solving skills in a creative way.', 'February 23, 2026', 'Free', '/formations/design-thinking.png') RETURNING id INTO form_dt;
+
+    -- Link Formations to Categories
+    INSERT INTO formation_category_link (formation_id, category_id) VALUES
+    (form_agile_darija, cat_agile),
+    (form_mindset, cat_soft_skills),
+    (form_teamwork, cat_agile),
+    (form_dt, cat_soft_skills);
 END $$;

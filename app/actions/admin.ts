@@ -188,7 +188,9 @@ export async function getFormations() {
         .from('formations')
         .select(`
             *,
-            category:formations_category(id, name)
+            categories:formation_category_link(
+                category:formations_category(id, name)
+            )
         `)
         .order('created_at', { ascending: false })
 
@@ -197,7 +199,11 @@ export async function getFormations() {
         return []
     }
 
-    return data
+    // Transform data to flat array of categories
+    return data.map((f: any) => ({
+        ...f,
+        categories: f.categories.map((c: any) => c.category)
+    }))
 }
 
 export async function createFormation(data: {
@@ -206,11 +212,12 @@ export async function createFormation(data: {
     date: string
     price: string
     image_url: string
-    category_id: string
+    category_ids: string[]
 }) {
     const supabase = await createServerSupabaseClient()
 
-    const { error } = await supabase
+    // 1. Create Formation
+    const { data: formation, error } = await supabase
         .from('formations')
         .insert({
             title: data.title,
@@ -218,8 +225,31 @@ export async function createFormation(data: {
             date: data.date,
             price: data.price,
             image_url: data.image_url,
-            category_id: data.category_id,
         })
+        .select()
+        .single()
+
+    if (error) {
+        console.error('Error creating formation:', error)
+        return { success: false, message: 'Failed to create formation.' }
+    }
+
+    // 2. Link Categories
+    if (data.category_ids && data.category_ids.length > 0) {
+        const links = data.category_ids.map(catId => ({
+            formation_id: formation.id,
+            category_id: catId
+        }))
+
+        const { error: linkError } = await supabase
+            .from('formation_category_link')
+            .insert(links)
+
+        if (linkError) {
+            console.error('Error linking categories:', linkError)
+            return { success: false, message: 'Formation created but failed to link categories.' }
+        }
+    }
 
     if (error) {
         console.error('Error creating formation:', error)
@@ -237,10 +267,11 @@ export async function updateFormation(id: string, data: {
     date: string
     price: string
     image_url: string
-    category_id: string
+    category_ids: string[]
 }) {
     const supabase = await createServerSupabaseClient()
 
+    // 1. Update Formation Details
     const { error } = await supabase
         .from('formations')
         .update({
@@ -249,13 +280,41 @@ export async function updateFormation(id: string, data: {
             date: data.date,
             price: data.price,
             image_url: data.image_url,
-            category_id: data.category_id,
         })
         .eq('id', id)
 
     if (error) {
         console.error('Error updating formation:', error)
         return { success: false, message: 'Failed to update formation.' }
+    }
+
+    // 2. Sync Categories (Delete all, then insert new)
+    // First, delete existing
+    const { error: deleteError } = await supabase
+        .from('formation_category_link')
+        .delete()
+        .eq('formation_id', id)
+
+    if (deleteError) {
+        console.error('Error deleting old categories:', deleteError)
+        return { success: false, message: 'Failed to update categories.' }
+    }
+
+    // Then insert new if any
+    if (data.category_ids && data.category_ids.length > 0) {
+        const links = data.category_ids.map(catId => ({
+            formation_id: id,
+            category_id: catId
+        }))
+
+        const { error: linkError } = await supabase
+            .from('formation_category_link')
+            .insert(links)
+
+        if (linkError) {
+            console.error('Error linking new categories:', linkError)
+            return { success: false, message: 'Failed to link new categories.' }
+        }
     }
 
     revalidatePath('/admin')

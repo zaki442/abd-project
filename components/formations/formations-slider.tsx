@@ -25,7 +25,7 @@ type Formation = {
     date: string
     price: string
     image_url: string
-    category_id: string
+    categories: Category[]
 }
 
 interface FormationsSliderProps {
@@ -39,7 +39,7 @@ export function FormationsSlider({ formations = [], categories = [] }: Formation
 
     const filteredFormations = selectedCategory === "all"
         ? formations
-        : formations.filter(f => f.category_id === selectedCategory)
+        : formations.filter(f => f.categories.some(c => c.id === selectedCategory))
 
     // Fallback if no formations provided (optional, or just show empty)
     // For now we assume existing formations if passed are valid.
