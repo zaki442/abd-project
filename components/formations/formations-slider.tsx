@@ -54,12 +54,21 @@ export function FormationsSlider({ formations = [], categories = [] }: Formation
                     </p>
                 </div>
 
-                <div className="flex justify-center mb-8">
-                    <Tabs defaultValue="all" onValueChange={setSelectedCategory} className="w-full max-w-3xl">
-                        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 h-auto">
-                            <TabsTrigger value="all">All</TabsTrigger>
+                <div className="flex justify-center mb-12">
+                    <Tabs defaultValue="all" onValueChange={setSelectedCategory} className="w-full flex flex-col items-center">
+                        <TabsList className="flex w-fit max-w-full mx-auto h-auto p-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full gap-1 overflow-x-auto no-scrollbar">
+                            <TabsTrigger
+                                value="all"
+                                className="rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:scale-105 hover:bg-white/5 hover:text-white"
+                            >
+                                All
+                            </TabsTrigger>
                             {categories.map((cat) => (
-                                <TabsTrigger key={cat.id} value={cat.id}>
+                                <TabsTrigger
+                                    key={cat.id}
+                                    value={cat.id}
+                                    className="rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:scale-105 hover:bg-white/5 hover:text-white whitespace-nowrap"
+                                >
                                     {cat.name}
                                 </TabsTrigger>
                             ))}
