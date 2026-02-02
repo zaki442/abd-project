@@ -18,6 +18,11 @@ INSERT INTO formations_category (name) VALUES
 ('Other')
 ON CONFLICT (name) DO NOTHING;
 
+-- Create the 'formations' storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('formations', 'formations', true)
+ON CONFLICT (id) DO NOTHING;
+
 -- Optional: Insert a test registration to verify the table works
 -- Uncomment if you want test data
 /*

@@ -107,4 +107,34 @@ on formations
 for all
 using (true);
 
+-- =============================================
+-- STORAGE
+-- =============================================
+
+-- Create the 'formations' bucket
+-- (Bucket creation moved to seed.sql)
+
+-- Allow public read access to the 'formations' bucket
+drop policy if exists "Public Access to Formations Images" on storage.objects;
+create policy "Public Access to Formations Images"
+on storage.objects for select
+using ( bucket_id = 'formations' );
+
+-- Allow authenticated uploads to the 'formations' bucket
+drop policy if exists "Authenticated Users Can Upload Images" on storage.objects;
+create policy "Authenticated Users Can Upload Images"
+on storage.objects for insert
+with check ( bucket_id = 'formations' );
+
+-- Allow authenticated updates/deletes (e.g. for admins)
+drop policy if exists "Authenticated Users Can Update Images" on storage.objects;
+create policy "Authenticated Users Can Update Images"
+on storage.objects for update
+using ( bucket_id = 'formations' );
+
+drop policy if exists "Authenticated Users Can Delete Images" on storage.objects;
+create policy "Authenticated Users Can Delete Images"
+on storage.objects for delete
+using ( bucket_id = 'formations' );
+
 
