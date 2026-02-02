@@ -170,3 +170,129 @@ export async function getStatsByFormation() {
         byFormation,
     }
 }
+
+// ==========================================
+// FORMATIONS MANAGEMENT
+// ==========================================
+
+export async function getFormations() {
+    const supabase = await createServerSupabaseClient()
+
+    const { data, error } = await supabase
+        .from('formations')
+        .select(`
+            *,
+            category:formations_category(id, name)
+        `)
+        .order('created_at', { ascending: false })
+
+    if (error) {
+        console.error('Error fetching formations:', error)
+        return []
+    }
+
+    return data
+}
+
+export async function createFormation(data: {
+    title: string
+    description: string
+    date: string
+    price: string
+    image_url: string
+    category_id: string
+}) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('formations')
+        .insert({
+            title: data.title,
+            description: data.description,
+            date: data.date,
+            price: data.price,
+            image_url: data.image_url,
+            category_id: data.category_id,
+        })
+
+    if (error) {
+        console.error('Error creating formation:', error)
+        return { success: false, message: 'Failed to create formation.' }
+    }
+
+    revalidatePath('/admin')
+    revalidatePath('/') // Revalidate home page to show new formations
+    return { success: true, message: 'Formation added successfully!' }
+}
+
+export async function deleteFormation(id: string) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('formations')
+        .delete()
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error deleting formation:', error)
+        return { success: false, message: 'Failed to delete formation.' }
+    }
+
+    revalidatePath('/admin')
+    revalidatePath('/')
+    return { success: true, message: 'Formation deleted successfully.' }
+}
+
+// ==========================================
+// CATEGORIES MANAGEMENT
+// ==========================================
+
+export async function getCategories() {
+    const supabase = await createServerSupabaseClient()
+
+    const { data, error } = await supabase
+        .from('formations_category')
+        .select('*')
+        .order('name', { ascending: true })
+
+    if (error) {
+        console.error('Error fetching categories:', error)
+        return []
+    }
+
+    return data
+}
+
+export async function createCategory(name: string) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('formations_category')
+        .insert({ name })
+
+    if (error) {
+        console.error('Error creating category:', error)
+        return { success: false, message: 'Failed to create category.' }
+    }
+
+    revalidatePath('/admin')
+    return { success: true, message: 'Category added successfully!' }
+}
+
+export async function deleteCategory(id: string) {
+    const supabase = await createServerSupabaseClient()
+
+    const { error } = await supabase
+        .from('formations_category')
+        .delete()
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error deleting category:', error)
+        return { success: false, message: 'Failed to delete category.' }
+    }
+
+    revalidatePath('/admin')
+    return { success: true, message: 'Category deleted successfully.' }
+}
+

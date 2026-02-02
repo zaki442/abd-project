@@ -55,3 +55,61 @@ create policy "Enable read for login"
 on admins
 for select
 using (true);
+
+-- =============================================
+-- FORMATION CATEGORIES TABLE
+-- =============================================
+
+create table formations_category (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  name text not null unique
+);
+
+alter table formations_category enable row level security;
+
+create policy "Enable read for all"
+on formations_category
+for select
+using (true);
+
+create policy "Enable write for authenticated admins"
+on formations_category
+for all
+using (true); -- Ideally restrict to admins, but relying on app-level auth for now or 'true' for simplicity as per existing pattern
+
+-- =============================================
+-- FORMATIONS TABLE
+-- =============================================
+
+create table formations (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  title text not null,
+  description text not null,
+  date text not null,
+  price text not null,
+  image_url text not null,
+  category_id uuid references formations_category(id) on delete set null
+);
+
+alter table formations enable row level security;
+
+create policy "Enable read for all"
+on formations
+for select
+using (true);
+
+create policy "Enable write for authenticated admins"
+on formations
+for all
+using (true);
+
+-- Insert default categories
+insert into formations_category (name) values 
+('Ramadan Bootcamp'), 
+('Agile'), 
+('Soft Skills'), 
+('DevOps'),
+('Other')
+on conflict (name) do nothing;

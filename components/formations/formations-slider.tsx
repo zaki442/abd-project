@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import {
     Carousel,
     CarouselContent,
@@ -10,44 +11,38 @@ import {
 import { FormationCard } from './formation-card'
 import Autoplay from 'embla-carousel-autoplay'
 import { useTranslations } from 'next-intl'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-export function FormationsSlider() {
+type Category = {
+    id: string
+    name: string
+}
+
+type Formation = {
+    id: string
+    title: string
+    description: string
+    date: string
+    price: string
+    image_url: string
+    category_id: string
+}
+
+interface FormationsSliderProps {
+    formations?: Formation[]
+    categories?: Category[]
+}
+
+export function FormationsSlider({ formations = [], categories = [] }: FormationsSliderProps) {
     const t = useTranslations("Formations")
+    const [selectedCategory, setSelectedCategory] = useState<string>("all")
 
-    const FORMATIONS = [
-        {
-            id: 'agile-darija',
-            title: t("items.agile-darija.title"),
-            description: t("items.agile-darija.desc"),
-            date: t("items.agile-darija.date"),
-            price: t("free"),
-            imageSrc: '/formations/agile-darija-v2.png',
-        },
-        {
-            id: 'mindset',
-            title: t("items.mindset.title"),
-            description: t("items.mindset.desc"),
-            date: t("items.mindset.date"),
-            price: t("free"),
-            imageSrc: '/formations/mindset.png',
-        },
-        {
-            id: 'agile-teamwork',
-            title: t("items.teamwork.title"),
-            description: t("items.teamwork.desc"),
-            date: t("items.teamwork.date"),
-            price: t("free"),
-            imageSrc: '/formations/agile-teamwork.png',
-        },
-        {
-            id: 'design-thinking',
-            title: t("items.design-thinking.title"),
-            description: t("items.design-thinking.desc"),
-            date: t("items.design-thinking.date"),
-            price: t("free"),
-            imageSrc: '/formations/design-thinking.png',
-        },
-    ]
+    const filteredFormations = selectedCategory === "all"
+        ? formations
+        : formations.filter(f => f.category_id === selectedCategory)
+
+    // Fallback if no formations provided (optional, or just show empty)
+    // For now we assume existing formations if passed are valid.
 
     return (
         <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/20">
@@ -57,6 +52,19 @@ export function FormationsSlider() {
                     <p className="max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                         {t("description")}
                     </p>
+                </div>
+
+                <div className="flex justify-center mb-8">
+                    <Tabs defaultValue="all" onValueChange={setSelectedCategory} className="w-full max-w-3xl">
+                        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 h-auto">
+                            <TabsTrigger value="all">All</TabsTrigger>
+                            {categories.map((cat) => (
+                                <TabsTrigger key={cat.id} value={cat.id}>
+                                    {cat.name}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
                 </div>
 
                 <div className="flex justify-center px-8 md:px-12">
@@ -74,13 +82,26 @@ export function FormationsSlider() {
                         className="w-full max-w-6xl"
                     >
                         <CarouselContent className="-ml-2 md:-ml-4">
-                            {FORMATIONS.map((formation) => (
-                                <CarouselItem key={formation.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                                    <div className="p-1 h-full">
-                                        <FormationCard {...formation} />
-                                    </div>
-                                </CarouselItem>
-                            ))}
+                            {filteredFormations.length > 0 ? (
+                                filteredFormations.map((formation) => (
+                                    <CarouselItem key={formation.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                                        <div className="p-1 h-full">
+                                            <FormationCard
+                                                id={formation.id}
+                                                title={formation.title}
+                                                description={formation.description}
+                                                date={formation.date}
+                                                price={formation.price}
+                                                imageSrc={formation.image_url}
+                                            />
+                                        </div>
+                                    </CarouselItem>
+                                ))
+                            ) : (
+                                <div className="w-full text-center py-10 text-muted-foreground">
+                                    No formations found in this category.
+                                </div>
+                            )}
                         </CarouselContent>
                         <CarouselPrevious />
                         <CarouselNext />

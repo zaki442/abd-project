@@ -1,11 +1,13 @@
-import { getRegistrations, getStatsByFormation, logoutAdmin } from '@/app/actions/admin'
+import { getFormations, getCategories, getRegistrations, getStatsByFormation, logoutAdmin } from '@/app/actions/admin'
 import { RegistrationsTable } from '@/components/admin/registrations-table'
 import { StatsCards } from '@/components/admin/stats-cards'
+import { FormationsManager } from '@/components/admin/formations-manager'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { User } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 
 import { AdminLoginForm } from '@/components/admin/admin-login-form'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -26,9 +28,11 @@ export default async function AdminPage() {
         )
     }
 
-    const [registrations, stats] = await Promise.all([
+    const [registrations, stats, formations, categories] = await Promise.all([
         getRegistrations(),
         getStatsByFormation(),
+        getFormations(),
+        getCategories(),
     ])
 
     return (
@@ -57,7 +61,22 @@ export default async function AdminPage() {
 
                 <StatsCards stats={stats} />
 
-                <RegistrationsTable initialRegistrations={registrations} />
+                <Tabs defaultValue="registrations" className="w-full">
+                    <div className="flex items-center justify-between mb-4">
+                        <TabsList className="bg-zinc-900 border border-zinc-800">
+                            <TabsTrigger value="registrations">Registrations</TabsTrigger>
+                            <TabsTrigger value="formations">Formations</TabsTrigger>
+                        </TabsList>
+                    </div>
+
+                    <TabsContent value="registrations" className="space-y-4">
+                        <RegistrationsTable initialRegistrations={registrations} />
+                    </TabsContent>
+
+                    <TabsContent value="formations" className="space-y-4">
+                        <FormationsManager formations={formations} categories={categories} />
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
     )
