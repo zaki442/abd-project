@@ -7,6 +7,8 @@ export async function registerUser(prevState: any, formData: FormData) {
 
     const fullName = formData.get('full_name') as string
     const email = formData.get('email') as string
+    const phoneNumber = formData.get('phone_number') as string
+    const motivation = formData.get('motivation') as string
     const formationId = formData.get('formation_id') as string
 
     if (!fullName || !email || !formationId) {
@@ -23,6 +25,8 @@ export async function registerUser(prevState: any, formData: FormData) {
                 {
                     full_name: fullName,
                     email: email,
+                    phone_number: phoneNumber,
+                    motivation: motivation,
                     formation_id: formationId,
                 },
             ])

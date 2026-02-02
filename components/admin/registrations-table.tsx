@@ -22,6 +22,8 @@ interface Registration {
     created_at: string
     full_name: string
     email: string
+    phone_number?: string
+    motivation?: string
     formation_id: string
 }
 
@@ -40,6 +42,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
     const filteredRegistrations = registrations.filter((reg) =>
         reg.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         reg.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (reg.phone_number?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         reg.formation_id.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
@@ -71,9 +74,9 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
     }
 
     const exportToCSV = () => {
-        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('formation')}`]
+        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('motivation')},${t('formation')}`]
         const rows = filteredRegistrations.map(reg =>
-            `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.formation_id}`
+            `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.motivation || '').replace(/"/g, '""')}",${reg.formation_id}`
         )
         const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
         const encodedUri = encodeURI(csvContent)
@@ -116,6 +119,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                             <TableHead className="w-[100px]">{t('date')}</TableHead>
                             <TableHead>{t('fullName')}</TableHead>
                             <TableHead>{t('email')}</TableHead>
+                            <TableHead>{t('phoneNumber')}</TableHead>
                             <TableHead>{t('formation')}</TableHead>
                             <TableHead className="text-end">{t('actions')}</TableHead>
                         </TableRow>
@@ -123,7 +127,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                     <TableBody>
                         {filteredRegistrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} className="h-24 text-center">
+                                <TableCell colSpan={6} className="h-24 text-center">
                                     {t('noResults')}
                                 </TableCell>
                             </TableRow>
@@ -135,6 +139,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                                     </TableCell>
                                     <TableCell>{reg.full_name}</TableCell>
                                     <TableCell>{reg.email}</TableCell>
+                                    <TableCell>{reg.phone_number || '-'}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                                             {reg.formation_id === 'agile-darija' ? ft('agile-darija.title') :

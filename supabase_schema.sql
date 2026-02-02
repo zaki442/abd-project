@@ -4,6 +4,8 @@ create table registrations (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   full_name text not null,
   email text not null,
+  phone_number text,
+  motivation text,
   formation_id text not null
 );
 
@@ -105,11 +107,4 @@ on formations
 for all
 using (true);
 
--- Insert default categories
-insert into formations_category (name) values 
-('Ramadan Bootcamp'), 
-('Agile'), 
-('Soft Skills'), 
-('DevOps'),
-('Other')
-on conflict (name) do nothing;
+

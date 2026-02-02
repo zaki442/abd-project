@@ -103,6 +103,8 @@ export async function deleteRegistration(id: string) {
 export async function createRegistration(data: {
     full_name: string
     email: string
+    phone_number?: string
+    motivation?: string
     formation_id: string
 }) {
     const supabase = await createServerSupabaseClient()
@@ -112,6 +114,8 @@ export async function createRegistration(data: {
         .insert({
             full_name: data.full_name,
             email: data.email,
+            phone_number: data.phone_number,
+            motivation: data.motivation,
             formation_id: data.formation_id,
         })
 
@@ -129,6 +133,8 @@ export async function updateRegistration(
     data: {
         full_name?: string
         email?: string
+        phone_number?: string
+        motivation?: string
         formation_id?: string
     }
 ) {

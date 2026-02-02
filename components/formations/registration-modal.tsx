@@ -11,10 +11,11 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { registerUser } from '@/app/actions/register'
 import { toast } from 'sonner'
-import { Loader2, User, Mail, Sparkles, ArrowRight } from 'lucide-react'
+import { Loader2, User, Mail, Sparkles, ArrowRight, Phone, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 
@@ -103,6 +104,35 @@ export function RegistrationModal({
                                 placeholder="zaki@example.com"
                                 className="ps-10 bg-zinc-900/50 border-zinc-700 focus:border-primary focus:ring-primary/20 transition-all"
                                 required
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="phone_number" className="text-zinc-300">
+                            {t("phoneNumber")}
+                        </Label>
+                        <div className="relative">
+                            <Phone className="absolute start-3 top-3 h-4 w-4 text-zinc-500" />
+                            <Input
+                                id="phone_number"
+                                name="phone_number"
+                                type="tel"
+                                placeholder="+212 600 000 000"
+                                className="ps-10 bg-zinc-900/50 border-zinc-700 focus:border-primary focus:ring-primary/20 transition-all"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="motivation" className="text-zinc-300">
+                            {t("motivation")}
+                        </Label>
+                        <div className="relative">
+                            <MessageSquare className="absolute start-3 top-3 h-4 w-4 text-zinc-500" />
+                            <Textarea
+                                id="motivation"
+                                name="motivation"
+                                placeholder={t("motivationPlaceholder")}
+                                className="ps-10 min-h-[100px] bg-zinc-900/50 border-zinc-700 focus:border-primary focus:ring-primary/20 transition-all resize-none py-3"
                             />
                         </div>
                     </div>

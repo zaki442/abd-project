@@ -96,7 +96,10 @@
         "fullName": "Full Name",
         "email": "Email",
         "registering": "Registering...",
-        "sendInfo": "Send Information"
+        "sendInfo": "Send Information",
+        "phoneNumber": "Phone Number",
+        "motivation": "Motivation",
+        "motivationPlaceholder": "Why do you want to join this bootcamp?"
     },
     "Admin": {
         "dashboard": "Admin Dashboard",
@@ -116,6 +119,8 @@
             "date": "Date",
             "fullName": "Full Name",
             "email": "Email",
+            "phoneNumber": "Phone Number",
+            "motivation": "Motivation",
             "formation": "Formation",
             "actions": "Actions",
             "noResults": "No results.",
@@ -134,6 +139,8 @@
             "modifyInfo": "Modify user information.",
             "fullName": "Full Name",
             "email": "Email",
+            "phoneNumber": "Phone Number",
+            "motivation": "Motivation",
             "formation": "Formation",
             "saving": "Saving...",
             "add": "Add",

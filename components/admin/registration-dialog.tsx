@@ -23,6 +23,8 @@ interface Registration {
     created_at: string
     full_name: string
     email: string
+    phone_number?: string
+    motivation?: string
     formation_id: string
 }
 
@@ -48,6 +50,8 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
     const [formData, setFormData] = useState({
         full_name: registration?.full_name || '',
         email: registration?.email || '',
+        phone_number: registration?.phone_number || '',
+        motivation: registration?.motivation || '',
         formation_id: registration?.formation_id || FORMATIONS[0].id,
     })
 
@@ -60,7 +64,7 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                 if (result.success) {
                     toast.success(result.message)
                     setOpen(false)
-                    setFormData({ full_name: '', email: '', formation_id: FORMATIONS[0].id })
+                    setFormData({ full_name: '', email: '', phone_number: '', motivation: '', formation_id: FORMATIONS[0].id })
                     onSuccess?.({ id: '', created_at: new Date().toISOString(), ...formData })
                 } else {
                     toast.error(result.message)
@@ -124,6 +128,24 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 placeholder="email@example.com"
                                 required
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="phone_number">{t('phoneNumber')}</Label>
+                            <Input
+                                id="phone_number"
+                                value={formData.phone_number || ''}
+                                onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
+                                placeholder="+212 600 000 000"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="motivation">{t('motivation')}</Label>
+                            <Input
+                                id="motivation"
+                                value={formData.motivation || ''}
+                                onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
+                                placeholder="Why joining?"
                             />
                         </div>
                         <div className="grid gap-2">
