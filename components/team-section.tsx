@@ -3,8 +3,8 @@ import { useTranslations } from "next-intl"
 
 const team = [
   { name: "Youness", role: "Community Lead", initials: "YN" },
-  { name: "Siham", role: "Operations Manager", initials: "SH" },
-  { name: "Khadija", role: "Events Manager", initials: "KH" },
+  { name: "Siham", role: "Operations", initials: "SH" },
+  { name: "Khadija", role: "Events", initials: "KH" },
   { name: "Ed-daoudi", role: "Media", initials: "ED" },
   { name: "Naima", role: "Partnerships", initials: "NM" },
   { name: "Soukaina", role: "Coordinator", initials: "SK" },

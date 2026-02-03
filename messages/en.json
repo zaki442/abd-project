@@ -66,11 +66,11 @@
         "description": "Meet the passionate individuals driving the Agile B Darija community forward.",
         "roles": {
             "Community Lead": "Community Lead",
-            "Operations": "Operations",
+            "Operations": "Operations Manager",
             "Tech": "Tech",
             "Content": "Content",
-            "Events": "Events",
-            "Media": "Media",
+            "Events": "Events Manager",
+            "Media": "Media Manager",
             "Partnerships": "Partnerships",
             "Coordinator": "Coordinator"
         }
