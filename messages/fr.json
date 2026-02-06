@@ -66,11 +66,11 @@
         "description": "Rencontrez les personnes passionnées qui font avancer la communauté Agile B Darija.",
         "roles": {
             "Community Lead": "Responsable Communauté",
-            "Operations": "Opérations",
+            "Operations": "Responsable Opérations",
             "Tech": "Technique",
             "Content": "Contenu",
-            "Events": "Événements",
-            "Media": "Médias",
+            "Events": "Responsable Événements",
+            "Media": "Responsable Médias",
             "Partnerships": "Partenariats",
             "Coordinator": "Coordinateur"
         }
@@ -96,7 +96,10 @@
         "fullName": "Nom Complet",
         "email": "Email",
         "registering": "Inscription en cours...",
-        "sendInfo": "Envoyer les Informations"
+        "sendInfo": "Envoyer les Informations",
+        "phoneNumber": "Numéro de téléphone",
+        "motivation": "Motivation",
+        "motivationPlaceholder": "Pourquoi souhaitez-vous rejoindre ce bootcamp ?"
     },
     "Admin": {
         "dashboard": "Tableau de Bord",
