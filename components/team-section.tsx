@@ -1,13 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 
 const team = [
-  { name: "Youness", role: "Community Lead", initials: "YN" },
-  { name: "Siham", role: "Operations", initials: "SH" },
+  { name: "Youness Id-bensalah", role: "Community Lead", initials: "YN", image: "/team/youness.jpg" },
+  { name: "Siham Haddany", role: "Operations", initials: "SH", image: "/team/siham.jpg" },
   { name: "Khadija", role: "Events", initials: "KH" },
   { name: "Ed-daoudi", role: "Media", initials: "ED" },
-  { name: "Naima", role: "Partnerships", initials: "NM" },
-  { name: "Soukaina", role: "Coordinator", initials: "SK" },
+  { name: "Soukaina Bouchane", role: "Coordinator", initials: "SK", image: "/team/soukaina.jpg" },
 ]
 
 const roleColors: Record<string, string> = {
@@ -43,11 +43,23 @@ export function TeamSection() {
               className="bg-card border-border hover:border-primary/50 transition-all duration-300 group"
             >
               <CardContent className="p-4 sm:p-6 text-center">
-                <div
-                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br ${roleColors[member.role] || "from-purple-500 to-pink-500"} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
-                >
-                  <span className="text-lg sm:text-xl font-bold text-white">{member.initials}</span>
-                </div>
+                {member.image ? (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform ring-2 ring-primary/30">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br ${roleColors[member.role] || "from-purple-500 to-pink-500"} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
+                  >
+                    <span className="text-lg sm:text-xl font-bold text-white">{member.initials}</span>
+                  </div>
+                )}
                 <h3 className="font-semibold text-foreground text-sm sm:text-base">{member.name}</h3>
                 <p className="text-muted-foreground text-xs sm:text-sm mt-1">{t(`roles.${member.role}` as any)}</p>
               </CardContent>
