@@ -3,11 +3,11 @@ import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 const team = [
-  { name: "Youness Id-bensalah", role: "Community Lead", initials: "YN", image: "/team/youness.jpg" },
+  { name: "Youness ID-BENSALAH ", role: "Community Lead", initials: "YN", image: "/team/youness.jpg" },
   { name: "Siham Haddany", role: "Operations", initials: "SH", image: "/team/siham.jpg" },
-  { name: "Khadija", role: "Events", initials: "KH" },
-  { name: "Ed-daoudi", role: "Media", initials: "ED" },
-  { name: "Soukaina Bouchane", role: "Coordinator", initials: "SK", image: "/team/soukaina.jpg" },
+  { name: "khadja Afkir", role: "Events", initials: "KH" },
+  { name: "Abdelouahed EdDdaoudy", role: "Media", initials: "ED", image: "/team/abdelwahab.jpg" },
+  { name: "Soukaina Bouchane", role: "Communication", initials: "SK", image: "/team/soukaina.jpg" },
 ]
 
 const roleColors: Record<string, string> = {
@@ -18,7 +18,7 @@ const roleColors: Record<string, string> = {
   Events: "from-pink-500 to-rose-500",
   Media: "from-indigo-500 to-purple-500",
   Partnerships: "from-teal-500 to-green-500",
-  Coordinator: "from-violet-500 to-indigo-500",
+  Communication: "from-violet-500 to-indigo-500",
 }
 
 export function TeamSection() {
