@@ -67,12 +67,12 @@
         "roles": {
             "Community Lead": "Responsable Communauté",
             "Operations": "Opérations",
-            "Tech": "Technique",
+            "Tech": "Responsable Technique",
             "Content": "Contenu",
             "Events": "Événements",
             "Media": "Médias",
             "Partnerships": "Partenariats",
-            "Coordinator": "Coordinateur"
+            "Communication": "Communication & Partenariats"
         }
     },
     "Roadmap": {
@@ -96,7 +96,10 @@
         "fullName": "Nom Complet",
         "email": "Email",
         "registering": "Inscription en cours...",
-        "sendInfo": "Envoyer les Informations"
+        "sendInfo": "Envoyer les Informations",
+        "phoneNumber": "Numéro de téléphone",
+        "motivation": "Motivation",
+        "motivationPlaceholder": "Pourquoi voulez-vous rejoindre ce bootcamp ?"
     },
     "Admin": {
         "dashboard": "Tableau de Bord",

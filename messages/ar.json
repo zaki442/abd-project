@@ -67,12 +67,12 @@
         "roles": {
             "Community Lead": "قائد المجتمع",
             "Operations": "العمليات",
-            "Tech": "التقنية",
+            "Tech": "مسؤول تقني",
             "Content": "المحتوى",
             "Events": "الفعاليات",
             "Media": "الإعلام",
             "Partnerships": "الشراكات",
-            "Coordinator": "المنسق"
+            "Communication": "التواصل والشراكات"
         }
     },
     "Roadmap": {
@@ -96,7 +96,10 @@
         "fullName": "الاسم الكامل",
         "email": "البريد الإلكتروني",
         "registering": "جاري التسجيل...",
-        "sendInfo": "إرسال المعلومات"
+        "sendInfo": "إرسال المعلومات",
+        "phoneNumber": "رقم الهاتف",
+        "motivation": "الدوافع",
+        "motivationPlaceholder": "علاش بغيتي تشارك فهاد البوتكامب؟"
     },
     "Admin": {
         "dashboard": "لوحة التحكم",
