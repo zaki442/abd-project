@@ -5,8 +5,8 @@ import Image from "next/image"
 const team = [
   { name: "Youness ID-BENSALAH ", role: "Community Lead", initials: "YN", image: "/team/youness.jpg" },
   { name: "Siham Haddany", role: "Operations", initials: "SH", image: "/team/siham.jpg" },
-  { name: "khadja Afkir", role: "Events", initials: "KH" },
-  { name: "Abdelouahed EdDdaoudy", role: "Media", initials: "ED", image: "/team/abdelwahab.jpg" },
+  { name: "Zakaria Abid", role: "Tech", initials: "ZA" },
+  { name: "Abdelouahed EdDdaoudy", role: "Media", initials: "ED", image: "/team/abdelouahed.jpg" },
   { name: "Soukaina Bouchane", role: "Communication", initials: "SK", image: "/team/soukaina.jpg" },
 ]
 
