@@ -27,11 +27,17 @@ interface Registration {
     formation_id: string
 }
 
-interface RegistrationsTableProps {
-    initialRegistrations: Registration[]
+interface Formation {
+    id: string
+    title: string
 }
 
-export function RegistrationsTable({ initialRegistrations }: RegistrationsTableProps) {
+interface RegistrationsTableProps {
+    initialRegistrations: Registration[]
+    formations: Formation[]
+}
+
+export function RegistrationsTable({ initialRegistrations, formations }: RegistrationsTableProps) {
     const [registrations, setRegistrations] = useState(initialRegistrations)
     const [searchQuery, setSearchQuery] = useState('')
     const [isPending, startTransition] = useTransition()
@@ -39,12 +45,29 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
     const t = useTranslations('Admin.table')
     const ft = useTranslations('Formations.items')
 
-    const filteredRegistrations = registrations.filter((reg) =>
-        reg.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        reg.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (reg.phone_number?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
-        reg.formation_id.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    const getFormationTitle = (id: string) => {
+        const formation = formations.find(f => f.id === id)
+        if (formation) return formation.title
+
+        // Fallback for hardcoded legacy IDs if needed
+        if (id === 'agile-darija') return ft('agile-darija.title')
+        if (id === 'mindset') return ft('mindset.title')
+        if (id === 'agile-teamwork') return ft('teamwork.title')
+        if (id === 'design-thinking') return ft('design-thinking.title')
+
+        return id
+    }
+
+    const filteredRegistrations = registrations.filter((reg) => {
+        const formationTitle = getFormationTitle(reg.formation_id).toLowerCase()
+
+        return (
+            reg.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            reg.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (reg.phone_number?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+            formationTitle.includes(searchQuery.toLowerCase())
+        )
+    })
 
     const handleDelete = async (id: string) => {
         if (!confirm(t('confirmDelete'))) return
@@ -75,9 +98,11 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
 
     const exportToCSV = () => {
         const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('motivation')},${t('formation')}`]
-        const rows = filteredRegistrations.map(reg =>
-            `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.motivation || '').replace(/"/g, '""')}",${reg.formation_id}`
-        )
+        const rows = filteredRegistrations.map(reg => {
+            const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
+            return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.motivation || '').replace(/"/g, '""')}", "${formationName}"`
+        })
+
         const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
         const encodedUri = encodeURI(csvContent)
         const link = document.createElement("a")
@@ -142,11 +167,7 @@ export function RegistrationsTable({ initialRegistrations }: RegistrationsTableP
                                     <TableCell>{reg.phone_number || '-'}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                                            {reg.formation_id === 'agile-darija' ? ft('agile-darija.title') :
-                                                reg.formation_id === 'mindset' ? ft('mindset.title') :
-                                                    reg.formation_id === 'agile-teamwork' ? ft('teamwork.title') :
-                                                        reg.formation_id === 'design-thinking' ? ft('design-thinking.title') :
-                                                            reg.formation_id}
+                                            {getFormationTitle(reg.formation_id)}
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-end">

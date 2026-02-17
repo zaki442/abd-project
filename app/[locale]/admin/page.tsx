@@ -60,7 +60,7 @@ export default async function AdminPage() {
                     </div>
                 </div>
 
-                <StatsCards stats={stats} />
+                <StatsCards stats={stats} formations={formations} />
 
                 <Tabs defaultValue="registrations" className="w-full">
                     <div className="flex items-center justify-between mb-4">
@@ -72,7 +72,7 @@ export default async function AdminPage() {
                     </div>
 
                     <TabsContent value="registrations" className="space-y-4">
-                        <RegistrationsTable initialRegistrations={registrations} />
+                        <RegistrationsTable initialRegistrations={registrations} formations={formations} />
                     </TabsContent>
 
                     <TabsContent value="formations" className="space-y-4">

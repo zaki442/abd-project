@@ -4,17 +4,36 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, BookOpen, TrendingUp, GraduationCap } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+interface Formation {
+    id: string
+    title: string
+}
+
 interface StatsCardsProps {
     stats: {
         total: number
         byFormation: Record<string, number>
     }
+    formations: Formation[]
 }
 
-export function StatsCards({ stats }: StatsCardsProps) {
+export function StatsCards({ stats, formations }: StatsCardsProps) {
     const formationEntries = Object.entries(stats.byFormation)
     const t = useTranslations('Admin.stats')
     const ft = useTranslations('Formations.items')
+
+    const getFormationTitle = (id: string) => {
+        const formation = formations.find(f => f.id === id)
+        if (formation) return formation.title
+
+        // Fallback for hardcoded legacy IDs if needed
+        if (id === 'agile-darija') return ft('agile-darija.title')
+        if (id === 'mindset') return ft('mindset.title')
+        if (id === 'agile-teamwork') return ft('teamwork.title')
+        if (id === 'design-thinking') return ft('design-thinking.title')
+
+        return id
+    }
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -48,12 +67,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
                     { title: 'text-orange-200', icon: 'text-orange-400', sub: 'text-orange-300' },
                 ]
                 const Icon = icons[index % icons.length]
-
-                const formationName = formationId === 'agile-darija' ? ft('agile-darija.title') :
-                    formationId === 'mindset' ? ft('mindset.title') :
-                        formationId === 'agile-teamwork' ? ft('teamwork.title') :
-                            formationId === 'design-thinking' ? ft('design-thinking.title') :
-                                formationId
+                const formationName = getFormationTitle(formationId)
 
                 return (
                     <Card key={formationId} className={`bg-gradient-to-br ${colors[index % colors.length]}`}>
