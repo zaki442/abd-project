@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   description: "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
   generator: "v0.app",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
 }
 

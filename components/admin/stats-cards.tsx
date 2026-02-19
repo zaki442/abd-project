@@ -38,7 +38,7 @@ export function StatsCards({ stats, formations }: StatsCardsProps) {
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {/* Total Registrations Card */}
-            <Card className="bg-gradient-to-br from-violet-600/20 to-purple-600/20 border-violet-500/30">
+            <Card className="bg-gradient-to-br from-violet-600/20 to-purple-600/20 border-violet-500/30 pt-6">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-violet-200">
                         {t('totalRegistrations')}
@@ -70,7 +70,7 @@ export function StatsCards({ stats, formations }: StatsCardsProps) {
                 const formationName = getFormationTitle(formationId)
 
                 return (
-                    <Card key={formationId} className={`bg-gradient-to-br ${colors[index % colors.length]}`}>
+                    <Card key={formationId} className={`bg-gradient-to-br ${colors[index % colors.length]} pt-6`}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className={`text-sm font-medium ${textColors[index % textColors.length].title}`}>
                                 {formationName}
