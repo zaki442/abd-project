@@ -142,7 +142,7 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                                 id="full_name"
                                 value={formData.full_name}
                                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                placeholder="Zaki Ad"
+                                placeholder="jhon doe"
                                 required
                             />
                         </div>

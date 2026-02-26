@@ -99,7 +99,7 @@ export function RegistrationModal({
                                 id="email"
                                 name="email"
                                 type="email"
-                                placeholder="zaki@example.com"
+                                placeholder="jhon@example.com"
                                 className="ps-10 bg-zinc-900/50 border-zinc-700 focus:border-primary focus:ring-primary/20 transition-all"
                                 required
                             />
