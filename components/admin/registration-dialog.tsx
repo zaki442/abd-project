@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -59,6 +59,28 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
         where_did_you_hear: registration?.where_did_you_hear || '',
         formation_id: registration?.formation_id || (formations[0]?.id ?? ''),
     })
+
+    // When edit dialog opens, sync form with the selected registration
+    useEffect(() => {
+        if (open && mode === 'edit' && registration) {
+            setFormData({
+                full_name: registration.full_name || '',
+                email: registration.email || '',
+                phone_number: registration.phone_number || '',
+                where_did_you_hear: registration.where_did_you_hear || '',
+                formation_id: registration.formation_id || (formations[0]?.id ?? ''),
+            })
+        }
+        if (open && mode === 'create') {
+            setFormData({
+                full_name: '',
+                email: '',
+                phone_number: '',
+                where_did_you_hear: '',
+                formation_id: formations[0]?.id ?? '',
+            })
+        }
+    }, [open, mode, registration, formations])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

@@ -17,6 +17,13 @@ import { toast } from 'sonner'
 import { Trash2, Search, Loader2, Download } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+const WHERE_DID_YOU_HEAR_MAP: Record<string, string> = {
+    linkedin: 'linkedin',
+    facebook: 'facebook',
+    instagram: 'instagram',
+    tiktok: 'tiktok',
+}
+
 interface Registration {
     id: string
     created_at: string
@@ -43,7 +50,14 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
     const [isPending, startTransition] = useTransition()
     const [deletingId, setDeletingId] = useState<string | null>(null)
     const t = useTranslations('Admin.table')
+    const tDialog = useTranslations('Admin.dialog')
     const ft = useTranslations('Formations.items')
+
+    const getWhereDidYouHearLabel = (value: string | undefined) => {
+        if (!value) return '—'
+        const key = WHERE_DID_YOU_HEAR_MAP[value]
+        return key ? tDialog(key) : value
+    }
 
     const getFormationTitle = (id: string) => {
         const formation = formations.find(f => f.id === id)
@@ -166,7 +180,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                                     <TableCell>{reg.full_name}</TableCell>
                                     <TableCell>{reg.email}</TableCell>
                                     <TableCell>{reg.phone_number || '-'}</TableCell>
-                                    <TableCell>{reg.where_did_you_hear || '-'}</TableCell>
+                                    <TableCell>{getWhereDidYouHearLabel(reg.where_did_you_hear)}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                                             {getFormationTitle(reg.formation_id)}
