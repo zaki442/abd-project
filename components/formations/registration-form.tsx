@@ -53,13 +53,18 @@ export function RegistrationForm({
     return (
         <div className="container mx-auto px-4 md:px-6">
             {/* Back link */}
-            <div className="mb-8">
+            <div className="mb-10">
                 <Link
                     href="/formations"
-                    className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="group inline-flex items-center gap-3 text-sm font-medium text-muted-foreground hover:text-primary transition-all duration-300"
                 >
-                    <ChevronLeft className="h-4 w-4" />
-                    {t('backToFormations')}
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
+                        <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                    </div>
+                    <span className="relative overflow-hidden">
+                        {t('backToFormations')}
+                        <span className="absolute bottom-0 left-0 w-full h-px bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    </span>
                 </Link>
             </div>
 
