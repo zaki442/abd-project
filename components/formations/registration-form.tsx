@@ -91,7 +91,7 @@ export function RegistrationForm({
                         )}
                     </div>
                     {formationImageUrl && (
-                        <div className="relative mt-6 lg:mt-0 h-40 lg:h-56 rounded-xl overflow-hidden border border-border/50">
+                        <div className="relative mt-6 lg:mt-0 aspect-square rounded-2xl overflow-hidden border border-border/50 shadow-lg shadow-primary/5">
                             <Image
                                 src={formationImageUrl}
                                 alt={formationName}
@@ -118,7 +118,7 @@ export function RegistrationForm({
                                 <Input
                                     id="full_name"
                                     name="full_name"
-                                    placeholder="jhon doe"
+                                    placeholder="John Doe"
                                     className="pl-10 h-11"
                                     required
                                 />
@@ -134,7 +134,7 @@ export function RegistrationForm({
                                     id="email"
                                     name="email"
                                     type="email"
-                                    placeholder="jhon@example.com"
+                                    placeholder="john@example.com"
                                     className="pl-10 h-11"
                                     required
                                 />
