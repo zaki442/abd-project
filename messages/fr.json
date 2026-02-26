@@ -3,6 +3,7 @@
         "vision": "Vision",
         "team": "Équipe",
         "roadmap": "Feuille de route",
+        "formations": "Formations",
         "joinDiscord": "Rejoindre Discord"
     },
     "Hero": {
@@ -98,8 +99,12 @@
         "registering": "Inscription en cours...",
         "sendInfo": "Envoyer les Informations",
         "phoneNumber": "Numéro de téléphone",
-        "motivation": "Motivation",
-        "motivationPlaceholder": "Pourquoi voulez-vous rejoindre ce bootcamp ?"
+        "whereDidYouHear": "Où nous avez-vous connu ?",
+        "selectOption": "Choisir une option",
+        "linkedin": "LinkedIn",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok"
     },
     "Admin": {
         "dashboard": "Tableau de Bord",
@@ -120,7 +125,7 @@
             "fullName": "Nom Complet",
             "email": "Email",
             "phoneNumber": "Numéro de téléphone",
-            "motivation": "Motivation",
+            "whereDidYouHear": "Où nous a-t-il connu",
             "formation": "Formation",
             "actions": "Actions",
             "noResults": "Aucun résultat.",
@@ -140,7 +145,11 @@
             "fullName": "Nom Complet",
             "email": "Email",
             "phoneNumber": "Numéro de téléphone",
-            "motivation": "Motivation",
+            "whereDidYouHear": "Où nous avez-vous connu ?",
+            "linkedin": "LinkedIn",
+            "facebook": "Facebook",
+            "instagram": "Instagram",
+            "tiktok": "TikTok",
             "formation": "Formation",
             "saving": "Enregistrement...",
             "add": "Ajouter",

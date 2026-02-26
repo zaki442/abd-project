@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { LanguageSwitcher } from "./language-switcher"
+import { Link } from "@/i18n/routing"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,6 +16,7 @@ export function Navbar() {
     { href: "#vision", label: t("vision") },
     { href: "#team", label: t("team") },
     { href: "#roadmap", label: t("roadmap") },
+    { href: "/formations", label: t("formations") },
   ]
 
   return (
@@ -36,15 +38,25 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.href.startsWith('#') ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
             <LanguageSwitcher />
             <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white">
               <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
@@ -67,16 +79,27 @@ export function Navbar() {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                link.href.startsWith('#') ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
               <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white w-fit">
                 <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
                   <DiscordIcon className="w-4 h-4 me-2" />

@@ -5,7 +5,7 @@ create table registrations (
   full_name text not null,
   email text not null,
   phone_number text,
-  motivation text,
+  where_did_you_hear text,
   formation_id text not null
 );
 

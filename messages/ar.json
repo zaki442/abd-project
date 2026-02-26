@@ -3,6 +3,7 @@
         "vision": "الرؤية",
         "team": "الفريق",
         "roadmap": "خارطة الطريق",
+        "formations": "التكوينات",
         "joinDiscord": "انضم إلى ديسكورد"
     },
     "Hero": {
@@ -98,8 +99,12 @@
         "registering": "جاري التسجيل...",
         "sendInfo": "إرسال المعلومات",
         "phoneNumber": "رقم الهاتف",
-        "motivation": "الدوافع",
-        "motivationPlaceholder": "علاش بغيتي تشارك فهاد البوتكامب؟"
+        "whereDidYouHear": "منين سمعتي بنا؟",
+        "selectOption": "اختر خيار",
+        "linkedin": "LinkedIn",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok"
     },
     "Admin": {
         "dashboard": "لوحة التحكم",
@@ -120,7 +125,7 @@
             "fullName": "الاسم الكامل",
             "email": "البريد الإلكتروني",
             "phoneNumber": "رقم الهاتف",
-            "motivation": "الدافع",
+            "whereDidYouHear": "منين سمع بنا",
             "formation": "التكوين",
             "actions": "إجراءات",
             "noResults": "لا توجد نتائج.",
@@ -140,7 +145,11 @@
             "fullName": "السمية الكاملة",
             "email": "البريد الإلكتروني",
             "phoneNumber": "رقم الهاتف",
-            "motivation": "الدافع",
+            "whereDidYouHear": "منين سمعتي بنا؟",
+            "linkedin": "LinkedIn",
+            "facebook": "Facebook",
+            "instagram": "Instagram",
+            "tiktok": "TikTok",
             "formation": "التكوين",
             "saving": "جاري الحفظ...",
             "add": "زيد",

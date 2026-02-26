@@ -24,12 +24,12 @@ VALUES ('formations', 'formations', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Optional: Insert a test registration to verify the table works
--- Uncomment if you want test data
+-- Uncomment if you want test data (replace FORMATION_UUID with a real formation id from formations table)
 /*
-INSERT INTO registrations (full_name, email, phone_number, motivation, formation_id)
+INSERT INTO registrations (full_name, email, phone_number, where_did_you_hear, formation_id)
 VALUES 
-  ('Test User', 'test@example.com', '+212600000001', 'I want to learn more about Agile.', 'agile-darija'),
-  ('Another User', 'another@example.com', '+212600000002', 'Improving my soft skills.', 'soft-skills');
+  ('Test User', 'test@example.com', '+212600000001', 'linkedin', 'FORMATION_UUID'),
+  ('Another User', 'another@example.com', '+212600000002', 'facebook', 'FORMATION_UUID');
 */
 
 -- =============================================

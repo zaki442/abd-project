@@ -104,7 +104,7 @@ export async function createRegistration(data: {
     full_name: string
     email: string
     phone_number?: string
-    motivation?: string
+    where_did_you_hear?: string
     formation_id: string
 }) {
     const supabase = await createServerSupabaseClient()
@@ -115,7 +115,7 @@ export async function createRegistration(data: {
             full_name: data.full_name,
             email: data.email,
             phone_number: data.phone_number,
-            motivation: data.motivation,
+            where_did_you_hear: data.where_did_you_hear,
             formation_id: data.formation_id,
         })
 
@@ -134,7 +134,7 @@ export async function updateRegistration(
         full_name?: string
         email?: string
         phone_number?: string
-        motivation?: string
+        where_did_you_hear?: string
         formation_id?: string
     }
 ) {
@@ -257,7 +257,10 @@ export async function createFormation(data: {
     }
 
     revalidatePath('/admin')
-    revalidatePath('/') // Revalidate home page to show new formations
+    revalidatePath('/')
+    revalidatePath('/en/formations')
+    revalidatePath('/fr/formations')
+    revalidatePath('/ar/formations')
     return { success: true, message: 'Formation added successfully!' }
 }
 
@@ -319,6 +322,9 @@ export async function updateFormation(id: string, data: {
 
     revalidatePath('/admin')
     revalidatePath('/')
+    revalidatePath('/en/formations')
+    revalidatePath('/fr/formations')
+    revalidatePath('/ar/formations')
     return { success: true, message: 'Formation updated successfully!' }
 }
 
@@ -337,6 +343,9 @@ export async function deleteFormation(id: string) {
 
     revalidatePath('/admin')
     revalidatePath('/')
+    revalidatePath('/en/formations')
+    revalidatePath('/fr/formations')
+    revalidatePath('/ar/formations')
     return { success: true, message: 'Formation deleted successfully.' }
 }
 

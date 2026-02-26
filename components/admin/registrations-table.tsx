@@ -23,7 +23,7 @@ interface Registration {
     full_name: string
     email: string
     phone_number?: string
-    motivation?: string
+    where_did_you_hear?: string
     formation_id: string
 }
 
@@ -97,10 +97,10 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
     }
 
     const exportToCSV = () => {
-        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('motivation')},${t('formation')}`]
+        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')}`]
         const rows = filteredRegistrations.map(reg => {
             const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
-            return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.motivation || '').replace(/"/g, '""')}", "${formationName}"`
+            return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}"`
         })
 
         const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
@@ -133,7 +133,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                         <Download className="me-2 h-4 w-4" />
                         {t('exportCSV')}
                     </Button>
-                    <RegistrationDialog mode="create" onSuccess={handleCreateSuccess} />
+                    <RegistrationDialog mode="create" formations={formations} onSuccess={handleCreateSuccess} />
                 </div>
             </div>
 
@@ -145,6 +145,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                             <TableHead>{t('fullName')}</TableHead>
                             <TableHead>{t('email')}</TableHead>
                             <TableHead>{t('phoneNumber')}</TableHead>
+                            <TableHead>{t('whereDidYouHear')}</TableHead>
                             <TableHead>{t('formation')}</TableHead>
                             <TableHead className="text-end">{t('actions')}</TableHead>
                         </TableRow>
@@ -152,7 +153,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                     <TableBody>
                         {filteredRegistrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-24 text-center">
+                                <TableCell colSpan={7} className="h-24 text-center">
                                     {t('noResults')}
                                 </TableCell>
                             </TableRow>
@@ -165,6 +166,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                                     <TableCell>{reg.full_name}</TableCell>
                                     <TableCell>{reg.email}</TableCell>
                                     <TableCell>{reg.phone_number || '-'}</TableCell>
+                                    <TableCell>{reg.where_did_you_hear || '-'}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                                             {getFormationTitle(reg.formation_id)}
@@ -175,6 +177,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                                             <RegistrationDialog
                                                 mode="edit"
                                                 registration={reg}
+                                                formations={formations}
                                                 onSuccess={handleEditSuccess}
                                             />
                                             <Button

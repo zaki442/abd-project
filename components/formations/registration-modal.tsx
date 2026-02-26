@@ -11,12 +11,10 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { registerUser } from '@/app/actions/register'
 import { toast } from 'sonner'
-import { Loader2, User, Mail, Sparkles, ArrowRight, Phone, MessageSquare } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Loader2, User, Mail, Sparkles, ArrowRight, Phone, Megaphone } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface RegistrationModalProps {
@@ -123,17 +121,22 @@ export function RegistrationModal({
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="motivation" className="text-zinc-300">
-                            {t("motivation")}
+                        <Label htmlFor="where_did_you_hear" className="text-zinc-300">
+                            {t("whereDidYouHear")}
                         </Label>
                         <div className="relative">
-                            <MessageSquare className="absolute start-3 top-3 h-4 w-4 text-zinc-500" />
-                            <Textarea
-                                id="motivation"
-                                name="motivation"
-                                placeholder={t("motivationPlaceholder")}
-                                className="ps-10 min-h-[100px] bg-zinc-900/50 border-zinc-700 focus:border-primary focus:ring-primary/20 transition-all resize-none py-3"
-                            />
+                            <Megaphone className="absolute start-3 top-3 h-4 w-4 text-zinc-500 pointer-events-none" />
+                            <select
+                                id="where_did_you_hear"
+                                name="where_did_you_hear"
+                                className="flex h-11 w-full rounded-md border border-zinc-700 bg-zinc-900/50 ps-10 pe-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-0 transition-all"
+                            >
+                                <option value="">{t("selectOption")}</option>
+                                <option value="linkedin">{t("linkedin")}</option>
+                                <option value="facebook">{t("facebook")}</option>
+                                <option value="instagram">{t("instagram")}</option>
+                                <option value="tiktok">{t("tiktok")}</option>
+                            </select>
                         </div>
                     </div>
                     <div className="pt-4">

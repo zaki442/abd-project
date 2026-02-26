@@ -24,35 +24,40 @@ interface Registration {
     full_name: string
     email: string
     phone_number?: string
-    motivation?: string
+    where_did_you_hear?: string
     formation_id: string
+}
+
+interface Formation {
+    id: string
+    title: string
 }
 
 interface RegistrationDialogProps {
     mode: 'create' | 'edit'
     registration?: Registration
+    formations: Formation[]
     onSuccess?: (data: Registration) => void
 }
 
-export function RegistrationDialog({ mode, registration, onSuccess }: RegistrationDialogProps) {
+const WHERE_DID_YOU_HEAR_OPTIONS = [
+    { value: 'linkedin', labelKey: 'linkedin' as const },
+    { value: 'facebook', labelKey: 'facebook' as const },
+    { value: 'instagram', labelKey: 'instagram' as const },
+    { value: 'tiktok', labelKey: 'tiktok' as const },
+]
+
+export function RegistrationDialog({ mode, registration, formations, onSuccess }: RegistrationDialogProps) {
     const [open, setOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
     const t = useTranslations('Admin.dialog')
-    const ft = useTranslations('Formations.items')
-
-    const FORMATIONS = [
-        { id: 'agile-darija', name: ft('agile-darija.title') },
-        { id: 'mindset', name: ft('mindset.title') },
-        { id: 'agile-teamwork', name: ft('teamwork.title') },
-        { id: 'design-thinking', name: ft('design-thinking.title') },
-    ]
 
     const [formData, setFormData] = useState({
         full_name: registration?.full_name || '',
         email: registration?.email || '',
         phone_number: registration?.phone_number || '',
-        motivation: registration?.motivation || '',
-        formation_id: registration?.formation_id || FORMATIONS[0].id,
+        where_did_you_hear: registration?.where_did_you_hear || '',
+        formation_id: registration?.formation_id || (formations[0]?.id ?? ''),
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +69,7 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                 if (result.success) {
                     toast.success(result.message)
                     setOpen(false)
-                    setFormData({ full_name: '', email: '', phone_number: '', motivation: '', formation_id: FORMATIONS[0].id })
+                    setFormData({ full_name: '', email: '', phone_number: '', where_did_you_hear: '', formation_id: formations[0]?.id ?? '' })
                     onSuccess?.({ id: '', created_at: new Date().toISOString(), ...formData })
                 } else {
                     toast.error(result.message)
@@ -140,13 +145,20 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="motivation">{t('motivation')}</Label>
-                            <Input
-                                id="motivation"
-                                value={formData.motivation || ''}
-                                onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
-                                placeholder="Why joining?"
-                            />
+                            <Label htmlFor="where_did_you_hear">{t('whereDidYouHear')}</Label>
+                            <select
+                                id="where_did_you_hear"
+                                value={formData.where_did_you_hear || ''}
+                                onChange={(e) => setFormData({ ...formData, where_did_you_hear: e.target.value })}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            >
+                                <option value="">—</option>
+                                {WHERE_DID_YOU_HEAR_OPTIONS.map((o) => (
+                                    <option key={o.value} value={o.value}>
+                                        {t(o.labelKey)}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="formation">{t('formation')}</Label>
@@ -156,9 +168,9 @@ export function RegistrationDialog({ mode, registration, onSuccess }: Registrati
                                 onChange={(e) => setFormData({ ...formData, formation_id: e.target.value })}
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             >
-                                {FORMATIONS.map((f) => (
+                                {formations.map((f) => (
                                     <option key={f.id} value={f.id}>
-                                        {f.name}
+                                        {f.title}
                                     </option>
                                 ))}
                             </select>
