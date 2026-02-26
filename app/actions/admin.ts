@@ -206,6 +206,30 @@ export async function getFormations() {
     }))
 }
 
+export async function getFormation(id: string) {
+    const supabase = await createServerSupabaseClient()
+
+    const { data, error } = await supabase
+        .from('formations')
+        .select(`
+            *,
+            categories:formation_category_link(
+                category:formations_category(id, name)
+            )
+        `)
+        .eq('id', id)
+        .single()
+
+    if (error || !data) {
+        return null
+    }
+
+    return {
+        ...data,
+        categories: (data as any).categories?.map((c: any) => c.category) ?? []
+    }
+}
+
 export async function createFormation(data: {
     title: string
     description: string

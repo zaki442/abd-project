@@ -13,9 +13,10 @@ export function Navbar() {
   const t = useTranslations("Navbar")
 
   const navLinks = [
-    { href: "#vision", label: t("vision") },
-    { href: "#team", label: t("team") },
-    { href: "#roadmap", label: t("roadmap") },
+    { href: "/", label: t("home") },
+    { href: "/#vision", label: t("vision") },
+    { href: "/#team", label: t("team") },
+    { href: "/#roadmap", label: t("roadmap") },
     { href: "/formations", label: t("formations") },
   ]
 
@@ -24,7 +25,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24">
           <div className="flex items-center gap-2">
-            <div className="relative w-72 h-20 me-2 overflow-hidden">
+            <Link href="/" className="relative w-72 h-20 me-2 overflow-hidden block">
               <Image
                 src="/logo.png"
                 alt="Agile B Darija Logo"
@@ -32,31 +33,21 @@ export function Navbar() {
                 className="object-contain scale-[2.5]"
                 priority
               />
-            </div>
+            </Link>
 
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) =>
-              link.href.startsWith('#') ? (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+              >
+                {link.label}
+              </Link>
+            ))}
             <LanguageSwitcher />
             <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white">
               <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
@@ -79,27 +70,16 @@ export function Navbar() {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              {navLinks.map((link) =>
-                link.href.startsWith('#') ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Button asChild className="bg-[#5865F2] hover:bg-[#4752c4] text-white w-fit">
                 <a href="https://discord.gg/RrkV93G4Pt" target="_blank" rel="noopener noreferrer">
                   <DiscordIcon className="w-4 h-4 me-2" />

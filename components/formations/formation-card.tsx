@@ -1,6 +1,11 @@
+'use client'
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { RegistrationModal } from './registration-modal'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/i18n/routing'
 import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface FormationCardProps {
     id: string
@@ -12,6 +17,7 @@ interface FormationCardProps {
 }
 
 export function FormationCard({ id, title, description, imageSrc, date, price }: FormationCardProps) {
+    const t = useTranslations('Formations')
     return (
         <Card className="group h-full flex flex-col justify-between overflow-hidden border-0 bg-background/60 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
             <div className="relative aspect-square w-full overflow-hidden">
@@ -46,7 +52,12 @@ export function FormationCard({ id, title, description, imageSrc, date, price }:
             </CardContent>
 
             <CardFooter className="pt-0">
-                <RegistrationModal formationId={id} formationName={title} />
+                <Button asChild size="lg" className="w-full text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-primary/25 transition-all duration-300 group">
+                    <Link href={`/formations/${id}/register`}>
+                        {t('register')}
+                        <ArrowRight className="ms-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                </Button>
             </CardFooter>
         </Card>
     )
