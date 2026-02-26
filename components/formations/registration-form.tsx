@@ -15,6 +15,7 @@ import { Link } from '@/i18n/routing'
 interface RegistrationFormProps {
     formationId: string
     formationName: string
+    formationDescription: string
     formationDate?: string
     formationPrice?: string
     formationImageUrl?: string
@@ -23,6 +24,7 @@ interface RegistrationFormProps {
 export function RegistrationForm({
     formationId,
     formationName,
+    formationDescription,
     formationDate,
     formationPrice,
     formationImageUrl,
@@ -89,6 +91,9 @@ export function RegistrationForm({
                                 )}
                             </div>
                         )}
+                        <p className="text-sm text-foreground/80 leading-relaxed italic border-l-2 border-primary/30 pl-4 py-1">
+                            {formationDescription}
+                        </p>
                     </div>
                     {formationImageUrl && (
                         <div className="relative mt-6 lg:mt-0 aspect-square rounded-2xl overflow-hidden border border-border/50 shadow-lg shadow-primary/5">

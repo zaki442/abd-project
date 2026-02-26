@@ -23,6 +23,7 @@ export default async function RegisterFormationPage({
                 <RegistrationForm
                     formationId={formation.id}
                     formationName={formation.title}
+                    formationDescription={formation.description}
                     formationDate={formation.date}
                     formationPrice={formation.price}
                     formationImageUrl={formation.image_url}
