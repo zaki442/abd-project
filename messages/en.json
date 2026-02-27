@@ -116,6 +116,7 @@
         "dashboard": "Admin Dashboard",
         "manageRegistrations": "Manage formation registrations.",
         "welcome": "Welcome",
+        "editProfile": "Edit Profile",
         "logout": "Logout",
         "login": {
             "access": "Admin Access",

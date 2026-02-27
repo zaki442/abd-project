@@ -116,6 +116,7 @@
         "dashboard": "لوحة التحكم",
         "manageRegistrations": "إدارة تسجلات التكوينات.",
         "welcome": "مرحباً",
+        "editProfile": "تعديل الملف الشخصي",
         "logout": "خروج",
         "login": {
             "access": "دخول المسؤول",

@@ -15,7 +15,7 @@ export async function verifyAdminLogin(name: string, password: string) {
         const supabase = await createServerSupabaseClient()
         const { data: admin, error } = await supabase
             .from('admins')
-            .select('name, password_hash')
+            .select('id, name, password_hash')
             .eq('name', name)
             .single()
 
@@ -30,6 +30,12 @@ export async function verifyAdminLogin(name: string, password: string) {
                     path: '/',
                 })
                 cookieStore.set('admin_name', admin.name || 'Admin', {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    maxAge: 60 * 60 * 24, // 1 day
+                    path: '/',
+                })
+                cookieStore.set('admin_id', admin.id, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     maxAge: 60 * 60 * 24, // 1 day
@@ -53,6 +59,12 @@ export async function verifyAdminLogin(name: string, password: string) {
             path: '/',
         })
         cookieStore.set('admin_name', 'System Admin', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24, // 1 day
+            path: '/',
+        })
+        cookieStore.set('admin_id', 'system-admin-id', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24, // 1 day
@@ -103,7 +115,36 @@ export async function createAdmin(name: string, email: string, password: string)
 
 export async function updateAdmin(id: string, name: string, email: string, password?: string) {
     console.log(`Attempting to update admin ID: ${id}`)
+
+    // Protection: don't allow renaming someone to 'admin' or 'System Admin'
+    // unless they already have that name (or it's a super-admin updating)
+    const normalizedName = name.toLowerCase().trim()
+    if (normalizedName === 'admin' || normalizedName === 'system admin') {
+        const cookieStore = await cookies()
+        const currentAdminName = cookieStore.get('admin_name')?.value
+        if (currentAdminName !== 'admin' && currentAdminName !== 'System Admin') {
+            return { success: false, message: 'Reserved name. Cannot use this name.' }
+        }
+    }
+
     const supabase = await createServerSupabaseClient()
+
+    // Check if we are updating a super-admin
+    const { data: targetAdmin } = await supabase
+        .from('admins')
+        .select('name')
+        .eq('id', id)
+        .single()
+
+    if (targetAdmin) {
+        if (targetAdmin.name === 'admin' || targetAdmin.name === 'System Admin') {
+            // If target is super-admin, name must remain the same
+            if (name !== targetAdmin.name) {
+                return { success: false, message: 'Cannot change the name of the primary super-admin.' }
+            }
+        }
+    }
+
     const updateData: any = { name, email }
 
     if (password && password.trim() !== '') {
@@ -122,7 +163,19 @@ export async function updateAdmin(id: string, name: string, email: string, passw
 
     console.log('Admin updated successfully in database.')
     revalidatePath('/admin')
-    return { success: true, message: 'Admin updated successfully!' }
+
+    // Update cookie if updating self
+    const cookieStore = await cookies()
+    if (cookieStore.get('admin_id')?.value === id) {
+        cookieStore.set('admin_name', name, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24, // 1 day
+            path: '/',
+        })
+    }
+
+    return { success: true, message: 'Profile updated successfully!' }
 }
 
 export async function deleteAdmin(id: string) {
@@ -145,7 +198,40 @@ export async function logoutAdmin() {
     const cookieStore = await cookies()
     cookieStore.delete('admin_authenticated')
     cookieStore.delete('admin_name')
+    cookieStore.delete('admin_id')
     return { success: true }
+}
+
+export async function getCurrentAdmin() {
+    const cookieStore = await cookies()
+    const id = cookieStore.get('admin_id')?.value
+    const name = cookieStore.get('admin_name')?.value
+
+    if (!id) return null
+
+    // For system-admin-id, return a synthetic object
+    if (id === 'system-admin-id') {
+        return {
+            id,
+            name: 'System Admin',
+            email: 'system@example.com',
+            created_at: new Date().toISOString()
+        }
+    }
+
+    const supabase = await createServerSupabaseClient()
+    const { data, error } = await supabase
+        .from('admins')
+        .select('id, name, email, created_at')
+        .eq('id', id)
+        .single()
+
+    if (error) {
+        console.error('Error fetching current admin:', error)
+        return null
+    }
+
+    return data
 }
 
 export async function getRegistrations() {

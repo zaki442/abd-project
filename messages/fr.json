@@ -116,6 +116,7 @@
         "dashboard": "Tableau de Bord",
         "manageRegistrations": "Gérer les inscriptions aux formations.",
         "welcome": "Bienvenue",
+        "editProfile": "Modifier le profil",
         "logout": "Déconnexion",
         "login": {
             "access": "Accès Admin",

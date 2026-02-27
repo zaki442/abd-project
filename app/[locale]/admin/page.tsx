@@ -1,4 +1,4 @@
-import { getFormations, getCategories, getRegistrations, getStatsByFormation, logoutAdmin, getAdmins } from '@/app/actions/admin'
+import { getFormations, getCategories, getRegistrations, getStatsByFormation, logoutAdmin, getAdmins, getCurrentAdmin } from '@/app/actions/admin'
 import { RegistrationsTable } from '@/components/admin/registrations-table'
 import { StatsCards } from '@/components/admin/stats-cards'
 import { FormationsManager } from '@/components/admin/formations-manager'
@@ -8,6 +8,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { User } from 'lucide-react'
+import { AdminProfileButton } from '@/components/admin/admin-profile-button'
 import { getTranslations } from 'next-intl/server'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 
@@ -31,6 +32,7 @@ export default async function AdminPage() {
     }
 
     const isSuperAdmin = adminName === 'admin' || adminName === 'System Admin'
+    const currentAdmin = await getCurrentAdmin()
 
     const [registrations, stats, formations, categories, admins] = await Promise.all([
         getRegistrations(),
@@ -50,10 +52,11 @@ export default async function AdminPage() {
                     </div>
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher />
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mr-2">
                             <User className="h-4 w-4" />
                             <span>{t('welcome')}, <span className="text-white font-medium">{adminName}</span></span>
                         </div>
+                        {currentAdmin && <AdminProfileButton admin={currentAdmin as any} />}
                         <form action={async () => {
                             'use server'
                             await logoutAdmin()

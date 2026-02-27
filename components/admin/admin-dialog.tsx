@@ -29,9 +29,10 @@ interface AdminDialogProps {
     mode: 'create' | 'edit'
     admin?: Admin
     onSuccess: () => void
+    children?: React.ReactNode
 }
 
-export function AdminDialog({ mode, admin, onSuccess }: AdminDialogProps) {
+export function AdminDialog({ mode, admin, onSuccess, children }: AdminDialogProps) {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [name, setName] = useState(admin?.name || '')
@@ -71,15 +72,17 @@ export function AdminDialog({ mode, admin, onSuccess }: AdminDialogProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                {mode === 'create' ? (
-                    <Button size="sm">
-                        <Plus className="me-2 h-4 w-4" />
-                        Add Admin
-                    </Button>
-                ) : (
-                    <Button variant="ghost" size="icon">
-                        <Pencil className="h-4 w-4" />
-                    </Button>
+                {children ? children : (
+                    mode === 'create' ? (
+                        <Button size="sm">
+                            <Plus className="me-2 h-4 w-4" />
+                            Add Admin
+                        </Button>
+                    ) : (
+                        <Button variant="ghost" size="icon">
+                            <Pencil className="h-4 w-4" />
+                        </Button>
+                    )
                 )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-zinc-950 text-white border-zinc-800">
