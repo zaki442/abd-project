@@ -8,28 +8,29 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 
 export const metadata: Metadata = {
-  title: "Agile B Darija - Agility as a Way of Life",
-  description: "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
+  metadataBase: new URL("https://agilebdarija.com"),
+  title: "Agile B Darija: Master Agility as a Way of Life in Morocco",
+  description: "Agile B Darija is the premier Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow through workshops and community events.",
   generator: "v0.app",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
-    title: "Agile B Darija - Agility as a Way of Life",
-    description: "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
+    title: "Agile B Darija: Master Agility as a Way of Life in Morocco",
+    description: "Agile B Darija is the premier Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow through workshops and community events.",
     images: [{
       url: "/og-image.png",
       width: 1200,
       height: 630,
-      alt: "Agile B Darija Community",
+      alt: "Agile B Darija Community - Moroccan Agile Hub",
     }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Agile B Darija - Agility as a Way of Life",
-    description: "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
+    title: "Agile B Darija: Master Agility as a Way of Life in Morocco",
+    description: "Agile B Darija is the premier Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow through workshops and community events.",
     images: ["/og-image.png"],
   },
 }
