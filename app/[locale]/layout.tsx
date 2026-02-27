@@ -15,6 +15,23 @@ export const metadata: Metadata = {
     icon: "/logo.png",
     apple: "/logo.png",
   },
+  openGraph: {
+    title: "Agile B Darija - Agility as a Way of Life",
+    description: "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
+    images: [{
+      url: "/og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "Agile B Darija Community",
+    }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Agile B Darija - Agility as a Way of Life",
+    description: "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
+    images: ["/og-image.png"],
+  },
 }
 
 export default async function RootLayout({
