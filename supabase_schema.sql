@@ -58,6 +58,24 @@ on admins
 for select
 using (true);
 
+-- Allow inserting admins
+create policy "Enable insert for all"
+on admins
+for insert
+with check (true);
+
+-- Allow update for all
+create policy "Enable update for all"
+on admins
+for update
+using (true);
+
+-- Allow delete for all
+create policy "Enable delete for all"
+on admins
+for delete
+using (true);
+
 -- =============================================
 -- FORMATION CATEGORIES TABLE
 -- =============================================

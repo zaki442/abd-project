@@ -1,8 +1,9 @@
-import { getFormations, getCategories, getRegistrations, getStatsByFormation, logoutAdmin } from '@/app/actions/admin'
+import { getFormations, getCategories, getRegistrations, getStatsByFormation, logoutAdmin, getAdmins } from '@/app/actions/admin'
 import { RegistrationsTable } from '@/components/admin/registrations-table'
 import { StatsCards } from '@/components/admin/stats-cards'
 import { FormationsManager } from '@/components/admin/formations-manager'
 import { CategoriesManager } from '@/components/admin/categories-manager'
+import { AdminsManager } from '@/components/admin/admins-manager'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -29,11 +30,12 @@ export default async function AdminPage() {
         )
     }
 
-    const [registrations, stats, formations, categories] = await Promise.all([
+    const [registrations, stats, formations, categories, admins] = await Promise.all([
         getRegistrations(),
         getStatsByFormation(),
         getFormations(),
         getCategories(),
+        getAdmins(),
     ])
 
     return (
@@ -68,6 +70,7 @@ export default async function AdminPage() {
                             <TabsTrigger value="registrations">Registrations</TabsTrigger>
                             <TabsTrigger value="formations">Formations</TabsTrigger>
                             <TabsTrigger value="categories">Categories</TabsTrigger>
+                            <TabsTrigger value="admins">Admins</TabsTrigger>
                         </TabsList>
                     </div>
 
@@ -81,6 +84,10 @@ export default async function AdminPage() {
 
                     <TabsContent value="categories" className="space-y-4">
                         <CategoriesManager categories={categories} />
+                    </TabsContent>
+
+                    <TabsContent value="admins" className="space-y-4">
+                        <AdminsManager admins={admins} />
                     </TabsContent>
                 </Tabs>
             </div>

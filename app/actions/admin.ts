@@ -3,6 +3,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
+import bcrypt from 'bcryptjs'
 
 // Fallback password from environment (for initial setup before admins table is populated)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
@@ -16,23 +17,25 @@ export async function verifyAdminPassword(password: string) {
             .select('name, password_hash')
 
         if (!error && admins && admins.length > 0) {
-            // Check if password matches any admin's password_hash
-            const matchedAdmin = admins.find(admin => admin.password_hash === password)
-            if (matchedAdmin) {
-                const cookieStore = await cookies()
-                cookieStore.set('admin_authenticated', 'true', {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    maxAge: 60 * 60 * 24, // 1 day
-                    path: '/',
-                })
-                cookieStore.set('admin_name', matchedAdmin.name || 'Admin', {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    maxAge: 60 * 60 * 24, // 1 day
-                    path: '/',
-                })
-                return { success: true }
+            // Check each admin's hashed password
+            for (const admin of admins) {
+                const isMatch = await bcrypt.compare(password, admin.password_hash)
+                if (isMatch) {
+                    const cookieStore = await cookies()
+                    cookieStore.set('admin_authenticated', 'true', {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        maxAge: 60 * 60 * 24, // 1 day
+                        path: '/',
+                    })
+                    cookieStore.set('admin_name', admin.name || 'Admin', {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        maxAge: 60 * 60 * 24, // 1 day
+                        path: '/',
+                    })
+                    return { success: true }
+                }
             }
         }
     } catch (e) {
@@ -48,7 +51,7 @@ export async function verifyAdminPassword(password: string) {
             maxAge: 60 * 60 * 24, // 1 day
             path: '/',
         })
-        cookieStore.set('admin_name', 'Admin', {
+        cookieStore.set('admin_name', 'System Admin', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24, // 1 day
@@ -58,6 +61,81 @@ export async function verifyAdminPassword(password: string) {
     }
 
     return { success: false, message: 'Invalid password.' }
+}
+
+export async function getAdmins() {
+    console.log('Fetching admins...')
+    const supabase = await createServerSupabaseClient()
+    const { data, error } = await supabase
+        .from('admins')
+        .select('id, name, email, created_at')
+        .order('created_at', { ascending: false })
+
+    if (error) {
+        console.error('Error fetching admins:', error)
+        return []
+    }
+    console.log(`Successfully fetched ${data?.length || 0} admins.`)
+    return data
+}
+
+export async function createAdmin(name: string, email: string, password: string) {
+    console.log(`Attempting to create admin: ${name} (${email})`)
+    const supabase = await createServerSupabaseClient()
+    const password_hash = await bcrypt.hash(password, 10)
+
+    const { error } = await supabase
+        .from('admins')
+        .insert({ name, email, password_hash })
+
+    if (error) {
+        console.error('Error creating admin result:', JSON.stringify(error, null, 2))
+        return { success: false, message: `Failed to create admin: ${error.message}` }
+    }
+
+    console.log('Admin created successfully in database.')
+    revalidatePath('/admin')
+    return { success: true, message: 'Admin created successfully!' }
+}
+
+export async function updateAdmin(id: string, name: string, email: string, password?: string) {
+    console.log(`Attempting to update admin ID: ${id}`)
+    const supabase = await createServerSupabaseClient()
+    const updateData: any = { name, email }
+
+    if (password && password.trim() !== '') {
+        updateData.password_hash = await bcrypt.hash(password, 10)
+    }
+
+    const { error } = await supabase
+        .from('admins')
+        .update(updateData)
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error updating admin:', JSON.stringify(error, null, 2))
+        return { success: false, message: `Failed to update admin: ${error.message}` }
+    }
+
+    console.log('Admin updated successfully in database.')
+    revalidatePath('/admin')
+    return { success: true, message: 'Admin updated successfully!' }
+}
+
+export async function deleteAdmin(id: string) {
+    const supabase = await createServerSupabaseClient()
+    const { error } = await supabase
+        .from('admins')
+        .delete()
+        .eq('id', id)
+
+    if (error) {
+        console.error('Error deleting admin:', error)
+        return { success: false, message: 'Failed to delete admin.' }
+    }
+
+    revalidatePath('/admin')
+    return { success: true, message: 'Admin deleted successfully.' }
 }
 
 export async function logoutAdmin() {
