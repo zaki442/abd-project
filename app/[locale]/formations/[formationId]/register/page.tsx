@@ -19,7 +19,7 @@ export default async function RegisterFormationPage({
     return (
         <main className="min-h-screen bg-background">
             <Navbar />
-            <div className="pt-24 pb-20">
+            <div className="pt-32 pb-20">
                 <RegistrationForm
                     formationId={formation.id}
                     formationName={formation.title}
