@@ -8,42 +8,43 @@ import bcrypt from 'bcryptjs'
 // Fallback password from environment (for initial setup before admins table is populated)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
 
-export async function verifyAdminPassword(password: string) {
+export async function verifyAdminLogin(name: string, password: string) {
+    console.log(`Login attempt for: ${name}`)
     // First, try to verify against the admins table
     try {
         const supabase = await createServerSupabaseClient()
-        const { data: admins, error } = await supabase
+        const { data: admin, error } = await supabase
             .from('admins')
             .select('name, password_hash')
+            .eq('name', name)
+            .single()
 
-        if (!error && admins && admins.length > 0) {
-            // Check each admin's hashed password
-            for (const admin of admins) {
-                const isMatch = await bcrypt.compare(password, admin.password_hash)
-                if (isMatch) {
-                    const cookieStore = await cookies()
-                    cookieStore.set('admin_authenticated', 'true', {
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production',
-                        maxAge: 60 * 60 * 24, // 1 day
-                        path: '/',
-                    })
-                    cookieStore.set('admin_name', admin.name || 'Admin', {
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production',
-                        maxAge: 60 * 60 * 24, // 1 day
-                        path: '/',
-                    })
-                    return { success: true }
-                }
+        if (!error && admin) {
+            const isMatch = await bcrypt.compare(password, admin.password_hash)
+            if (isMatch) {
+                const cookieStore = await cookies()
+                cookieStore.set('admin_authenticated', 'true', {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    maxAge: 60 * 60 * 24, // 1 day
+                    path: '/',
+                })
+                cookieStore.set('admin_name', admin.name || 'Admin', {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    maxAge: 60 * 60 * 24, // 1 day
+                    path: '/',
+                })
+                console.log(`Login successful for: ${name}`)
+                return { success: true }
             }
         }
     } catch (e) {
-        console.error('Error checking admins table:', e)
+        console.error('Error checking admins table during login:', e)
     }
 
-    // Fallback to environment variable password
-    if (password === ADMIN_PASSWORD) {
+    // Fallback to environment variable password for System Admin
+    if (name === 'System Admin' && password === ADMIN_PASSWORD) {
         const cookieStore = await cookies()
         cookieStore.set('admin_authenticated', 'true', {
             httpOnly: true,
@@ -57,10 +58,12 @@ export async function verifyAdminPassword(password: string) {
             maxAge: 60 * 60 * 24, // 1 day
             path: '/',
         })
+        console.log(`Login successful for: System Admin (Fallback)`)
         return { success: true }
     }
 
-    return { success: false, message: 'Invalid password.' }
+    console.log(`Login failed for: ${name}`)
+    return { success: false, message: 'Invalid name or password.' }
 }
 
 export async function getAdmins() {

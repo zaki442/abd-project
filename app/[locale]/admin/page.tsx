@@ -30,12 +30,14 @@ export default async function AdminPage() {
         )
     }
 
+    const isSuperAdmin = adminName === 'admin' || adminName === 'System Admin'
+
     const [registrations, stats, formations, categories, admins] = await Promise.all([
         getRegistrations(),
         getStatsByFormation(),
         getFormations(),
         getCategories(),
-        getAdmins(),
+        isSuperAdmin ? getAdmins() : Promise.resolve([]),
     ])
 
     return (
@@ -70,7 +72,7 @@ export default async function AdminPage() {
                             <TabsTrigger value="registrations">Registrations</TabsTrigger>
                             <TabsTrigger value="formations">Formations</TabsTrigger>
                             <TabsTrigger value="categories">Categories</TabsTrigger>
-                            <TabsTrigger value="admins">Admins</TabsTrigger>
+                            {isSuperAdmin && <TabsTrigger value="admins">Admins</TabsTrigger>}
                         </TabsList>
                     </div>
 
@@ -86,9 +88,11 @@ export default async function AdminPage() {
                         <CategoriesManager categories={categories} />
                     </TabsContent>
 
-                    <TabsContent value="admins" className="space-y-4">
-                        <AdminsManager admins={admins} />
-                    </TabsContent>
+                    {isSuperAdmin && (
+                        <TabsContent value="admins" className="space-y-4">
+                            <AdminsManager admins={admins} />
+                        </TabsContent>
+                    )}
                 </Tabs>
             </div>
         </div>

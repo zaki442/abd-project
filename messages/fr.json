@@ -120,6 +120,7 @@
         "login": {
             "access": "Accès Admin",
             "enterPassword": "Entrez le mot de passe pour accéder au tableau de bord",
+            "nameLabel": "Nom",
             "passwordLabel": "Mot de passe",
             "loginButton": "Connexion"
         },

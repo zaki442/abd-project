@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { verifyAdminPassword } from '@/app/actions/admin'
+import { verifyAdminLogin } from '@/app/actions/admin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 export function AdminLoginForm() {
+    const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [isPending, startTransition] = useTransition()
@@ -27,7 +28,7 @@ export function AdminLoginForm() {
         setError('')
 
         startTransition(async () => {
-            const result = await verifyAdminPassword(password)
+            const result = await verifyAdminLogin(name, password)
             if (result.success) {
                 router.refresh() // Refresh to hit the server component again and pass the cookie check
             } else {
@@ -53,6 +54,15 @@ export function AdminLoginForm() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <Input
+                            type="text"
+                            placeholder={t('nameLabel')}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-500"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Input
                             type="password"
                             placeholder={t('passwordLabel')}
                             value={password}
@@ -69,7 +79,7 @@ export function AdminLoginForm() {
                     <Button
                         type="submit"
                         className="w-full"
-                        disabled={isPending || !password}
+                        disabled={isPending || !name || !password}
                     >
                         {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t('loginButton')}
                     </Button>
