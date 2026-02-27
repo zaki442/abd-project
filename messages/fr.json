@@ -5,7 +5,8 @@
         "team": "Équipe",
         "roadmap": "Feuille de route",
         "formations": "Formations",
-        "joinDiscord": "Rejoindre Discord"
+        "joinDiscord": "Rejoindre Discord",
+        "joinTelegram": "Rejoindre Telegram"
     },
     "Hero": {
         "community": "Communauté Agile Marocaine",
@@ -13,6 +14,7 @@
         "slogan": "L'agilité comme réflexe de vie",
         "description": "Le hub marocain pour les praticiens Agile, les étudiants et les leaders pour collaborer, apprendre et grandir.",
         "joinDiscord": "Rejoindre Discord",
+        "joinTelegram": "Rejoindre Telegram",
         "viewTrello": "Voir le Trello"
     },
     "Features": {

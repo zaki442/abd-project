@@ -5,7 +5,8 @@
         "team": "Team",
         "roadmap": "Roadmap",
         "formations": "Formations",
-        "joinDiscord": "Join Discord"
+        "joinDiscord": "Join Discord",
+        "joinTelegram": "Join Telegram"
     },
     "Hero": {
         "community": "Moroccan Agile Community",
@@ -13,6 +14,7 @@
         "slogan": "Agility as a Way of Life",
         "description": "The Moroccan hub for Agile practitioners, students, and leaders to collaborate, learn, and grow.",
         "joinDiscord": "Join Discord",
+        "joinTelegram": "Join Telegram",
         "viewTrello": "View Trello Board"
     },
     "Features": {

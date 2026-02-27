@@ -47,6 +47,17 @@ export function HeroSection() {
               {t("viewTrello")}
             </a>
           </Button>
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="px-8 py-6 text-lg border-border hover:bg-[#26A5E4]/10 hover:text-[#26A5E4] hover:border-[#26A5E4] bg-transparent"
+          >
+            <a href="https://t.me/+MBW2ET5JKspmMWM0" target="_blank" rel="noopener noreferrer">
+              <TelegramIcon className="w-5 h-5 me-2" />
+              {t("joinTelegram")}
+            </a>
+          </Button>
         </div>
       </div>
     </section>
@@ -65,6 +76,14 @@ function TrelloIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M21 0H3C1.343 0 0 1.343 0 3v18c0 1.656 1.343 3 3 3h18c1.656 0 3-1.344 3-3V3c0-1.657-1.344-3-3-3zM10.44 18.18c0 .795-.645 1.44-1.44 1.44H4.56c-.795 0-1.44-.645-1.44-1.44V4.56c0-.795.645-1.44 1.44-1.44H9c.795 0 1.44.645 1.44 1.44v13.62zm10.44-6c0 .794-.645 1.44-1.44 1.44H15c-.795 0-1.44-.646-1.44-1.44V4.56c0-.795.645-1.44 1.44-1.44h4.44c.795 0 1.44.645 1.44 1.44v7.62z" />
+    </svg>
+  )
+}
+
+function TelegramIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11.944 0C5.356 0 0 5.356 0 11.944c0 6.589 5.356 11.944 11.944 11.944 6.589 0 11.944-5.355 11.944-11.944C23.888 5.356 18.533 0 11.944 0zm5.833 8.333l-2.051 9.663c-.15.68-.551.848-1.121.528l-3.132-2.308-1.511 1.455c-.167.167-.308.308-.633.308l.225-3.189 5.804-5.242c.252-.224-.055-.348-.39-.126l-7.172 4.515-3.091-.967c-.672-.211-.686-.672.14-.994l12.077-4.653c.559-.204 1.047.13 1.25.99c.001 0 .001 0 0 .02z" />
     </svg>
   )
 }
