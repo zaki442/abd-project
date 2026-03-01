@@ -11,10 +11,10 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { deleteRegistration } from '@/app/actions/admin'
+import { deleteRegistration, getRegistrations } from '@/app/actions/admin'
 import { RegistrationDialog } from './registration-dialog'
 import { toast } from 'sonner'
-import { Trash2, Search, Loader2, Download } from 'lucide-react'
+import { Trash2, Search, Loader2, Download, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 const WHERE_DID_YOU_HEAR_MAP: Record<string, string> = {
@@ -42,13 +42,29 @@ interface Formation {
 interface RegistrationsTableProps {
     initialRegistrations: Registration[]
     formations: Formation[]
+    initialCount?: number
+    initialPage?: number
+    initialPageSize?: number
+    initialTotalPages?: number
 }
 
-export function RegistrationsTable({ initialRegistrations, formations }: RegistrationsTableProps) {
+export function RegistrationsTable({ 
+    initialRegistrations, 
+    formations, 
+    initialCount = 0,
+    initialPage = 1,
+    initialPageSize = 10,
+    initialTotalPages = 0
+}: RegistrationsTableProps) {
     const [registrations, setRegistrations] = useState(initialRegistrations)
     const [searchQuery, setSearchQuery] = useState('')
     const [isPending, startTransition] = useTransition()
     const [deletingId, setDeletingId] = useState<string | null>(null)
+    const [currentPage, setCurrentPage] = useState(initialPage)
+    const [pageSize, setPageSize] = useState(initialPageSize)
+    const [totalCount, setTotalCount] = useState(initialCount)
+    const [totalPages, setTotalPages] = useState(initialTotalPages)
+    const [isLoading, setIsLoading] = useState(false)
     const t = useTranslations('Admin.table')
     const tDialog = useTranslations('Admin.dialog')
     const ft = useTranslations('Formations.items')
@@ -72,6 +88,33 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
         return id
     }
 
+    const fetchPage = async (page: number, size: number) => {
+        setIsLoading(true)
+        try {
+            const result = await getRegistrations(page, size)
+            setRegistrations(result.data)
+            setTotalCount(result.count)
+            setTotalPages(result.totalPages)
+            setCurrentPage(page)
+            setPageSize(size)
+        } catch (error) {
+            console.error('Error fetching page:', error)
+            toast.error('Failed to load registrations')
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages && !isLoading) {
+            fetchPage(page, pageSize)
+        }
+    }
+
+    const handlePageSizeChange = (newSize: number) => {
+        fetchPage(1, newSize)
+    }
+
     const filteredRegistrations = registrations.filter((reg) => {
         const formationTitle = getFormationTitle(reg.formation_id).toLowerCase()
 
@@ -91,7 +134,8 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
             const result = await deleteRegistration(id)
             if (result.success) {
                 toast.success(result.message)
-                setRegistrations((prev) => prev.filter((r) => r.id !== id))
+                // Refresh current page to maintain data consistency
+                await fetchPage(currentPage, pageSize)
             } else {
                 toast.error(result.message)
             }
@@ -100,8 +144,8 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
     }
 
     const handleCreateSuccess = () => {
-        // Trigger a page refresh to get fresh data
-        window.location.reload()
+        // Refresh first page to show new registration
+        fetchPage(1, pageSize)
     }
 
     const handleEditSuccess = (updated: Registration) => {
@@ -127,6 +171,107 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
         document.body.removeChild(link)
     }
 
+    const PaginationControls = () => {
+        const pages = []
+        const maxVisiblePages = 5
+        
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1)
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(i)
+        }
+
+        return (
+            <div className="flex items-center justify-between px-2">
+                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <span>({totalCount} total)</span>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage <= 1 || isLoading}
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            Previous
+                        </Button>
+                        
+                        {startPage > 1 && (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handlePageChange(1)}
+                                    disabled={isLoading}
+                                >
+                                    1
+                                </Button>
+                                {startPage > 2 && <span className="px-2">...</span>}
+                            </>
+                        )}
+                        
+                        {pages.map((page) => (
+                            <Button
+                                key={page}
+                                variant={currentPage === page ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => handlePageChange(page)}
+                                disabled={isLoading}
+                            >
+                                {page}
+                            </Button>
+                        ))}
+                        
+                        {endPage < totalPages && (
+                            <>
+                                {endPage < totalPages - 1 && <span className="px-2">...</span>}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handlePageChange(totalPages)}
+                                    disabled={isLoading}
+                                >
+                                    {totalPages}
+                                </Button>
+                            </>
+                        )}
+                        
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage >= totalPages || isLoading}
+                        >
+                            Next
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
+                    </div>
+                    
+                    <select
+                        value={pageSize}
+                        onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                        className="h-8 w-16 rounded border border-input bg-background px-2 text-sm"
+                        disabled={isLoading}
+                    >
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                    </select>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -141,7 +286,7 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="text-sm text-muted-foreground">
-                        {t('total')}: {filteredRegistrations.length}
+                        {t('showing')}: {filteredRegistrations.length} {t('of')} {totalCount}
                     </div>
                     <Button variant="outline" size="sm" onClick={exportToCSV}>
                         <Download className="me-2 h-4 w-4" />
@@ -165,7 +310,16 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredRegistrations.length === 0 ? (
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={7} className="h-24 text-center">
+                                    <div className="flex items-center justify-center space-x-2">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <span>Loading...</span>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : filteredRegistrations.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={7} className="h-24 text-center">
                                     {t('noResults')}
@@ -215,6 +369,12 @@ export function RegistrationsTable({ initialRegistrations, formations }: Registr
                     </TableBody>
                 </Table>
             </div>
+            
+            {totalPages > 1 && (
+                <div className="flex items-center justify-center">
+                    <PaginationControls />
+                </div>
+            )}
         </div>
     )
 }

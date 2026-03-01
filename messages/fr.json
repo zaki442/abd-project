@@ -128,6 +128,8 @@
         "table": {
             "search": "Rechercher des utilisateurs...",
             "total": "Total",
+            "showing": "Affichage",
+            "of": "de",
             "exportCSV": "Exporter en CSV",
             "date": "Date",
             "fullName": "Nom Complet",

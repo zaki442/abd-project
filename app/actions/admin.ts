@@ -291,7 +291,7 @@ export async function getCurrentAdmin() {
     return data
 }
 
-export async function getRegistrations(page: number = 1, pageSize: number = 50) {
+export async function getRegistrations(page: number = 1, pageSize: number = 10) {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize

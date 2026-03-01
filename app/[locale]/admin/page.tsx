@@ -84,7 +84,14 @@ export default async function AdminPage() {
                     </div>
 
                     <TabsContent value="registrations" className="space-y-4">
-                        <RegistrationsTable initialRegistrations={Array.isArray(registrations) ? registrations : registrations.data || []} formations={formationsArray} />
+                        <RegistrationsTable 
+                            initialRegistrations={Array.isArray(registrations) ? registrations : registrations.data || []} 
+                            formations={formationsArray}
+                            initialCount={typeof registrations === 'object' && registrations.count ? registrations.count : registrations.length}
+                            initialPage={typeof registrations === 'object' && registrations.page ? registrations.page : 1}
+                            initialPageSize={typeof registrations === 'object' && registrations.pageSize ? registrations.pageSize : 10}
+                            initialTotalPages={typeof registrations === 'object' && registrations.totalPages ? registrations.totalPages : 1}
+                        />
                     </TabsContent>
 
                     <TabsContent value="formations" className="space-y-4">
