@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerSupabaseClient } from '@/lib/supabase'
+import { createServerSupabaseClient, createServerSupabaseAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
@@ -180,7 +180,7 @@ export async function updateAdmin(id: string, name: string, email: string, passw
 
 export async function deleteAdmin(id: string) {
     console.log(`Attempting to delete admin ID: ${id}`)
-    const supabase = await createServerSupabaseClient()
+    const supabase = await createServerSupabaseAdminClient()
 
     // 1. Protection: Check if this is a primary admin
     const { data: adminToDelete, error: fetchError } = await supabase
