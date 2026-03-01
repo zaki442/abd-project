@@ -38,10 +38,14 @@ export function AdminsManager({ admins: initialAdmins }: AdminsManagerProps) {
 
         setDeletingId(id)
         startTransition(async () => {
-            const result = await deleteAdmin(id)
+            const result = await deleteAdmin(id) as any
             if (result.success) {
                 toast.success(result.message)
-                setAdmins((prev) => prev.filter((a) => a.id !== id))
+                if (result.redirected) {
+                    window.location.href = '/admin'
+                } else {
+                    setAdmins((prev) => prev.filter((a) => a.id !== id))
+                }
             } else {
                 toast.error(result.message)
             }

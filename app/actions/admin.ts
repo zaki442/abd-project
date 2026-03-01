@@ -179,15 +179,50 @@ export async function updateAdmin(id: string, name: string, email: string, passw
 }
 
 export async function deleteAdmin(id: string) {
+    console.log(`Attempting to delete admin ID: ${id}`)
     const supabase = await createServerSupabaseClient()
-    const { error } = await supabase
+
+    // 1. Protection: Check if this is a primary admin
+    const { data: adminToDelete, error: fetchError } = await supabase
+        .from('admins')
+        .select('name')
+        .eq('id', id)
+        .single()
+
+    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "not found"
+        console.error('Error fetching admin to delete:', fetchError)
+        return { success: false, message: 'Failed to verify admin account.' }
+    }
+
+    if (adminToDelete) {
+        if (adminToDelete.name === 'admin' || adminToDelete.name === 'System Admin') {
+            return { success: false, message: 'Cannot delete primary super-admin accounts.' }
+        }
+    }
+
+    // 2. Perform deletion
+    const { error: deleteError } = await supabase
         .from('admins')
         .delete()
         .eq('id', id)
 
-    if (error) {
-        console.error('Error deleting admin:', error)
-        return { success: false, message: 'Failed to delete admin.' }
+    if (deleteError) {
+        console.error('Error deleting admin:', JSON.stringify(deleteError, null, 2))
+        return { success: false, message: `Failed to delete admin: ${deleteError.message}` }
+    }
+
+    console.log('Admin deleted successfully from database.')
+
+    // 3. Handle self-deletion: logout if the deleted admin is the current user
+    const cookieStore = await cookies()
+    const currentAdminId = cookieStore.get('admin_id')?.value
+
+    if (currentAdminId === id) {
+        console.log('Admin deleted their own account. Logging out...')
+        cookieStore.delete('admin_authenticated')
+        cookieStore.delete('admin_name')
+        cookieStore.delete('admin_id')
+        return { success: true, message: 'Your account was deleted and you have been logged out.', redirected: true }
     }
 
     revalidatePath('/admin')
