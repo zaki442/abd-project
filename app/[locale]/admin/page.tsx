@@ -39,8 +39,12 @@ export default async function AdminPage() {
         getStatsByFormation(),
         getFormations(),
         getCategories(),
-        isSuperAdmin ? getAdmins() : Promise.resolve([]),
+        isSuperAdmin ? getAdmins() : Promise.resolve({ data: [], count: 0, page: 1, pageSize: 50, totalPages: 0 }),
     ])
+
+    // Extract data arrays from paginated responses
+    const formationsArray = Array.isArray(formations) ? formations : formations.data || []
+    const adminsArray = Array.isArray(admins) ? admins : admins.data || []
 
     return (
         <div className="min-h-screen bg-black p-8 text-white">
@@ -67,7 +71,7 @@ export default async function AdminPage() {
                     </div>
                 </div>
 
-                <StatsCards stats={stats} formations={formations} />
+                <StatsCards stats={stats} formations={formationsArray} />
 
                 <Tabs defaultValue="registrations" className="w-full">
                     <div className="flex items-center justify-between mb-4">
@@ -80,11 +84,11 @@ export default async function AdminPage() {
                     </div>
 
                     <TabsContent value="registrations" className="space-y-4">
-                        <RegistrationsTable initialRegistrations={registrations} formations={formations} />
+                        <RegistrationsTable initialRegistrations={Array.isArray(registrations) ? registrations : registrations.data || []} formations={formationsArray} />
                     </TabsContent>
 
                     <TabsContent value="formations" className="space-y-4">
-                        <FormationsManager formations={formations} categories={categories} />
+                        <FormationsManager formations={formationsArray} categories={categories} />
                     </TabsContent>
 
                     <TabsContent value="categories" className="space-y-4">
@@ -93,7 +97,7 @@ export default async function AdminPage() {
 
                     {isSuperAdmin && (
                         <TabsContent value="admins" className="space-y-4">
-                            <AdminsManager admins={admins} />
+                            <AdminsManager admins={adminsArray} />
                         </TabsContent>
                     )}
                 </Tabs>

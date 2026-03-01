@@ -23,6 +23,18 @@ export async function createServerSupabaseClient() {
                     }
                 },
             },
+            global: {
+                headers: {
+                    'Connection': 'keep-alive',
+                },
+            },
+            db: {
+                schema: 'public',
+            },
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false,
+            },
         }
     )
 }
@@ -48,6 +60,18 @@ export async function createServerSupabaseAdminClient() {
                         // Ignore errors in read-only contexts
                     }
                 },
+            },
+            global: {
+                headers: {
+                    'Connection': 'keep-alive',
+                },
+            },
+            db: {
+                schema: 'public',
+            },
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false,
             },
         }
     )

@@ -5,6 +5,20 @@ import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 
+// Retry utility for failed requests
+async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: number = 1000): Promise<T> {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            return await fn()
+        } catch (error) {
+            console.warn(`Attempt ${i + 1} failed:`, error)
+            if (i === maxRetries - 1) throw error
+            await new Promise(resolve => setTimeout(resolve, delay * (i + 1)))
+        }
+    }
+    throw new Error('Max retries exceeded')
+}
+
 // Fallback password from environment (for initial setup before admins table is populated)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
 
@@ -78,20 +92,28 @@ export async function verifyAdminLogin(name: string, password: string) {
     return { success: false, message: 'Invalid name or password.' }
 }
 
-export async function getAdmins() {
+export async function getAdmins(page: number = 1, pageSize: number = 50) {
     console.log('Fetching admins...')
-    const supabase = await createServerSupabaseClient()
-    const { data, error } = await supabase
-        .from('admins')
-        .select('id, name, email, created_at')
-        .order('created_at', { ascending: false })
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
 
-    if (error) {
-        console.error('Error fetching admins:', error)
-        return []
-    }
-    console.log(`Successfully fetched ${data?.length || 0} admins.`)
-    return data
+        const { data, error, count } = await supabase
+            .from('admins')
+            .select('id, name, email, created_at', { count: 'exact' })
+            .order('created_at', { ascending: false })
+            .range(from, to)
+
+        if (error) {
+            console.error('Error fetching admins:', error)
+            return { data: [], count: 0, page, pageSize, totalPages: 0 }
+        }
+        
+        const totalPages = Math.ceil((count || 0) / pageSize)
+        console.log(`Successfully fetched ${data?.length || 0} admins.`)
+        return { data: data || [], count: count || 0, page, pageSize, totalPages }
+    })
 }
 
 export async function createAdmin(name: string, email: string, password: string) {
@@ -269,20 +291,26 @@ export async function getCurrentAdmin() {
     return data
 }
 
-export async function getRegistrations() {
-    const supabase = await createServerSupabaseClient()
+export async function getRegistrations(page: number = 1, pageSize: number = 50) {
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
 
-    const { data, error } = await supabase
-        .from('registrations')
-        .select('*')
-        .order('created_at', { ascending: false })
+        const { data, error, count } = await supabase
+            .from('registrations')
+            .select('*', { count: 'exact' })
+            .order('created_at', { ascending: false })
+            .range(from, to)
 
-    if (error) {
-        console.error('Error fetching registrations:', error)
-        return []
-    }
+        if (error) {
+            console.error('Error fetching registrations:', error)
+            return { data: [], count: 0, page, pageSize, totalPages: 0 }
+        }
 
-    return data
+        const totalPages = Math.ceil((count || 0) / pageSize)
+        return { data: data || [], count: count || 0, page, pageSize, totalPages }
+    })
 }
 
 export async function deleteRegistration(id: string) {
@@ -356,56 +384,73 @@ export async function updateRegistration(
     return { success: true, message: 'Updated successfully!' }
 }
 
-export async function getStatsByFormation() {
-    const supabase = await createServerSupabaseClient()
+export async function getStatsByFormation(page: number = 1, pageSize: number = 1000) {
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
 
-    const { data, error } = await supabase
-        .from('registrations')
-        .select('formation_id')
+        const { data, error, count } = await supabase
+            .from('registrations')
+            .select('formation_id', { count: 'exact' })
+            .range(from, to)
 
-    if (error) {
-        console.error('Error fetching stats:', error)
-        return { total: 0, byFormation: {} }
-    }
+        if (error) {
+            console.error('Error fetching stats:', error)
+            return { total: 0, byFormation: {}, page, pageSize, totalPages: 0 }
+        }
 
-    const byFormation: Record<string, number> = {}
-    data.forEach((reg) => {
-        byFormation[reg.formation_id] = (byFormation[reg.formation_id] || 0) + 1
+        const byFormation: Record<string, number> = {}
+        data?.forEach((reg) => {
+            byFormation[reg.formation_id] = (byFormation[reg.formation_id] || 0) + 1
+        })
+
+        const totalPages = Math.ceil((count || 0) / pageSize)
+        return {
+            total: count || 0,
+            byFormation,
+            page,
+            pageSize,
+            totalPages
+        }
     })
-
-    return {
-        total: data.length,
-        byFormation,
-    }
 }
 
 // ==========================================
 // FORMATIONS MANAGEMENT
 // ==========================================
 
-export async function getFormations() {
-    const supabase = await createServerSupabaseClient()
+export async function getFormations(page: number = 1, pageSize: number = 50) {
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
 
-    const { data, error } = await supabase
-        .from('formations')
-        .select(`
-            *,
-            categories:formation_category_link(
-                category:formations_category(id, name)
-            )
-        `)
-        .order('created_at', { ascending: false })
+        const { data, error, count } = await supabase
+            .from('formations')
+            .select(`
+                *,
+                categories:formation_category_link(
+                    category:formations_category(id, name)
+                )
+            `, { count: 'exact' })
+            .order('created_at', { ascending: false })
+            .range(from, to)
 
-    if (error) {
-        console.error('Error fetching formations:', error)
-        return []
-    }
+        if (error) {
+            console.error('Error fetching formations:', error)
+            return { data: [], count: 0, page, pageSize, totalPages: 0 }
+        }
 
-    // Transform data to flat array of categories
-    return data.map((f: any) => ({
-        ...f,
-        categories: f.categories.map((c: any) => c.category)
-    }))
+        // Transform data to flat array of categories
+        const transformedData = (data || []).map((f: any) => ({
+            ...f,
+            categories: f.categories.map((c: any) => c.category)
+        }))
+        
+        const totalPages = Math.ceil((count || 0) / pageSize)
+        return { data: transformedData, count: count || 0, page, pageSize, totalPages }
+    })
 }
 
 export async function getFormation(id: string) {
@@ -460,33 +505,40 @@ export async function createFormation(data: {
         return { success: false, message: 'Failed to create formation.' }
     }
 
-    // 2. Link Categories
+    // 2. Link Categories (can be done in parallel with revalidation)
     if (data.category_ids && data.category_ids.length > 0) {
         const links = data.category_ids.map(catId => ({
             formation_id: formation.id,
             category_id: catId
         }))
 
-        const { error: linkError } = await supabase
-            .from('formation_category_link')
-            .insert(links)
+        const [linkResult] = await Promise.all([
+            supabase
+                .from('formation_category_link')
+                .insert(links),
+            // Start revalidation early while linking categories
+            Promise.resolve().then(() => {
+                revalidatePath('/admin')
+                revalidatePath('/')
+                revalidatePath('/en/formations')
+                revalidatePath('/fr/formations')
+                revalidatePath('/ar/formations')
+            })
+        ])
 
-        if (linkError) {
-            console.error('Error linking categories:', linkError)
+        if (linkResult.error) {
+            console.error('Error linking categories:', linkResult.error)
             return { success: false, message: 'Formation created but failed to link categories.' }
         }
+    } else {
+        // Revalidate immediately if no categories to link
+        revalidatePath('/admin')
+        revalidatePath('/')
+        revalidatePath('/en/formations')
+        revalidatePath('/fr/formations')
+        revalidatePath('/ar/formations')
     }
 
-    if (error) {
-        console.error('Error creating formation:', error)
-        return { success: false, message: 'Failed to create formation.' }
-    }
-
-    revalidatePath('/admin')
-    revalidatePath('/')
-    revalidatePath('/en/formations')
-    revalidatePath('/fr/formations')
-    revalidatePath('/ar/formations')
     return { success: true, message: 'Formation added successfully!' }
 }
 
@@ -500,36 +552,35 @@ export async function updateFormation(id: string, data: {
 }) {
     const supabase = await createServerSupabaseClient()
 
-    // 1. Update Formation Details
-    const { error } = await supabase
-        .from('formations')
-        .update({
-            title: data.title,
-            description: data.description,
-            date: data.date,
-            price: data.price,
-            image_url: data.image_url,
-        })
-        .eq('id', id)
+    // 1. Update Formation Details and delete existing categories in parallel
+    const [updateResult, deleteResult] = await Promise.all([
+        supabase
+            .from('formations')
+            .update({
+                title: data.title,
+                description: data.description,
+                date: data.date,
+                price: data.price,
+                image_url: data.image_url,
+            })
+            .eq('id', id),
+        supabase
+            .from('formation_category_link')
+            .delete()
+            .eq('formation_id', id)
+    ])
 
-    if (error) {
-        console.error('Error updating formation:', error)
+    if (updateResult.error) {
+        console.error('Error updating formation:', updateResult.error)
         return { success: false, message: 'Failed to update formation.' }
     }
 
-    // 2. Sync Categories (Delete all, then insert new)
-    // First, delete existing
-    const { error: deleteError } = await supabase
-        .from('formation_category_link')
-        .delete()
-        .eq('formation_id', id)
-
-    if (deleteError) {
-        console.error('Error deleting old categories:', deleteError)
+    if (deleteResult.error) {
+        console.error('Error deleting old categories:', deleteResult.error)
         return { success: false, message: 'Failed to update categories.' }
     }
 
-    // Then insert new if any
+    // 2. Insert new categories if any
     if (data.category_ids && data.category_ids.length > 0) {
         const links = data.category_ids.map(catId => ({
             formation_id: id,
