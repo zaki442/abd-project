@@ -11,6 +11,9 @@ export default async function FormationsPage() {
     ])
     const t = await getTranslations('Formations')
 
+    // Extract data arrays from paginated responses
+    const formationsArray = Array.isArray(formations) ? formations : formations.data || []
+
     return (
         <main className="min-h-screen bg-background">
             <Navbar />
@@ -24,7 +27,7 @@ export default async function FormationsPage() {
                             {t('description')}
                         </p>
                     </div>
-                    <FormationsPageContent formations={formations} categories={categories} />
+                    <FormationsPageContent formations={formationsArray} categories={categories} />
                 </div>
             </div>
             <Footer />

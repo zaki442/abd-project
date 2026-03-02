@@ -14,12 +14,15 @@ export default async function Home() {
     getCategories()
   ])
 
+  // Extract data arrays from paginated responses
+  const formationsArray = Array.isArray(formations) ? formations : formations.data || []
+
   return (
     <main className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
       <FeaturesSection />
-      <FormationsSlider formations={formations} categories={categories} />
+      <FormationsSlider formations={formationsArray} categories={categories} />
       <TeamSection />
       <RoadmapSection />
       <TestimonialsSection />
