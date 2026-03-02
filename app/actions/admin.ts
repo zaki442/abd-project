@@ -7,16 +7,35 @@ import bcrypt from 'bcryptjs'
 
 // Retry utility for failed requests
 async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: number = 1000): Promise<T> {
+    let lastError: Error | undefined
+    
     for (let i = 0; i < maxRetries; i++) {
         try {
             return await fn()
         } catch (error) {
+            lastError = error as Error
             console.warn(`Attempt ${i + 1} failed:`, error)
+            console.warn('Error details:', {
+                name: (error as Error).name,
+                message: (error as Error).message,
+                stack: (error as Error).stack,
+                toString: error instanceof Error ? error.toString() : String(error)
+            })
+            
+            // Don't retry on timeout errors, they're already handled by AbortSignal
+            if (error instanceof Error && (
+                error.message.includes('ETIMEDOUT') || 
+                error.message.includes('timeout') ||
+                error.message.includes('AbortError')
+            )) {
+                throw error
+            }
+            
             if (i === maxRetries - 1) throw error
             await new Promise(resolve => setTimeout(resolve, delay * (i + 1)))
         }
     }
-    throw new Error('Max retries exceeded')
+    throw lastError || new Error('Max retries exceeded')
 }
 
 // Fallback password from environment (for initial setup before admins table is populated)
@@ -384,6 +403,25 @@ export async function updateRegistration(
     return { success: true, message: 'Updated successfully!' }
 }
 
+// Test function to verify Supabase connection
+export async function testSupabaseConnection() {
+    try {
+        const supabase = await createServerSupabaseClient()
+        const { data, error } = await supabase.from('registrations').select('count').limit(1)
+        
+        if (error) {
+            console.error('Connection test failed:', JSON.stringify(error, null, 2))
+            return { success: false, error }
+        }
+        
+        console.log('Supabase connection successful')
+        return { success: true, data }
+    } catch (error) {
+        console.error('Connection test exception:', error)
+        return { success: false, error }
+    }
+}
+
 export async function getStatsByFormation(page: number = 1, pageSize: number = 1000) {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
@@ -396,7 +434,13 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
             .range(from, to)
 
         if (error) {
-            console.error('Error fetching stats:', error)
+            console.error('Error fetching stats:', JSON.stringify(error, null, 2))
+            console.error('Error details:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            })
             return { total: 0, byFormation: {}, page, pageSize, totalPages: 0 }
         }
 
@@ -420,7 +464,7 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
 // FORMATIONS MANAGEMENT
 // ==========================================
 
-export async function getFormations(page: number = 1, pageSize: number = 50) {
+export async function getFormations(page: number = 1, pageSize: number = 1000) {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
@@ -438,7 +482,13 @@ export async function getFormations(page: number = 1, pageSize: number = 50) {
             .range(from, to)
 
         if (error) {
-            console.error('Error fetching formations:', error)
+            console.error('Error fetching formations:', JSON.stringify(error, null, 2))
+            console.error('Error details:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            })
             return { data: [], count: 0, page, pageSize, totalPages: 0 }
         }
 
@@ -485,61 +535,64 @@ export async function createFormation(data: {
     image_url: string
     category_ids: string[]
 }) {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    // 1. Create Formation
-    const { data: formation, error } = await supabase
-        .from('formations')
-        .insert({
-            title: data.title,
-            description: data.description,
-            date: data.date,
-            price: data.price,
-            image_url: data.image_url,
-        })
-        .select()
-        .single()
-
-    if (error) {
-        console.error('Error creating formation:', error)
-        return { success: false, message: 'Failed to create formation.' }
-    }
-
-    // 2. Link Categories (can be done in parallel with revalidation)
-    if (data.category_ids && data.category_ids.length > 0) {
-        const links = data.category_ids.map(catId => ({
-            formation_id: formation.id,
-            category_id: catId
-        }))
-
-        const [linkResult] = await Promise.all([
-            supabase
-                .from('formation_category_link')
-                .insert(links),
-            // Start revalidation early while linking categories
-            Promise.resolve().then(() => {
-                revalidatePath('/admin')
-                revalidatePath('/')
-                revalidatePath('/en/formations')
-                revalidatePath('/fr/formations')
-                revalidatePath('/ar/formations')
+        // 1. Create Formation
+        const { data: formation, error } = await supabase
+            .from('formations')
+            .insert({
+                title: data.title,
+                description: data.description,
+                date: data.date,
+                price: data.price,
+                image_url: data.image_url,
             })
-        ])
+            .select()
+            .single()
 
-        if (linkResult.error) {
-            console.error('Error linking categories:', linkResult.error)
-            return { success: false, message: 'Formation created but failed to link categories.' }
+        if (error) {
+            console.error('Error creating formation:', error)
+            throw new Error(`Failed to create formation: ${error.message}`)
         }
-    } else {
-        // Revalidate immediately if no categories to link
+
+        // Check if formation was actually created
+        if (!formation || !formation.id) {
+            throw new Error('Formation was not created properly')
+        }
+
+        // 2. Link Categories (only if categories provided)
+        if (data.category_ids && data.category_ids.length > 0) {
+            const links = data.category_ids.map(catId => ({
+                formation_id: formation.id,
+                category_id: catId
+            }))
+
+            try {
+                const { error: linkError } = await supabase
+                    .from('formation_category_link')
+                    .insert(links)
+
+                if (linkError) {
+                    console.error('Error linking categories:', linkError)
+                    // Don't throw error here, formation was created successfully
+                    // Just log the error for debugging
+                }
+            } catch (categoryError) {
+                console.error('Exception linking categories:', categoryError)
+                // Don't throw error here, formation was created successfully
+            }
+        }
+
+        // 3. Revalidate paths
         revalidatePath('/admin')
         revalidatePath('/')
         revalidatePath('/en/formations')
         revalidatePath('/fr/formations')
         revalidatePath('/ar/formations')
-    }
-
-    return { success: true, message: 'Formation added successfully!' }
+        
+        return { success: true, message: 'Formation created successfully!' }
+    }, 2, 500) // Reduced retries and delay for faster response
 }
 
 export async function updateFormation(id: string, data: {
@@ -608,6 +661,18 @@ export async function updateFormation(id: string, data: {
 export async function deleteFormation(id: string) {
     const supabase = await createServerSupabaseClient()
 
+    // First delete category links manually (faster than cascade)
+    const { error: linkError } = await supabase
+        .from('formation_category_link')
+        .delete()
+        .eq('formation_id', id)
+
+    if (linkError) {
+        console.error('Error deleting formation category links:', linkError)
+        return { success: false, message: 'Failed to delete formation category links.' }
+    }
+
+    // Then delete the formation
     const { error } = await supabase
         .from('formations')
         .delete()
@@ -631,19 +696,21 @@ export async function deleteFormation(id: string) {
 // ==========================================
 
 export async function getCategories() {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const { data, error } = await supabase
-        .from('formations_category')
-        .select('*')
-        .order('name', { ascending: true })
+        const { data, error } = await supabase
+            .from('formations_category')
+            .select('*')
+            .order('name', { ascending: true })
 
-    if (error) {
-        console.error('Error fetching categories:', error)
-        return []
-    }
+        if (error) {
+            console.error('Error fetching categories:', error)
+            return []
+        }
 
-    return data
+        return data || []
+    })
 }
 
 export async function createCategory(name: string) {

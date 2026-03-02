@@ -1,9 +1,13 @@
-import { getStatsByFormation, getFormations } from '@/app/actions/admin'
+import { getStatsByFormation, getFormations, testSupabaseConnection } from '@/app/actions/admin'
 import { DynamicStatsCards } from '@/components/admin/dynamic-stats-cards'
 import { getTranslations } from 'next-intl/server'
 
 export default async function AdminDashboardPage() {
     const t = await getTranslations('Admin')
+    
+    // Test connection first
+    const connectionTest = await testSupabaseConnection()
+    console.log('Connection test result:', connectionTest)
     
     const [stats, formations] = await Promise.all([
         getStatsByFormation(),

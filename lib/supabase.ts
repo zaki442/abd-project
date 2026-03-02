@@ -24,9 +24,13 @@ export async function createServerSupabaseClient() {
                 },
             },
             global: {
-                headers: {
-                    'Connection': 'keep-alive',
-                },
+                fetch: (url, options = {}) => {
+                    const fetchOptions = {
+                        ...options,
+                        signal: AbortSignal.timeout(30000), // 30 second timeout
+                    }
+                    return fetch(url, fetchOptions)
+                }
             },
             db: {
                 schema: 'public',
@@ -62,9 +66,13 @@ export async function createServerSupabaseAdminClient() {
                 },
             },
             global: {
-                headers: {
-                    'Connection': 'keep-alive',
-                },
+                fetch: (url, options = {}) => {
+                    const fetchOptions = {
+                        ...options,
+                        signal: AbortSignal.timeout(30000), // 30 second timeout
+                    }
+                    return fetch(url, fetchOptions)
+                }
             },
             db: {
                 schema: 'public',
