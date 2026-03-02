@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, BookOpen, TrendingUp, GraduationCap, Menu, X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings } from 'lucide-react'
+import { Users, BookOpen, TrendingUp, GraduationCap, Settings, Home } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface Formation {
@@ -19,83 +18,7 @@ interface StatsCardsProps {
     formations: Formation[]
 }
 
-interface SidebarProps {
-    currentPage: string
-    onPageChange: (page: string) => void
-    isMobileMenuOpen: boolean
-    onMobileMenuToggle: () => void
-    messages: {
-        dashboard: string
-    }
-}
-
-function Sidebar({ currentPage, onPageChange, isMobileMenuOpen, onMobileMenuToggle, messages }: SidebarProps) {
-    const menuItems = [
-        { id: 'overview', label: messages.dashboard, icon: Home },
-        { id: 'registrations', label: 'Registrations', icon: UsersIcon },
-        { id: 'formations', label: 'Formations', icon: BookIcon },
-        { id: 'categories', label: 'Categories', icon: FolderOpen },
-        { id: 'admins', label: 'Admins', icon: Settings },
-    ]
-
-    return (
-        <>
-            {/* Mobile menu overlay */}
-            {isMobileMenuOpen && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-                    onClick={onMobileMenuToggle}
-                />
-            )}
-            
-            {/* Sidebar */}
-            <div className={`
-                fixed left-0 top-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 z-50
-                transform transition-transform duration-300 ease-in-out
-                lg:relative lg:translate-x-0
-                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}>
-                <div className="flex h-full flex-col">
-                    {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-zinc-800">
-                        <h2 className="text-xl font-bold text-white">Admin Panel</h2>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={onMobileMenuToggle}
-                            className="lg:hidden"
-                        >
-                            <X className="h-5 w-5" />
-                        </Button>
-                    </div>
-
-                    {/* Navigation */}
-                    <nav className="flex-1 space-y-2 p-4">
-                        {menuItems.map((item) => {
-                            const Icon = item.icon
-                            return (
-                                <Button
-                                    key={item.id}
-                                    variant={currentPage === item.id ? 'default' : 'ghost'}
-                                    className="w-full justify-start"
-                                    onClick={() => {
-                                        onPageChange(item.id)
-                                        onMobileMenuToggle()
-                                    }}
-                                >
-                                    <Icon className="mr-3 h-4 w-4" />
-                                    {item.label}
-                                </Button>
-                            )
-                        })}
-                    </nav>
-                </div>
-            </div>
-        </>
-    )
-}
-
-function DynamicStatsCards({ stats, formations }: StatsCardsProps) {
+export function DynamicStatsCards({ stats, formations }: StatsCardsProps) {
     const formationEntries = Object.entries(stats.byFormation)
     const t = useTranslations('Admin.stats')
     const ft = useTranslations('Formations.items')
@@ -178,5 +101,3 @@ function DynamicStatsCards({ stats, formations }: StatsCardsProps) {
         </div>
     )
 }
-
-export { Sidebar, DynamicStatsCards }
