@@ -26,6 +26,13 @@ interface ResponsiveAdminLayoutProps {
         welcome: string
         logout: string
     }
+    registrationProps?: {
+        initialRegistrations: any[]
+        initialCount?: number
+        initialPage?: number
+        initialPageSize?: number
+        initialTotalPages?: number
+    }
 }
 
 export function ResponsiveAdminLayout({
@@ -37,7 +44,8 @@ export function ResponsiveAdminLayout({
     currentAdmin,
     adminName,
     isSuperAdmin,
-    messages
+    messages,
+    registrationProps
 }: ResponsiveAdminLayoutProps) {
     const [currentPage, setCurrentPage] = useState('overview')
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -66,12 +74,8 @@ export function ResponsiveAdminLayout({
                             </div>
                         </div>
                         <RegistrationsTable 
-                            initialRegistrations={registrations} 
+                            {...(registrationProps || {})}
                             formations={formations}
-                            initialCount={registrations.length}
-                            initialPage={1}
-                            initialPageSize={10}
-                            initialTotalPages={1}
                         />
                     </div>
                 )

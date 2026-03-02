@@ -52,6 +52,13 @@ export default async function AdminPage() {
                 welcome: t('welcome'),
                 logout: t('logout')
             }}
+            registrationProps={{
+                initialRegistrations: Array.isArray(registrations) ? registrations : registrations.data || [],
+                initialCount: typeof registrations === 'object' && registrations.count ? registrations.count : registrations.length,
+                initialPage: typeof registrations === 'object' && registrations.page ? registrations.page : 1,
+                initialPageSize: typeof registrations === 'object' && registrations.pageSize ? registrations.pageSize : 10,
+                initialTotalPages: typeof registrations === 'object' && registrations.totalPages ? registrations.totalPages : 1,
+            }}
         />
     )
 }

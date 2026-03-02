@@ -126,6 +126,9 @@ export function RegistrationsTable({
         )
     })
 
+    // For pagination display, use the actual registrations count, not filtered count
+    const displayCount = searchQuery ? filteredRegistrations.length : registrations.length
+
     const handleDelete = async (id: string) => {
         if (!confirm(t('confirmDelete'))) return
 
@@ -155,8 +158,9 @@ export function RegistrationsTable({
     }
 
     const exportToCSV = () => {
+        const dataToExport = searchQuery ? filteredRegistrations : registrations
         const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')}`]
-        const rows = filteredRegistrations.map(reg => {
+        const rows = dataToExport.map(reg => {
             const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
             return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}"`
         })
@@ -286,7 +290,7 @@ export function RegistrationsTable({
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="text-sm text-muted-foreground">
-                        {t('showing')}: {filteredRegistrations.length} {t('of')} {totalCount}
+                        {t('showing')}: {displayCount} {t('of')} {totalCount}
                     </div>
                     <Button variant="outline" size="sm" onClick={exportToCSV}>
                         <Download className="me-2 h-4 w-4" />
@@ -319,14 +323,20 @@ export function RegistrationsTable({
                                     </div>
                                 </TableCell>
                             </TableRow>
-                        ) : filteredRegistrations.length === 0 ? (
+                        ) : searchQuery && filteredRegistrations.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={7} className="h-24 text-center">
                                     {t('noResults')}
                                 </TableCell>
                             </TableRow>
+                        ) : registrations.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={7} className="h-24 text-center">
+                                    No registrations found
+                                </TableCell>
+                            </TableRow>
                         ) : (
-                            filteredRegistrations.map((reg) => (
+                            (searchQuery ? filteredRegistrations : registrations).map((reg) => (
                                 <TableRow key={reg.id}>
                                     <TableCell className="font-medium">
                                         {new Date(reg.created_at).toLocaleDateString()}
