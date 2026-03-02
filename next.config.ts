@@ -14,6 +14,7 @@ const nextConfig: import('next').NextConfig = {
             },
         ],
     },
+    allowedDevOrigins: ['192.168.1.26:3000','localhost:3000'],
 };
 
 export default withNextIntl(nextConfig);
