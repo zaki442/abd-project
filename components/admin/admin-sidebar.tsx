@@ -50,7 +50,7 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
                             variant="ghost"
                             size="icon"
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="lg:hidden"
+                            className="lg:hidden text-white hover:bg-zinc-800"
                         >
                             <X className="h-5 w-5" />
                         </Button>
@@ -87,6 +87,7 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800"
                 >
                     <Menu className="h-5 w-5" />
                 </Button>
