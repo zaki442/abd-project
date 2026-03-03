@@ -5,6 +5,115 @@ import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 
+// ==========================================
+// CONSTANTS AND TYPES
+// ==========================================
+
+const COOKIE_OPTIONS = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24, // 1 day
+    path: '/',
+}
+
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
+const RESERVED_NAMES = ['admin', 'system admin']
+const SUPER_ADMIN_NAMES = ['admin', 'System Admin']
+
+interface PaginatedResponse<T> {
+    data: T[]
+    count: number
+    page: number
+    pageSize: number
+    totalPages: number
+}
+
+interface ApiResponse {
+    success: boolean
+    message: string
+    redirected?: boolean
+}
+
+interface Admin {
+    id: string
+    name: string
+    email: string
+    created_at: string
+}
+
+interface Formation {
+    id: string
+    title: string
+    description: string
+    date: string
+    price: string
+    image_url: string
+    categories: Array<{ id: string; name: string }>
+}
+
+interface Category {
+    id: string
+    name: string
+    created_at: string
+}
+
+interface Registration {
+    id: string
+    full_name: string
+    email: string
+    phone_number?: string
+    where_did_you_hear?: string
+    formation_id: string
+    created_at: string
+}
+
+// ==========================================
+// HELPER FUNCTIONS
+// ==========================================
+
+function createSuccessResponse(message: string, redirected = false): ApiResponse {
+    return { success: true, message, redirected }
+}
+
+function createErrorResponse(message: string): ApiResponse {
+    return { success: false, message }
+}
+
+function handleSupabaseError(error: any, context: string): string {
+    console.error(`${context}:`, error)
+    return error?.message || `Failed to ${context.toLowerCase()}`
+}
+
+async function setAuthCookies(adminId: string, adminName: string) {
+    const cookieStore = await cookies()
+    cookieStore.set('admin_authenticated', 'true', COOKIE_OPTIONS)
+    cookieStore.set('admin_name', adminName, COOKIE_OPTIONS)
+    cookieStore.set('admin_id', adminId, COOKIE_OPTIONS)
+}
+
+async function clearAuthCookies() {
+    const cookieStore = await cookies()
+    cookieStore.delete('admin_authenticated')
+    cookieStore.delete('admin_name')
+    cookieStore.delete('admin_id')
+}
+
+function isReservedName(name: string): boolean {
+    return RESERVED_NAMES.includes(name.toLowerCase().trim())
+}
+
+function isSuperAdmin(name: string): boolean {
+    return SUPER_ADMIN_NAMES.includes(name)
+}
+
+function revalidateAllPaths() {
+    revalidatePath('/admin')
+    revalidatePath('/')
+    revalidatePath('/en/formations')
+    revalidatePath('/fr/formations')
+    revalidatePath('/ar/formations')
+}
+
 // Retry utility for failed requests
 async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: number = 1000): Promise<T> {
     let lastError: Error | undefined
@@ -38,12 +147,10 @@ async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: num
     throw lastError || new Error('Max retries exceeded')
 }
 
-// Fallback password from environment (for initial setup before admins table is populated)
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
-
-export async function verifyAdminLogin(name: string, password: string) {
+export async function verifyAdminLogin(name: string, password: string): Promise<ApiResponse> {
     console.log(`Login attempt for: ${name}`)
-    // First, try to verify against the admins table
+    
+    // Try to verify against the admins table
     try {
         const supabase = await createServerSupabaseClient()
         const { data: admin, error } = await supabase
@@ -55,27 +162,9 @@ export async function verifyAdminLogin(name: string, password: string) {
         if (!error && admin) {
             const isMatch = await bcrypt.compare(password, admin.password_hash)
             if (isMatch) {
-                const cookieStore = await cookies()
-                cookieStore.set('admin_authenticated', 'true', {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    maxAge: 60 * 60 * 24, // 1 day
-                    path: '/',
-                })
-                cookieStore.set('admin_name', admin.name || 'Admin', {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    maxAge: 60 * 60 * 24, // 1 day
-                    path: '/',
-                })
-                cookieStore.set('admin_id', admin.id, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    maxAge: 60 * 60 * 24, // 1 day
-                    path: '/',
-                })
+                await setAuthCookies(admin.id, admin.name || 'Admin')
                 console.log(`Login successful for: ${name}`)
-                return { success: true }
+                return createSuccessResponse('Login successful')
             }
         }
     } catch (e) {
@@ -84,34 +173,16 @@ export async function verifyAdminLogin(name: string, password: string) {
 
     // Fallback to environment variable password for System Admin
     if (name === 'System Admin' && password === ADMIN_PASSWORD) {
-        const cookieStore = await cookies()
-        cookieStore.set('admin_authenticated', 'true', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24, // 1 day
-            path: '/',
-        })
-        cookieStore.set('admin_name', 'System Admin', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24, // 1 day
-            path: '/',
-        })
-        cookieStore.set('admin_id', 'system-admin-id', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24, // 1 day
-            path: '/',
-        })
+        await setAuthCookies('system-admin-id', 'System Admin')
         console.log(`Login successful for: System Admin (Fallback)`)
-        return { success: true }
+        return createSuccessResponse('Login successful')
     }
 
     console.log(`Login failed for: ${name}`)
-    return { success: false, message: 'Invalid name or password.' }
+    return createErrorResponse('Invalid name or password.')
 }
 
-export async function getAdmins(page: number = 1, pageSize: number = 50) {
+export async function getAdmins(page: number = 1, pageSize: number = 50): Promise<PaginatedResponse<Admin>> {
     console.log('Fetching admins...')
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
@@ -135,7 +206,7 @@ export async function getAdmins(page: number = 1, pageSize: number = 50) {
     })
 }
 
-export async function createAdmin(name: string, email: string, password: string) {
+export async function createAdmin(name: string, email: string, password: string): Promise<ApiResponse> {
     console.log(`Attempting to create admin: ${name} (${email})`)
     const supabase = await createServerSupabaseClient()
     const password_hash = await bcrypt.hash(password, 10)
@@ -145,26 +216,23 @@ export async function createAdmin(name: string, email: string, password: string)
         .insert({ name, email, password_hash })
 
     if (error) {
-        console.error('Error creating admin result:', JSON.stringify(error, null, 2))
-        return { success: false, message: `Failed to create admin: ${error.message}` }
+        return createErrorResponse(`Failed to create admin: ${error.message}`)
     }
 
     console.log('Admin created successfully in database.')
     revalidatePath('/admin')
-    return { success: true, message: 'Admin created successfully!' }
+    return createSuccessResponse('Admin created successfully!')
 }
 
-export async function updateAdmin(id: string, name: string, email: string, password?: string) {
+export async function updateAdmin(id: string, name: string, email: string, password?: string): Promise<ApiResponse> {
     console.log(`Attempting to update admin ID: ${id}`)
 
-    // Protection: don't allow renaming someone to 'admin' or 'System Admin'
-    // unless they already have that name (or it's a super-admin updating)
-    const normalizedName = name.toLowerCase().trim()
-    if (normalizedName === 'admin' || normalizedName === 'system admin') {
+    // Protection: don't allow renaming someone to reserved names unless they're a super-admin
+    if (isReservedName(name)) {
         const cookieStore = await cookies()
         const currentAdminName = cookieStore.get('admin_name')?.value
-        if (currentAdminName !== 'admin' && currentAdminName !== 'System Admin') {
-            return { success: false, message: 'Reserved name. Cannot use this name.' }
+        if (!isSuperAdmin(currentAdminName || '')) {
+            return createErrorResponse('Reserved name. Cannot use this name.')
         }
     }
 
@@ -177,16 +245,11 @@ export async function updateAdmin(id: string, name: string, email: string, passw
         .eq('id', id)
         .single()
 
-    if (targetAdmin) {
-        if (targetAdmin.name === 'admin' || targetAdmin.name === 'System Admin') {
-            // If target is super-admin, name must remain the same
-            if (name !== targetAdmin.name) {
-                return { success: false, message: 'Cannot change the name of the primary super-admin.' }
-            }
-        }
+    if (targetAdmin && isSuperAdmin(targetAdmin.name) && name !== targetAdmin.name) {
+        return createErrorResponse('Cannot change the name of the primary super-admin.')
     }
 
-    const updateData: any = { name, email }
+    const updateData: { name: string; email: string; password_hash?: string } = { name, email }
 
     if (password && password.trim() !== '') {
         updateData.password_hash = await bcrypt.hash(password, 10)
@@ -198,8 +261,7 @@ export async function updateAdmin(id: string, name: string, email: string, passw
         .eq('id', id)
 
     if (error) {
-        console.error('Error updating admin:', JSON.stringify(error, null, 2))
-        return { success: false, message: `Failed to update admin: ${error.message}` }
+        return createErrorResponse(`Failed to update admin: ${error.message}`)
     }
 
     console.log('Admin updated successfully in database.')
@@ -208,22 +270,17 @@ export async function updateAdmin(id: string, name: string, email: string, passw
     // Update cookie if updating self
     const cookieStore = await cookies()
     if (cookieStore.get('admin_id')?.value === id) {
-        cookieStore.set('admin_name', name, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24, // 1 day
-            path: '/',
-        })
+        cookieStore.set('admin_name', name, COOKIE_OPTIONS)
     }
 
-    return { success: true, message: 'Profile updated successfully!' }
+    return createSuccessResponse('Profile updated successfully!')
 }
 
-export async function deleteAdmin(id: string) {
+export async function deleteAdmin(id: string): Promise<ApiResponse> {
     console.log(`Attempting to delete admin ID: ${id}`)
     const supabase = await createServerSupabaseAdminClient()
 
-    // 1. Protection: Check if this is a primary admin
+    // Protection: Check if this is a primary admin
     const { data: adminToDelete, error: fetchError } = await supabase
         .from('admins')
         .select('name')
@@ -232,53 +289,45 @@ export async function deleteAdmin(id: string) {
 
     if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "not found"
         console.error('Error fetching admin to delete:', fetchError)
-        return { success: false, message: 'Failed to verify admin account.' }
+        return createErrorResponse('Failed to verify admin account.')
     }
 
-    if (adminToDelete) {
-        if (adminToDelete.name === 'admin' || adminToDelete.name === 'System Admin') {
-            return { success: false, message: 'Cannot delete primary super-admin accounts.' }
-        }
+    if (adminToDelete && isSuperAdmin(adminToDelete.name)) {
+        return createErrorResponse('Cannot delete primary super-admin accounts.')
     }
 
-    // 2. Perform deletion
+    // Perform deletion
     const { error: deleteError } = await supabase
         .from('admins')
         .delete()
         .eq('id', id)
 
     if (deleteError) {
-        console.error('Error deleting admin:', JSON.stringify(deleteError, null, 2))
-        return { success: false, message: `Failed to delete admin: ${deleteError.message}` }
+        return createErrorResponse(`Failed to delete admin: ${deleteError.message}`)
     }
 
     console.log('Admin deleted successfully from database.')
 
-    // 3. Handle self-deletion: logout if the deleted admin is the current user
+    // Handle self-deletion: logout if the deleted admin is the current user
     const cookieStore = await cookies()
     const currentAdminId = cookieStore.get('admin_id')?.value
 
     if (currentAdminId === id) {
         console.log('Admin deleted their own account. Logging out...')
-        cookieStore.delete('admin_authenticated')
-        cookieStore.delete('admin_name')
-        cookieStore.delete('admin_id')
-        return { success: true, message: 'Your account was deleted and you have been logged out.', redirected: true }
+        await clearAuthCookies()
+        return createSuccessResponse('Your account was deleted and you have been logged out.', true)
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Admin deleted successfully.' }
+    return createSuccessResponse('Admin deleted successfully.')
 }
 
-export async function logoutAdmin() {
-    const cookieStore = await cookies()
-    cookieStore.delete('admin_authenticated')
-    cookieStore.delete('admin_name')
-    cookieStore.delete('admin_id')
-    return { success: true }
+export async function logoutAdmin(): Promise<ApiResponse> {
+    await clearAuthCookies()
+    return createSuccessResponse('Logged out successfully')
 }
 
-export async function getCurrentAdmin() {
+export async function getCurrentAdmin(): Promise<Admin | null> {
     const cookieStore = await cookies()
     const id = cookieStore.get('admin_id')?.value
     const name = cookieStore.get('admin_name')?.value
@@ -310,7 +359,7 @@ export async function getCurrentAdmin() {
     return data
 }
 
-export async function getRegistrations(page: number = 1, pageSize: number = 10) {
+export async function getRegistrations(page: number = 1, pageSize: number = 10): Promise<PaginatedResponse<Registration>> {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
@@ -332,7 +381,7 @@ export async function getRegistrations(page: number = 1, pageSize: number = 10) 
     })
 }
 
-export async function deleteRegistration(id: string) {
+export async function deleteRegistration(id: string): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     const { error } = await supabase
@@ -341,12 +390,11 @@ export async function deleteRegistration(id: string) {
         .eq('id', id)
 
     if (error) {
-        console.error('Error deleting registration:', error)
-        return { success: false, message: 'Failed to delete.' }
+        return createErrorResponse('Failed to delete registration')
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Deleted successfully.' }
+    return createSuccessResponse('Deleted successfully')
 }
 
 export async function createRegistration(data: {
@@ -355,7 +403,7 @@ export async function createRegistration(data: {
     phone_number?: string
     where_did_you_hear?: string
     formation_id: string
-}) {
+}): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     const { error } = await supabase
@@ -369,12 +417,11 @@ export async function createRegistration(data: {
         })
 
     if (error) {
-        console.error('Error creating registration:', error)
-        return { success: false, message: 'Failed to create.' }
+        return createErrorResponse('Failed to create registration')
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Added successfully!' }
+    return createSuccessResponse('Added successfully')
 }
 
 export async function updateRegistration(
@@ -386,7 +433,7 @@ export async function updateRegistration(
         where_did_you_hear?: string
         formation_id?: string
     }
-) {
+): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     const { error } = await supabase
@@ -395,12 +442,11 @@ export async function updateRegistration(
         .eq('id', id)
 
     if (error) {
-        console.error('Error updating registration:', error)
-        return { success: false, message: 'Failed to update.' }
+        return createErrorResponse('Failed to update registration')
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Updated successfully!' }
+    return createSuccessResponse('Updated successfully')
 }
 
 // Test function to verify Supabase connection
@@ -464,7 +510,7 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
 // FORMATIONS MANAGEMENT
 // ==========================================
 
-export async function getFormations(page: number = 1, pageSize: number = 1000) {
+export async function getFormations(page: number = 1, pageSize: number = 1000): Promise<PaginatedResponse<Formation>> {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
@@ -482,20 +528,14 @@ export async function getFormations(page: number = 1, pageSize: number = 1000) {
             .range(from, to)
 
         if (error) {
-            console.error('Error fetching formations:', JSON.stringify(error, null, 2))
-            console.error('Error details:', {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code
-            })
+            console.error('Error fetching formations:', error)
             return { data: [], count: 0, page, pageSize, totalPages: 0 }
         }
 
         // Transform data to flat array of categories
         const transformedData = (data || []).map((f: any) => ({
             ...f,
-            categories: f.categories.map((c: any) => c.category)
+            categories: f.categories?.map((c: any) => c.category) || []
         }))
         
         const totalPages = Math.ceil((count || 0) / pageSize)
@@ -503,7 +543,7 @@ export async function getFormations(page: number = 1, pageSize: number = 1000) {
     })
 }
 
-export async function getFormation(id: string) {
+export async function getFormation(id: string): Promise<Formation | null> {
     const supabase = await createServerSupabaseClient()
 
     const { data, error } = await supabase
@@ -523,7 +563,7 @@ export async function getFormation(id: string) {
 
     return {
         ...data,
-        categories: (data as any).categories?.map((c: any) => c.category) ?? []
+        categories: (data as any).categories?.map((c: any) => c.category) || []
     }
 }
 
@@ -534,7 +574,7 @@ export async function createFormation(data: {
     price: string
     image_url: string
     category_ids: string[]
-}) {
+}): Promise<ApiResponse> {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
 
@@ -552,7 +592,6 @@ export async function createFormation(data: {
             .single()
 
         if (error) {
-            console.error('Error creating formation:', error)
             throw new Error(`Failed to create formation: ${error.message}`)
         }
 
@@ -576,7 +615,6 @@ export async function createFormation(data: {
                 if (linkError) {
                     console.error('Error linking categories:', linkError)
                     // Don't throw error here, formation was created successfully
-                    // Just log the error for debugging
                 }
             } catch (categoryError) {
                 console.error('Exception linking categories:', categoryError)
@@ -585,13 +623,9 @@ export async function createFormation(data: {
         }
 
         // 3. Revalidate paths
-        revalidatePath('/admin')
-        revalidatePath('/')
-        revalidatePath('/en/formations')
-        revalidatePath('/fr/formations')
-        revalidatePath('/ar/formations')
+        revalidateAllPaths()
         
-        return { success: true, message: 'Formation created successfully!' }
+        return createSuccessResponse('Formation created successfully')
     }, 2, 500) // Reduced retries and delay for faster response
 }
 
@@ -602,7 +636,7 @@ export async function updateFormation(id: string, data: {
     price: string
     image_url: string
     category_ids: string[]
-}) {
+}): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     // 1. Update Formation Details and delete existing categories in parallel
@@ -624,13 +658,11 @@ export async function updateFormation(id: string, data: {
     ])
 
     if (updateResult.error) {
-        console.error('Error updating formation:', updateResult.error)
-        return { success: false, message: 'Failed to update formation.' }
+        return createErrorResponse('Failed to update formation')
     }
 
     if (deleteResult.error) {
-        console.error('Error deleting old categories:', deleteResult.error)
-        return { success: false, message: 'Failed to update categories.' }
+        return createErrorResponse('Failed to update categories')
     }
 
     // 2. Insert new categories if any
@@ -645,57 +677,53 @@ export async function updateFormation(id: string, data: {
             .insert(links)
 
         if (linkError) {
-            console.error('Error linking new categories:', linkError)
-            return { success: false, message: 'Failed to link new categories.' }
+            return createErrorResponse('Failed to link new categories')
+        }
+    }
+    revalidateAllPaths()
+    return createSuccessResponse('Formation updated successfully')
+}
+
+export async function deleteFormation(id: string): Promise<ApiResponse> {
+    const supabase = await createServerSupabaseClient()
+
+    const deleteCategoryLinks = async () => {
+        const { error } = await supabase
+            .from('formation_category_link')
+            .delete()
+            .eq('formation_id', id)
+
+        if (error) {
+            throw new Error(`Failed to delete category links: ${error.message}`)
         }
     }
 
-    revalidatePath('/admin')
-    revalidatePath('/')
-    revalidatePath('/en/formations')
-    revalidatePath('/fr/formations')
-    revalidatePath('/ar/formations')
-    return { success: true, message: 'Formation updated successfully!' }
-}
+    const deleteFormation = async () => {
+        const { error } = await supabase
+            .from('formations')
+            .delete()
+            .eq('id', id)
 
-export async function deleteFormation(id: string) {
-    const supabase = await createServerSupabaseClient()
-
-    // First delete category links manually (faster than cascade)
-    const { error: linkError } = await supabase
-        .from('formation_category_link')
-        .delete()
-        .eq('formation_id', id)
-
-    if (linkError) {
-        console.error('Error deleting formation category links:', linkError)
-        return { success: false, message: 'Failed to delete formation category links.' }
+        if (error) {
+            throw new Error(`Failed to delete formation: ${error.message}`)
+        }
     }
 
-    // Then delete the formation
-    const { error } = await supabase
-        .from('formations')
-        .delete()
-        .eq('id', id)
-
-    if (error) {
-        console.error('Error deleting formation:', error)
-        return { success: false, message: 'Failed to delete formation.' }
+    try {
+        await deleteCategoryLinks()
+        await deleteFormation()
+    } catch (error) {
+        return createErrorResponse('Failed to delete formation')
     }
 
-    revalidatePath('/admin')
-    revalidatePath('/')
-    revalidatePath('/en/formations')
-    revalidatePath('/fr/formations')
-    revalidatePath('/ar/formations')
-    return { success: true, message: 'Formation deleted successfully.' }
+    revalidateAllPaths()
+    return createSuccessResponse('Formation deleted successfully')
 }
 
 // ==========================================
 // CATEGORIES MANAGEMENT
 // ==========================================
-
-export async function getCategories() {
+export async function getCategories(): Promise<Category[]> {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
 
@@ -713,7 +741,7 @@ export async function getCategories() {
     })
 }
 
-export async function createCategory(name: string) {
+export async function createCategory(name: string): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     const { error } = await supabase
@@ -721,15 +749,14 @@ export async function createCategory(name: string) {
         .insert({ name })
 
     if (error) {
-        console.error('Error creating category:', error)
-        return { success: false, message: 'Failed to create category.' }
+        return createErrorResponse('Failed to create category')
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Category added successfully!' }
+    return createSuccessResponse('Category added successfully')
 }
 
-export async function updateCategory(id: string, name: string) {
+export async function updateCategory(id: string, name: string): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     const { error } = await supabase
@@ -738,15 +765,14 @@ export async function updateCategory(id: string, name: string) {
         .eq('id', id)
 
     if (error) {
-        console.error('Error updating category:', error)
-        return { success: false, message: 'Failed to update category.' }
+        return createErrorResponse('Failed to update category')
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Category updated successfully!' }
+    return createSuccessResponse('Category updated successfully')
 }
 
-export async function deleteCategory(id: string) {
+export async function deleteCategory(id: string): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
 
     const { error } = await supabase
@@ -755,11 +781,10 @@ export async function deleteCategory(id: string) {
         .eq('id', id)
 
     if (error) {
-        console.error('Error deleting category:', error)
-        return { success: false, message: 'Failed to delete category.' }
+        return createErrorResponse('Failed to delete category')
     }
 
     revalidatePath('/admin')
-    return { success: true, message: 'Category deleted successfully.' }
+    return createSuccessResponse('Category deleted successfully')
 }
 
