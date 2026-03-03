@@ -2,17 +2,21 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Menu, X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings } from 'lucide-react'
+import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import Link from 'next/link'
 
 interface AdminSidebarProps {
     adminName: string
+    isMobileMenuOpen?: boolean
+    onMobileMenuToggle?: (open: boolean) => void
 }
 
-export function AdminSidebar({ adminName }: AdminSidebarProps) {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenuToggle }: AdminSidebarProps) {
+    const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false)
+    const mobileMenuOpen = isMobileMenuOpen || internalMobileMenuOpen
+    const setMobileMenuOpen = onMobileMenuToggle || setInternalMobileMenuOpen
     const t = useTranslations('Admin')
 
     const menuItems = [
@@ -28,10 +32,10 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
     return (
         <>
             {/* Mobile menu overlay */}
-            {isMobileMenuOpen && (
+            {mobileMenuOpen && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => setMobileMenuOpen(false)}
                 />
             )}
             
@@ -39,8 +43,8 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
             <div className={`
                 fixed left-0 top-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 z-50
                 transform transition-transform duration-300 ease-in-out
-                lg:relative lg:translate-x-0
-                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+                lg:relative lg:translate-x-0 lg:z-auto
+                ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <div className="flex h-full flex-col">
                     {/* Header */}
@@ -49,7 +53,7 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
                         <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => setIsMobileMenuOpen(false)}
+                            onClick={() => setMobileMenuOpen(false)}
                             className="lg:hidden text-white hover:bg-zinc-800"
                         >
                             <X className="h-5 w-5" />
@@ -70,7 +74,7 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
                                     key={item.id}
                                     href={item.href}
                                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onClick={() => setMobileMenuOpen(false)}
                                 >
                                     <Icon className="h-4 w-4" />
                                     {item.label}
@@ -79,18 +83,6 @@ export function AdminSidebar({ adminName }: AdminSidebarProps) {
                         })}
                     </nav>
                 </div>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="lg:hidden fixed top-4 left-4 z-50">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800"
-                >
-                    <Menu className="h-5 w-5" />
-                </Button>
             </div>
         </>
     )
