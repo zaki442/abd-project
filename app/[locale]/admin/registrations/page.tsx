@@ -12,6 +12,8 @@ export default async function AdminRegistrationsPage() {
 
     // Extract data arrays from paginated responses
     const formationsArray = Array.isArray(formations) ? formations : formations.data || []
+    const registrationsArray = Array.isArray(registrations) ? registrations : registrations.data || []
+    const isArray = Array.isArray(registrations)
 
     return (
         <div className="space-y-8">
@@ -22,12 +24,18 @@ export default async function AdminRegistrationsPage() {
                 </div>
             </div>
             <RegistrationsTable 
-                initialRegistrations={Array.isArray(registrations) ? registrations : registrations.data || []}
+                initialRegistrations={registrationsArray}
                 formations={formationsArray}
-                initialCount={typeof registrations === 'object' && registrations.count ? registrations.count : registrations.length}
-                initialPage={typeof registrations === 'object' && registrations.page ? registrations.page : 1}
-                initialPageSize={typeof registrations === 'object' && registrations.pageSize ? registrations.pageSize : 10}
-                initialTotalPages={typeof registrations === 'object' && registrations.totalPages ? registrations.totalPages : 1}
+                initialCount={isArray ? registrations.length : (registrations.count ?? registrations.data?.length ?? 0)}
+                initialPage={isArray ? 1 : (registrations.page ?? 1)}
+                initialPageSize={isArray ? registrations.length : (registrations.pageSize ?? registrations.data?.length ?? 10)}
+                initialTotalPages={
+                    isArray
+                        ? 1
+                        : (registrations.totalPages ??
+                           Math.ceil((registrations.count ?? registrations.data?.length ?? 0) /
+                                     (registrations.pageSize ?? 1)))
+                }
             />
         </div>
     )
