@@ -117,7 +117,7 @@ function revalidateAllPaths() {
 // Retry utility for failed requests
 async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: number = 1000): Promise<T> {
     let lastError: Error | undefined
-    
+
     for (let i = 0; i < maxRetries; i++) {
         try {
             return await fn()
@@ -130,16 +130,12 @@ async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: num
                 stack: (error as Error).stack,
                 toString: error instanceof Error ? error.toString() : String(error)
             })
-            
-            // Don't retry on timeout errors, they're already handled by AbortSignal
-            if (error instanceof Error && (
-                error.message.includes('ETIMEDOUT') || 
-                error.message.includes('timeout') ||
-                error.message.includes('AbortError')
-            )) {
+
+            // Do not retry on AbortError as that means the request was intentionally cancelled
+            if (error instanceof Error && error.name === 'AbortError') {
                 throw error
             }
-            
+
             if (i === maxRetries - 1) throw error
             await new Promise(resolve => setTimeout(resolve, delay * (i + 1)))
         }
@@ -149,7 +145,7 @@ async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: num
 
 export async function verifyAdminLogin(name: string, password: string): Promise<ApiResponse> {
     console.log(`Login attempt for: ${name}`)
-    
+
     // Try to verify against the admins table
     try {
         const supabase = await createServerSupabaseClient()
@@ -197,12 +193,15 @@ export async function getAdmins(page: number = 1, pageSize: number = 50): Promis
 
         if (error) {
             console.error('Error fetching admins:', error)
-            return { data: [], count: 0, page, pageSize, totalPages: 0 }
+            throw error
         }
-        
+
         const totalPages = Math.ceil((count || 0) / pageSize)
         console.log(`Successfully fetched ${data?.length || 0} admins.`)
         return { data: data || [], count: count || 0, page, pageSize, totalPages }
+    }).catch((e) => {
+        console.error('Permanent error fetching admins after retries:', e)
+        return { data: [], count: 0, page, pageSize, totalPages: 0 }
     })
 }
 
@@ -373,11 +372,14 @@ export async function getRegistrations(page: number = 1, pageSize: number = 10):
 
         if (error) {
             console.error('Error fetching registrations:', error)
-            return { data: [], count: 0, page, pageSize, totalPages: 0 }
+            throw error
         }
 
         const totalPages = Math.ceil((count || 0) / pageSize)
         return { data: data || [], count: count || 0, page, pageSize, totalPages }
+    }).catch((e) => {
+        console.error('Permanent error fetching registrations after retries:', e)
+        return { data: [], count: 0, page, pageSize, totalPages: 0 }
     })
 }
 
@@ -454,12 +456,12 @@ export async function testSupabaseConnection() {
     try {
         const supabase = await createServerSupabaseClient()
         const { data, error } = await supabase.from('registrations').select('count').limit(1)
-        
+
         if (error) {
             console.error('Connection test failed:', JSON.stringify(error, null, 2))
             return { success: false, error }
         }
-        
+
         console.log('Supabase connection successful')
         return { success: true, data }
     } catch (error) {
@@ -487,7 +489,7 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
                 hint: error.hint,
                 code: error.code
             })
-            return { total: 0, byFormation: {}, page, pageSize, totalPages: 0 }
+            throw error
         }
 
         const byFormation: Record<string, number> = {}
@@ -503,6 +505,9 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
             pageSize,
             totalPages
         }
+    }).catch((e) => {
+        console.error('Permanent error fetching stats after retries:', e)
+        return { total: 0, byFormation: {}, page, pageSize, totalPages: 0 }
     })
 }
 
@@ -529,7 +534,7 @@ export async function getFormations(page: number = 1, pageSize: number = 1000): 
 
         if (error) {
             console.error('Error fetching formations:', error)
-            return { data: [], count: 0, page, pageSize, totalPages: 0 }
+            throw error
         }
 
         // Transform data to flat array of categories
@@ -537,34 +542,44 @@ export async function getFormations(page: number = 1, pageSize: number = 1000): 
             ...f,
             categories: f.categories?.map((c: any) => c.category) || []
         }))
-        
+
         const totalPages = Math.ceil((count || 0) / pageSize)
         return { data: transformedData, count: count || 0, page, pageSize, totalPages }
+    }).catch((e) => {
+        console.error('Permanent error fetching formations after retries:', e)
+        return { data: [], count: 0, page, pageSize, totalPages: 0 }
     })
 }
 
 export async function getFormation(id: string): Promise<Formation | null> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const { data, error } = await supabase
-        .from('formations')
-        .select(`
-            *,
-            categories:formation_category_link(
-                category:formations_category(id, name)
-            )
-        `)
-        .eq('id', id)
-        .single()
+        const { data, error } = await supabase
+            .from('formations')
+            .select(`
+                *,
+                categories:formation_category_link(
+                    category:formations_category(id, name)
+                )
+            `)
+            .eq('id', id)
+            .single()
 
-    if (error || !data) {
+        if (error) {
+            throw error
+        }
+
+        if (!data) return null;
+
+        return {
+            ...data,
+            categories: (data as any).categories?.map((c: any) => c.category) || []
+        }
+    }).catch((e) => {
+        console.error('Permanent error fetching formation after retries:', e)
         return null
-    }
-
-    return {
-        ...data,
-        categories: (data as any).categories?.map((c: any) => c.category) || []
-    }
+    })
 }
 
 export async function createFormation(data: {
@@ -624,7 +639,7 @@ export async function createFormation(data: {
 
         // 3. Revalidate paths
         revalidateAllPaths()
-        
+
         return createSuccessResponse('Formation created successfully')
     }, 2, 500) // Reduced retries and delay for faster response
 }
@@ -734,10 +749,13 @@ export async function getCategories(): Promise<Category[]> {
 
         if (error) {
             console.error('Error fetching categories:', error)
-            return []
+            throw error
         }
 
         return data || []
+    }).catch((e) => {
+        console.error('Permanent error fetching categories after retries:', e)
+        return []
     })
 }
 

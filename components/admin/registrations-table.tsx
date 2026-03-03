@@ -37,6 +37,7 @@ interface Registration {
 interface Formation {
     id: string
     title: string
+    date: string
 }
 
 interface RegistrationsTableProps {
@@ -86,6 +87,14 @@ export function RegistrationsTable({
         if (id === 'design-thinking') return ft('design-thinking.title')
 
         return id
+    }
+
+    const getFormationDate = (id: string) => {
+        const formation = formations.find(f => f.id === id)
+        if (formation && formation.date) {
+            return new Date(formation.date).toLocaleDateString()
+        }
+        return '—'
     }
 
     const fetchPage = async (page: number, size: number) => {
@@ -159,10 +168,11 @@ export function RegistrationsTable({
 
     const exportToCSV = () => {
         const dataToExport = searchQuery ? filteredRegistrations : registrations
-        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')}`]
+        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')},Formation Date`]
         const rows = dataToExport.map(reg => {
             const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
-            return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}"`
+            const formationDate = getFormationDate(reg.formation_id)
+            return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}",${formationDate}`
         })
 
         const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
@@ -310,13 +320,14 @@ export function RegistrationsTable({
                             <TableHead>{t('phoneNumber')}</TableHead>
                             <TableHead>{t('whereDidYouHear')}</TableHead>
                             <TableHead>{t('formation')}</TableHead>
+                            <TableHead>Formation Date</TableHead>
                             <TableHead className="text-end">{t('actions')}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={7} className="h-24 text-center">
+                                <TableCell colSpan={8} className="h-24 text-center">
                                     <div className="flex items-center justify-center space-x-2">
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                         <span>Loading...</span>
@@ -325,13 +336,13 @@ export function RegistrationsTable({
                             </TableRow>
                         ) : searchQuery && filteredRegistrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} className="h-24 text-center">
+                                <TableCell colSpan={8} className="h-24 text-center">
                                     {t('noResults')}
                                 </TableCell>
                             </TableRow>
                         ) : registrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} className="h-24 text-center">
+                                <TableCell colSpan={8} className="h-24 text-center">
                                     No registrations found
                                 </TableCell>
                             </TableRow>
@@ -350,6 +361,7 @@ export function RegistrationsTable({
                                             {getFormationTitle(reg.formation_id)}
                                         </span>
                                     </TableCell>
+                                    <TableCell>{getFormationDate(reg.formation_id)}</TableCell>
                                     <TableCell className="text-end">
                                         <div className="flex justify-end gap-1">
                                             <RegistrationDialog
