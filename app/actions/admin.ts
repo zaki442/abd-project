@@ -358,17 +358,44 @@ export async function getCurrentAdmin(): Promise<Admin | null> {
     return data
 }
 
-export async function getRegistrations(page: number = 1, pageSize: number = 10): Promise<PaginatedResponse<Registration>> {
+export async function getRegistrations(
+    page: number = 1,
+    pageSize: number = 10,
+    searchQuery: string = ''
+): Promise<PaginatedResponse<Registration>> {
     return retry(async () => {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
 
-        const { data, error, count } = await supabase
+        let query = supabase
             .from('registrations')
             .select('*', { count: 'exact' })
             .order('created_at', { ascending: false })
-            .range(from, to)
+
+        if (searchQuery) {
+            const { data: matchedFormations } = await supabase
+                .from('formations')
+                .select('id')
+                .ilike('title', `%${searchQuery}%`)
+
+            const formationIds = matchedFormations?.map(f => f.id) || []
+
+            const searchLower = searchQuery.toLowerCase()
+            if ('agile darija'.includes(searchLower)) formationIds.push('agile-darija')
+            if ('mindset'.includes(searchLower)) formationIds.push('mindset')
+            if ('agile teamwork'.includes(searchLower)) formationIds.push('agile-teamwork')
+            if ('design thinking'.includes(searchLower)) formationIds.push('design-thinking')
+
+            let orCondition = `full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone_number.ilike.%${searchQuery}%`
+            if (formationIds.length > 0) {
+                const formattedIds = formationIds.map(id => `"${id}"`).join(',')
+                orCondition += `,formation_id.in.(${formattedIds})`
+            }
+            query = query.or(orCondition)
+        }
+
+        const { data, error, count } = await query.range(from, to)
 
         if (error) {
             console.error('Error fetching registrations:', error)
@@ -380,6 +407,51 @@ export async function getRegistrations(page: number = 1, pageSize: number = 10):
     }).catch((e) => {
         console.error('Permanent error fetching registrations after retries:', e)
         return { data: [], count: 0, page, pageSize, totalPages: 0 }
+    })
+}
+
+export async function exportAllRegistrations(searchQuery: string = ''): Promise<Registration[]> {
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
+
+        let query = supabase
+            .from('registrations')
+            .select('*')
+            .order('created_at', { ascending: false })
+
+        if (searchQuery) {
+            const { data: matchedFormations } = await supabase
+                .from('formations')
+                .select('id')
+                .ilike('title', `%${searchQuery}%`)
+
+            const formationIds = matchedFormations?.map(f => f.id) || []
+
+            const searchLower = searchQuery.toLowerCase()
+            if ('agile darija'.includes(searchLower)) formationIds.push('agile-darija')
+            if ('mindset'.includes(searchLower)) formationIds.push('mindset')
+            if ('agile teamwork'.includes(searchLower)) formationIds.push('agile-teamwork')
+            if ('design thinking'.includes(searchLower)) formationIds.push('design-thinking')
+
+            let orCondition = `full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone_number.ilike.%${searchQuery}%`
+            if (formationIds.length > 0) {
+                const formattedIds = formationIds.map(id => `"${id}"`).join(',')
+                orCondition += `,formation_id.in.(${formattedIds})`
+            }
+            query = query.or(orCondition)
+        }
+
+        const { data, error } = await query
+
+        if (error) {
+            console.error('Error fetching all registrations:', error)
+            throw error
+        }
+
+        return data || []
+    }).catch((e) => {
+        console.error('Permanent error fetching all registrations after retries:', e)
+        return []
     })
 }
 

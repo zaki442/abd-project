@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import {
     Table,
     TableBody,
@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { deleteRegistration, getRegistrations } from '@/app/actions/admin'
+import { deleteRegistration, getRegistrations, exportAllRegistrations } from '@/app/actions/admin'
 import { RegistrationDialog } from './registration-dialog'
 import { toast } from 'sonner'
 import { Trash2, Search, Loader2, Download, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -49,9 +49,9 @@ interface RegistrationsTableProps {
     initialTotalPages?: number
 }
 
-export function RegistrationsTable({ 
-    initialRegistrations, 
-    formations, 
+export function RegistrationsTable({
+    initialRegistrations,
+    formations,
     initialCount = 0,
     initialPage = 1,
     initialPageSize = 10,
@@ -66,6 +66,8 @@ export function RegistrationsTable({
     const [totalCount, setTotalCount] = useState(initialCount)
     const [totalPages, setTotalPages] = useState(initialTotalPages)
     const [isLoading, setIsLoading] = useState(false)
+    const [isExporting, setIsExporting] = useState(false)
+    const mounted = useRef(false)
     const t = useTranslations('Admin.table')
     const tDialog = useTranslations('Admin.dialog')
     const ft = useTranslations('Formations.items')
@@ -97,10 +99,10 @@ export function RegistrationsTable({
         return '—'
     }
 
-    const fetchPage = async (page: number, size: number) => {
+    const fetchPage = async (page: number, size: number, query: string = searchQuery) => {
         setIsLoading(true)
         try {
-            const result = await getRegistrations(page, size)
+            const result = await getRegistrations(page, size, query)
             setRegistrations(result.data)
             setTotalCount(result.count)
             setTotalPages(result.totalPages)
@@ -114,29 +116,29 @@ export function RegistrationsTable({
         }
     }
 
+    useEffect(() => {
+        if (!mounted.current) {
+            mounted.current = true
+            return
+        }
+        const timer = setTimeout(() => {
+            fetchPage(1, pageSize, searchQuery)
+        }, 500)
+        return () => clearTimeout(timer)
+    }, [searchQuery])
+
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages && !isLoading) {
-            fetchPage(page, pageSize)
+            fetchPage(page, pageSize, searchQuery)
         }
     }
 
     const handlePageSizeChange = (newSize: number) => {
-        fetchPage(1, newSize)
+        fetchPage(1, newSize, searchQuery)
     }
 
-    const filteredRegistrations = registrations.filter((reg) => {
-        const formationTitle = getFormationTitle(reg.formation_id).toLowerCase()
-
-        return (
-            reg.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            reg.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (reg.phone_number?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
-            formationTitle.includes(searchQuery.toLowerCase())
-        )
-    })
-
-    // For pagination display, use the actual registrations count, not filtered count
-    const displayCount = searchQuery ? filteredRegistrations.length : registrations.length
+    // For pagination display, use the actual registrations count
+    const displayCount = registrations.length
 
     const handleDelete = async (id: string) => {
         if (!confirm(t('confirmDelete'))) return
@@ -147,7 +149,7 @@ export function RegistrationsTable({
             if (result.success) {
                 toast.success(result.message)
                 // Refresh current page to maintain data consistency
-                await fetchPage(currentPage, pageSize)
+                await fetchPage(currentPage, pageSize, searchQuery)
             } else {
                 toast.error(result.message)
             }
@@ -157,7 +159,7 @@ export function RegistrationsTable({
 
     const handleCreateSuccess = () => {
         // Refresh first page to show new registration
-        fetchPage(1, pageSize)
+        fetchPage(1, pageSize, searchQuery)
     }
 
     const handleEditSuccess = (updated: Registration) => {
@@ -166,36 +168,45 @@ export function RegistrationsTable({
         )
     }
 
-    const exportToCSV = () => {
-        const dataToExport = searchQuery ? filteredRegistrations : registrations
-        const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')},Formation Date`]
-        const rows = dataToExport.map(reg => {
-            const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
-            const formationDate = getFormationDate(reg.formation_id)
-            return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}",${formationDate}`
-        })
+    const exportToCSV = async () => {
+        if (isExporting) return
+        setIsExporting(true)
+        try {
+            const dataToExport = await exportAllRegistrations(searchQuery)
+            const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')},Formation Date`]
+            const rows = dataToExport.map(reg => {
+                const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
+                const formationDate = getFormationDate(reg.formation_id)
+                return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}",${formationDate}`
+            })
 
-        const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
-        const encodedUri = encodeURI(csvContent)
-        const link = document.createElement("a")
-        link.setAttribute("href", encodedUri)
-        link.setAttribute("download", "registrations.csv")
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
+            const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
+            const encodedUri = encodeURI(csvContent)
+            const link = document.createElement("a")
+            link.setAttribute("href", encodedUri)
+            link.setAttribute("download", "registrations.csv")
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        } catch (error) {
+            console.error('Error exporting data:', error)
+            toast.error('Failed to export data')
+        } finally {
+            setIsExporting(false)
+        }
     }
 
     const PaginationControls = () => {
         const pages = []
         const maxVisiblePages = 5
-        
+
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
-        
+
         if (endPage - startPage + 1 < maxVisiblePages) {
             startPage = Math.max(1, endPage - maxVisiblePages + 1)
         }
-        
+
         for (let i = startPage; i <= endPage; i++) {
             pages.push(i)
         }
@@ -206,7 +217,7 @@ export function RegistrationsTable({
                     <span>Page {currentPage} of {totalPages}</span>
                     <span>({totalCount} total)</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                     <div className="flex items-center space-x-1">
                         <Button
@@ -218,7 +229,7 @@ export function RegistrationsTable({
                             <ChevronLeft className="h-4 w-4" />
                             Previous
                         </Button>
-                        
+
                         {startPage > 1 && (
                             <>
                                 <Button
@@ -232,7 +243,7 @@ export function RegistrationsTable({
                                 {startPage > 2 && <span className="px-2">...</span>}
                             </>
                         )}
-                        
+
                         {pages.map((page) => (
                             <Button
                                 key={page}
@@ -244,7 +255,7 @@ export function RegistrationsTable({
                                 {page}
                             </Button>
                         ))}
-                        
+
                         {endPage < totalPages && (
                             <>
                                 {endPage < totalPages - 1 && <span className="px-2">...</span>}
@@ -258,7 +269,7 @@ export function RegistrationsTable({
                                 </Button>
                             </>
                         )}
-                        
+
                         <Button
                             variant="outline"
                             size="sm"
@@ -269,7 +280,7 @@ export function RegistrationsTable({
                             <ChevronRight className="h-4 w-4" />
                         </Button>
                     </div>
-                    
+
                     <select
                         value={pageSize}
                         onChange={(e) => handlePageSizeChange(Number(e.target.value))}
@@ -302,8 +313,8 @@ export function RegistrationsTable({
                     <div className="text-sm text-muted-foreground">
                         {t('showing')}: {displayCount} {t('of')} {totalCount}
                     </div>
-                    <Button variant="outline" size="sm" onClick={exportToCSV}>
-                        <Download className="me-2 h-4 w-4" />
+                    <Button variant="outline" size="sm" onClick={exportToCSV} disabled={isExporting}>
+                        {isExporting ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Download className="me-2 h-4 w-4" />}
                         {t('exportCSV')}
                     </Button>
                     <RegistrationDialog mode="create" formations={formations} onSuccess={handleCreateSuccess} />
@@ -334,20 +345,14 @@ export function RegistrationsTable({
                                     </div>
                                 </TableCell>
                             </TableRow>
-                        ) : searchQuery && filteredRegistrations.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={8} className="h-24 text-center">
-                                    {t('noResults')}
-                                </TableCell>
-                            </TableRow>
                         ) : registrations.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={8} className="h-24 text-center">
-                                    No registrations found
+                                    {searchQuery ? t('noResults') : 'No registrations found'}
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            (searchQuery ? filteredRegistrations : registrations).map((reg) => (
+                            registrations.map((reg) => (
                                 <TableRow key={reg.id}>
                                     <TableCell className="font-medium">
                                         {new Date(reg.created_at).toLocaleDateString()}
@@ -391,7 +396,7 @@ export function RegistrationsTable({
                     </TableBody>
                 </Table>
             </div>
-            
+
             {totalPages > 1 && (
                 <div className="flex items-center justify-center">
                     <PaginationControls />
