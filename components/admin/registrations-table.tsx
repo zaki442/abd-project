@@ -121,11 +121,6 @@ export function RegistrationsTable({
             mounted.current = true
             return
         }
-        
-        // Prevent re-fetching initial data if search query hasn't changed from empty on mount
-        if (searchQuery === '' && currentPage === 1) {
-            return
-        }
 
         const timer = setTimeout(() => {
             fetchPage(1, pageSize, searchQuery)
