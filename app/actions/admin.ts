@@ -114,34 +114,7 @@ function revalidateAllPaths() {
     revalidatePath('/ar/formations')
 }
 
-// Retry utility for failed requests
-async function retry<T>(fn: () => Promise<T>, maxRetries: number = 3, delay: number = 1000): Promise<T> {
-    let lastError: Error | undefined
-
-    for (let i = 0; i < maxRetries; i++) {
-        try {
-            return await fn()
-        } catch (error) {
-            lastError = error as Error
-            console.warn(`Attempt ${i + 1} failed:`, error)
-            console.warn('Error details:', {
-                name: (error as Error).name,
-                message: (error as Error).message,
-                stack: (error as Error).stack,
-                toString: error instanceof Error ? error.toString() : String(error)
-            })
-
-            // Do not retry on AbortError as that means the request was intentionally cancelled
-            if (error instanceof Error && error.name === 'AbortError') {
-                throw error
-            }
-
-            if (i === maxRetries - 1) throw error
-            await new Promise(resolve => setTimeout(resolve, delay * (i + 1)))
-        }
-    }
-    throw lastError || new Error('Max retries exceeded')
-}
+// Retry utility removed since fetchWithRetry handles it globally in lib/supabase.ts
 
 export async function verifyAdminLogin(name: string, password: string): Promise<ApiResponse> {
     console.log(`Login attempt for: ${name}`)
@@ -180,7 +153,7 @@ export async function verifyAdminLogin(name: string, password: string): Promise<
 
 export async function getAdmins(page: number = 1, pageSize: number = 50): Promise<PaginatedResponse<Admin>> {
     console.log('Fetching admins...')
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
@@ -199,10 +172,10 @@ export async function getAdmins(page: number = 1, pageSize: number = 50): Promis
         const totalPages = Math.ceil((count || 0) / pageSize)
         console.log(`Successfully fetched ${data?.length || 0} admins.`)
         return { data: data || [], count: count || 0, page, pageSize, totalPages }
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching admins after retries:', e)
         return { data: [], count: 0, page, pageSize, totalPages: 0 }
-    })
+    }
 }
 
 export async function createAdmin(name: string, email: string, password: string): Promise<ApiResponse> {
@@ -224,7 +197,7 @@ export async function createAdmin(name: string, email: string, password: string)
 }
 
 export async function updateAdmin(id: string, name: string, email: string, password?: string): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         console.log(`Attempting to update admin ID: ${id}`)
 
         // Protection: don't allow renaming someone to reserved names unless they're a super-admin
@@ -274,11 +247,13 @@ export async function updateAdmin(id: string, name: string, email: string, passw
         }
 
         return createSuccessResponse('Profile updated successfully!')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to update admin')
+    }
 }
 
 export async function deleteAdmin(id: string): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         console.log(`Attempting to delete admin ID: ${id}`)
         const supabase = await createServerSupabaseAdminClient()
 
@@ -322,7 +297,9 @@ export async function deleteAdmin(id: string): Promise<ApiResponse> {
 
         revalidatePath('/admin')
         return createSuccessResponse('Admin deleted successfully.')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to delete admin')
+    }
 }
 
 export async function logoutAdmin(): Promise<ApiResponse> {
@@ -367,7 +344,7 @@ export async function getRegistrations(
     pageSize: number = 10,
     searchQuery: string = ''
 ): Promise<PaginatedResponse<Registration>> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
@@ -408,14 +385,14 @@ export async function getRegistrations(
 
         const totalPages = Math.ceil((count || 0) / pageSize)
         return { data: data || [], count: count || 0, page, pageSize, totalPages }
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching registrations after retries:', e)
         return { data: [], count: 0, page, pageSize, totalPages: 0 }
-    })
+    }
 }
 
 export async function exportAllRegistrations(searchQuery: string = ''): Promise<Registration[]> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         let query = supabase
@@ -453,14 +430,14 @@ export async function exportAllRegistrations(searchQuery: string = ''): Promise<
         }
 
         return data || []
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching all registrations after retries:', e)
         return []
-    })
+    }
 }
 
 export async function deleteRegistration(id: string): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const { error } = await supabase
@@ -474,7 +451,9 @@ export async function deleteRegistration(id: string): Promise<ApiResponse> {
 
         revalidatePath('/admin')
         return createSuccessResponse('Deleted successfully')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to delete registration')
+    }
 }
 
 export async function createRegistration(data: {
@@ -514,7 +493,7 @@ export async function updateRegistration(
         formation_id?: string
     }
 ): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const { error } = await supabase
@@ -528,7 +507,9 @@ export async function updateRegistration(
 
         revalidatePath('/admin')
         return createSuccessResponse('Updated successfully')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to update registration')
+    }
 }
 
 // Test function to verify Supabase connection
@@ -551,7 +532,7 @@ export async function testSupabaseConnection() {
 }
 
 export async function getStatsByFormation(page: number = 1, pageSize: number = 1000) {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
@@ -585,10 +566,10 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
             pageSize,
             totalPages
         }
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching stats after retries:', e)
         return { total: 0, byFormation: {}, page, pageSize, totalPages: 0 }
-    })
+    }
 }
 
 // ==========================================
@@ -596,7 +577,7 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
 // ==========================================
 
 export async function getFormations(page: number = 1, pageSize: number = 1000): Promise<PaginatedResponse<Formation>> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
@@ -625,14 +606,14 @@ export async function getFormations(page: number = 1, pageSize: number = 1000): 
 
         const totalPages = Math.ceil((count || 0) / pageSize)
         return { data: transformedData, count: count || 0, page, pageSize, totalPages }
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching formations after retries:', e)
         return { data: [], count: 0, page, pageSize, totalPages: 0 }
-    })
+    }
 }
 
 export async function getFormation(id: string): Promise<Formation | null> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const { data, error } = await supabase
@@ -656,10 +637,10 @@ export async function getFormation(id: string): Promise<Formation | null> {
             ...data,
             categories: (data as any).categories?.map((c: any) => c.category) || []
         }
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching formation after retries:', e)
         return null
-    })
+    }
 }
 
 export async function createFormation(data: {
@@ -670,7 +651,7 @@ export async function createFormation(data: {
     image_url: string
     category_ids: string[]
 }): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         // 1. Create Formation
@@ -721,7 +702,9 @@ export async function createFormation(data: {
         revalidateAllPaths()
 
         return createSuccessResponse('Formation created successfully')
-    }, 2, 500) // Reduced retries and delay for faster response
+    } catch (e) {
+        return createErrorResponse('Failed to create formation')
+    }
 }
 
 export async function updateFormation(id: string, data: {
@@ -732,7 +715,7 @@ export async function updateFormation(id: string, data: {
     image_url: string
     category_ids: string[]
 }): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         // 1. Update Formation Details and delete existing categories in parallel
@@ -778,11 +761,13 @@ export async function updateFormation(id: string, data: {
         }
         revalidateAllPaths()
         return createSuccessResponse('Formation updated successfully')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to update formation')
+    }
 }
 
 export async function deleteFormation(id: string): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const deleteCategoryLinks = async () => {
@@ -816,14 +801,16 @@ export async function deleteFormation(id: string): Promise<ApiResponse> {
 
         revalidateAllPaths()
         return createSuccessResponse('Formation deleted successfully')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to delete formation')
+    }
 }
 
 // ==========================================
 // CATEGORIES MANAGEMENT
 // ==========================================
 export async function getCategories(): Promise<Category[]> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const { data, error } = await supabase
@@ -837,10 +824,10 @@ export async function getCategories(): Promise<Category[]> {
         }
 
         return data || []
-    }).catch((e) => {
+    } catch (e) {
         console.error('Permanent error fetching categories after retries:', e)
         return []
-    })
+    }
 }
 
 export async function createCategory(name: string): Promise<ApiResponse> {
@@ -859,7 +846,7 @@ export async function createCategory(name: string): Promise<ApiResponse> {
 }
 
 export async function updateCategory(id: string, name: string): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const { error } = await supabase
@@ -873,11 +860,13 @@ export async function updateCategory(id: string, name: string): Promise<ApiRespo
 
         revalidatePath('/admin')
         return createSuccessResponse('Category updated successfully')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to update category')
+    }
 }
 
 export async function deleteCategory(id: string): Promise<ApiResponse> {
-    return retry(async () => {
+    try {
         const supabase = await createServerSupabaseClient()
 
         const { error } = await supabase
@@ -891,6 +880,7 @@ export async function deleteCategory(id: string): Promise<ApiResponse> {
 
         revalidatePath('/admin')
         return createSuccessResponse('Category deleted successfully')
-    }, 2, 500)
+    } catch (e) {
+        return createErrorResponse('Failed to delete category')
+    }
 }
-
