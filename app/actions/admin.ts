@@ -224,101 +224,105 @@ export async function createAdmin(name: string, email: string, password: string)
 }
 
 export async function updateAdmin(id: string, name: string, email: string, password?: string): Promise<ApiResponse> {
-    console.log(`Attempting to update admin ID: ${id}`)
+    return retry(async () => {
+        console.log(`Attempting to update admin ID: ${id}`)
 
-    // Protection: don't allow renaming someone to reserved names unless they're a super-admin
-    if (isReservedName(name)) {
-        const cookieStore = await cookies()
-        const currentAdminName = cookieStore.get('admin_name')?.value
-        if (!isSuperAdmin(currentAdminName || '')) {
-            return createErrorResponse('Reserved name. Cannot use this name.')
+        // Protection: don't allow renaming someone to reserved names unless they're a super-admin
+        if (isReservedName(name)) {
+            const cookieStore = await cookies()
+            const currentAdminName = cookieStore.get('admin_name')?.value
+            if (!isSuperAdmin(currentAdminName || '')) {
+                return createErrorResponse('Reserved name. Cannot use this name.')
+            }
         }
-    }
 
-    const supabase = await createServerSupabaseClient()
+        const supabase = await createServerSupabaseClient()
 
-    // Check if we are updating a super-admin
-    const { data: targetAdmin } = await supabase
-        .from('admins')
-        .select('name')
-        .eq('id', id)
-        .single()
+        // Check if we are updating a super-admin
+        const { data: targetAdmin } = await supabase
+            .from('admins')
+            .select('name')
+            .eq('id', id)
+            .single()
 
-    if (targetAdmin && isSuperAdmin(targetAdmin.name) && name !== targetAdmin.name) {
-        return createErrorResponse('Cannot change the name of the primary super-admin.')
-    }
+        if (targetAdmin && isSuperAdmin(targetAdmin.name) && name !== targetAdmin.name) {
+            return createErrorResponse('Cannot change the name of the primary super-admin.')
+        }
 
-    const updateData: { name: string; email: string; password_hash?: string } = { name, email }
+        const updateData: { name: string; email: string; password_hash?: string } = { name, email }
 
-    if (password && password.trim() !== '') {
-        updateData.password_hash = await bcrypt.hash(password, 10)
-    }
+        if (password && password.trim() !== '') {
+            updateData.password_hash = await bcrypt.hash(password, 10)
+        }
 
-    const { error } = await supabase
-        .from('admins')
-        .update(updateData)
-        .eq('id', id)
+        const { error } = await supabase
+            .from('admins')
+            .update(updateData)
+            .eq('id', id)
 
-    if (error) {
-        return createErrorResponse(`Failed to update admin: ${error.message}`)
-    }
+        if (error) {
+            return createErrorResponse(`Failed to update admin: ${error.message}`)
+        }
 
-    console.log('Admin updated successfully in database.')
-    revalidatePath('/admin')
+        console.log('Admin updated successfully in database.')
+        revalidatePath('/admin')
 
-    // Update cookie if updating self
-    const cookieStore = await cookies()
-    if (cookieStore.get('admin_id')?.value === id) {
-        cookieStore.set('admin_name', name, COOKIE_OPTIONS)
-    }
+        // Update cookie if updating self
+        const cookieStore = await cookies()
+        if (cookieStore.get('admin_id')?.value === id) {
+            cookieStore.set('admin_name', name, COOKIE_OPTIONS)
+        }
 
-    return createSuccessResponse('Profile updated successfully!')
+        return createSuccessResponse('Profile updated successfully!')
+    }, 2, 500)
 }
 
 export async function deleteAdmin(id: string): Promise<ApiResponse> {
-    console.log(`Attempting to delete admin ID: ${id}`)
-    const supabase = await createServerSupabaseAdminClient()
+    return retry(async () => {
+        console.log(`Attempting to delete admin ID: ${id}`)
+        const supabase = await createServerSupabaseAdminClient()
 
-    // Protection: Check if this is a primary admin
-    const { data: adminToDelete, error: fetchError } = await supabase
-        .from('admins')
-        .select('name')
-        .eq('id', id)
-        .single()
+        // Protection: Check if this is a primary admin
+        const { data: adminToDelete, error: fetchError } = await supabase
+            .from('admins')
+            .select('name')
+            .eq('id', id)
+            .single()
 
-    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "not found"
-        console.error('Error fetching admin to delete:', fetchError)
-        return createErrorResponse('Failed to verify admin account.')
-    }
+        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "not found"
+            console.error('Error fetching admin to delete:', fetchError)
+            return createErrorResponse('Failed to verify admin account.')
+        }
 
-    if (adminToDelete && isSuperAdmin(adminToDelete.name)) {
-        return createErrorResponse('Cannot delete primary super-admin accounts.')
-    }
+        if (adminToDelete && isSuperAdmin(adminToDelete.name)) {
+            return createErrorResponse('Cannot delete primary super-admin accounts.')
+        }
 
-    // Perform deletion
-    const { error: deleteError } = await supabase
-        .from('admins')
-        .delete()
-        .eq('id', id)
+        // Perform deletion
+        const { error: deleteError } = await supabase
+            .from('admins')
+            .delete()
+            .eq('id', id)
 
-    if (deleteError) {
-        return createErrorResponse(`Failed to delete admin: ${deleteError.message}`)
-    }
+        if (deleteError) {
+            return createErrorResponse(`Failed to delete admin: ${deleteError.message}`)
+        }
 
-    console.log('Admin deleted successfully from database.')
+        console.log('Admin deleted successfully from database.')
 
-    // Handle self-deletion: logout if the deleted admin is the current user
-    const cookieStore = await cookies()
-    const currentAdminId = cookieStore.get('admin_id')?.value
+        // Handle self-deletion: logout if the deleted admin is the current user
+        const cookieStore = await cookies()
+        const currentAdminId = cookieStore.get('admin_id')?.value
 
-    if (currentAdminId === id) {
-        console.log('Admin deleted their own account. Logging out...')
-        await clearAuthCookies()
-        return createSuccessResponse('Your account was deleted and you have been logged out.', true)
-    }
+        if (currentAdminId === id) {
+            console.log('Admin deleted their own account. Logging out...')
+            await clearAuthCookies()
+            return createSuccessResponse('Your account was deleted and you have been logged out.', true)
+        }
 
-    revalidatePath('/admin')
-    return createSuccessResponse('Admin deleted successfully.')
+        revalidatePath('/admin')
+        return createSuccessResponse('Admin deleted successfully.')
+    }, 2, 500)
 }
 
 export async function logoutAdmin(): Promise<ApiResponse> {
@@ -456,19 +460,21 @@ export async function exportAllRegistrations(searchQuery: string = ''): Promise<
 }
 
 export async function deleteRegistration(id: string): Promise<ApiResponse> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const { error } = await supabase
-        .from('registrations')
-        .delete()
-        .eq('id', id)
+        const { error } = await supabase
+            .from('registrations')
+            .delete()
+            .eq('id', id)
 
-    if (error) {
-        return createErrorResponse('Failed to delete registration')
-    }
+        if (error) {
+            return createErrorResponse('Failed to delete registration')
+        }
 
-    revalidatePath('/admin')
-    return createSuccessResponse('Deleted successfully')
+        revalidatePath('/admin')
+        return createSuccessResponse('Deleted successfully')
+    }, 2, 500)
 }
 
 export async function createRegistration(data: {
@@ -508,19 +514,21 @@ export async function updateRegistration(
         formation_id?: string
     }
 ): Promise<ApiResponse> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const { error } = await supabase
-        .from('registrations')
-        .update(data)
-        .eq('id', id)
+        const { error } = await supabase
+            .from('registrations')
+            .update(data)
+            .eq('id', id)
 
-    if (error) {
-        return createErrorResponse('Failed to update registration')
-    }
+        if (error) {
+            return createErrorResponse('Failed to update registration')
+        }
 
-    revalidatePath('/admin')
-    return createSuccessResponse('Updated successfully')
+        revalidatePath('/admin')
+        return createSuccessResponse('Updated successfully')
+    }, 2, 500)
 }
 
 // Test function to verify Supabase connection
@@ -724,87 +732,91 @@ export async function updateFormation(id: string, data: {
     image_url: string
     category_ids: string[]
 }): Promise<ApiResponse> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    // 1. Update Formation Details and delete existing categories in parallel
-    const [updateResult, deleteResult] = await Promise.all([
-        supabase
-            .from('formations')
-            .update({
-                title: data.title,
-                description: data.description,
-                date: data.date,
-                price: data.price,
-                image_url: data.image_url,
-            })
-            .eq('id', id),
-        supabase
-            .from('formation_category_link')
-            .delete()
-            .eq('formation_id', id)
-    ])
+        // 1. Update Formation Details and delete existing categories in parallel
+        const [updateResult, deleteResult] = await Promise.all([
+            supabase
+                .from('formations')
+                .update({
+                    title: data.title,
+                    description: data.description,
+                    date: data.date,
+                    price: data.price,
+                    image_url: data.image_url,
+                })
+                .eq('id', id),
+            supabase
+                .from('formation_category_link')
+                .delete()
+                .eq('formation_id', id)
+        ])
 
-    if (updateResult.error) {
-        return createErrorResponse('Failed to update formation')
-    }
-
-    if (deleteResult.error) {
-        return createErrorResponse('Failed to update categories')
-    }
-
-    // 2. Insert new categories if any
-    if (data.category_ids && data.category_ids.length > 0) {
-        const links = data.category_ids.map(catId => ({
-            formation_id: id,
-            category_id: catId
-        }))
-
-        const { error: linkError } = await supabase
-            .from('formation_category_link')
-            .insert(links)
-
-        if (linkError) {
-            return createErrorResponse('Failed to link new categories')
+        if (updateResult.error) {
+            return createErrorResponse('Failed to update formation')
         }
-    }
-    revalidateAllPaths()
-    return createSuccessResponse('Formation updated successfully')
+
+        if (deleteResult.error) {
+            return createErrorResponse('Failed to update categories')
+        }
+
+        // 2. Insert new categories if any
+        if (data.category_ids && data.category_ids.length > 0) {
+            const links = data.category_ids.map(catId => ({
+                formation_id: id,
+                category_id: catId
+            }))
+
+            const { error: linkError } = await supabase
+                .from('formation_category_link')
+                .insert(links)
+
+            if (linkError) {
+                return createErrorResponse('Failed to link new categories')
+            }
+        }
+        revalidateAllPaths()
+        return createSuccessResponse('Formation updated successfully')
+    }, 2, 500)
 }
 
 export async function deleteFormation(id: string): Promise<ApiResponse> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const deleteCategoryLinks = async () => {
-        const { error } = await supabase
-            .from('formation_category_link')
-            .delete()
-            .eq('formation_id', id)
+        const deleteCategoryLinks = async () => {
+            const { error } = await supabase
+                .from('formation_category_link')
+                .delete()
+                .eq('formation_id', id)
 
-        if (error) {
-            throw new Error(`Failed to delete category links: ${error.message}`)
+            if (error) {
+                throw new Error(`Failed to delete category links: ${error.message}`)
+            }
         }
-    }
 
-    const deleteFormation = async () => {
-        const { error } = await supabase
-            .from('formations')
-            .delete()
-            .eq('id', id)
+        const deleteFormation = async () => {
+            const { error } = await supabase
+                .from('formations')
+                .delete()
+                .eq('id', id)
 
-        if (error) {
-            throw new Error(`Failed to delete formation: ${error.message}`)
+            if (error) {
+                throw new Error(`Failed to delete formation: ${error.message}`)
+            }
         }
-    }
 
-    try {
-        await deleteCategoryLinks()
-        await deleteFormation()
-    } catch (error) {
-        return createErrorResponse('Failed to delete formation')
-    }
+        try {
+            await deleteCategoryLinks()
+            await deleteFormation()
+        } catch (error) {
+            return createErrorResponse('Failed to delete formation')
+        }
 
-    revalidateAllPaths()
-    return createSuccessResponse('Formation deleted successfully')
+        revalidateAllPaths()
+        return createSuccessResponse('Formation deleted successfully')
+    }, 2, 500)
 }
 
 // ==========================================
@@ -847,34 +859,38 @@ export async function createCategory(name: string): Promise<ApiResponse> {
 }
 
 export async function updateCategory(id: string, name: string): Promise<ApiResponse> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const { error } = await supabase
-        .from('formations_category')
-        .update({ name })
-        .eq('id', id)
+        const { error } = await supabase
+            .from('formations_category')
+            .update({ name })
+            .eq('id', id)
 
-    if (error) {
-        return createErrorResponse('Failed to update category')
-    }
+        if (error) {
+            return createErrorResponse('Failed to update category')
+        }
 
-    revalidatePath('/admin')
-    return createSuccessResponse('Category updated successfully')
+        revalidatePath('/admin')
+        return createSuccessResponse('Category updated successfully')
+    }, 2, 500)
 }
 
 export async function deleteCategory(id: string): Promise<ApiResponse> {
-    const supabase = await createServerSupabaseClient()
+    return retry(async () => {
+        const supabase = await createServerSupabaseClient()
 
-    const { error } = await supabase
-        .from('formations_category')
-        .delete()
-        .eq('id', id)
+        const { error } = await supabase
+            .from('formations_category')
+            .delete()
+            .eq('id', id)
 
-    if (error) {
-        return createErrorResponse('Failed to delete category')
-    }
+        if (error) {
+            return createErrorResponse('Failed to delete category')
+        }
 
-    revalidatePath('/admin')
-    return createSuccessResponse('Category deleted successfully')
+        revalidatePath('/admin')
+        return createSuccessResponse('Category deleted successfully')
+    }, 2, 500)
 }
 
