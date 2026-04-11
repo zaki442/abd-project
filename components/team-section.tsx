@@ -8,6 +8,7 @@ const team = [
   { name: "Zakaria Abid", role: "Tech", initials: "ZA" },
   { name: "Abdelouahed EdDdaoudy", role: "Media", initials: "ED", image: "/team/abdelouahed.jpg" },
   { name: "Soukaina Bouchane", role: "Communication", initials: "SK", image: "/team/soukaina.jpg" },
+  { name: "Khadija Afkir", role: "EventsWorkshop", initials: "KA" },
 ]
 
 const roleColors: Record<string, string> = {
@@ -16,6 +17,7 @@ const roleColors: Record<string, string> = {
   Tech: "from-green-500 to-emerald-500",
   Content: "from-orange-500 to-yellow-500",
   Events: "from-pink-500 to-rose-500",
+  EventsWorkshop: "from-pink-500 to-rose-500",
   Media: "from-indigo-500 to-purple-500",
   Partnerships: "from-teal-500 to-green-500",
   Communication: "from-violet-500 to-indigo-500",
