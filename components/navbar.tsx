@@ -18,6 +18,7 @@ export function Navbar() {
     { href: "/#team", label: t("team") },
     { href: "/#roadmap", label: t("roadmap") },
     { href: "/formations", label: t("formations") },
+    { href: "/jobs", label: t("jobs") },
   ]
 
   return (

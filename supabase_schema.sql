@@ -176,4 +176,52 @@ create policy "Authenticated Users Can Delete Images"
 on storage.objects for delete
 using ( bucket_id = 'formations' );
 
+-- =============================================
+-- JOBS TABLE
+-- =============================================
 
+create table jobs (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  title text not null,
+  description text not null,
+  is_active boolean default true not null
+);
+
+alter table jobs enable row level security;
+
+create policy "Enable read for jobs"
+on jobs
+for select
+using (true);
+
+create policy "Enable write for jobs admins"
+on jobs
+for all
+using (true);
+
+-- =============================================
+-- JOB REGISTRATIONS TABLE
+-- =============================================
+
+create table job_registrations (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  job_id uuid references jobs(id) on delete cascade not null,
+  full_name text not null,
+  email text not null,
+  phone_number text,
+  cover_letter text
+);
+
+alter table job_registrations enable row level security;
+
+create policy "Enable insert for public job registrations"
+on job_registrations
+for insert
+with check (true);
+
+create policy "Enable read and write for job registrations admins"
+on job_registrations
+for all
+using (true);

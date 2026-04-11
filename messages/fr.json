@@ -5,6 +5,7 @@
         "team": "Équipe",
         "roadmap": "Feuille de route",
         "formations": "Formations",
+        "jobs": "Emplois",
         "joinDiscord": "Rejoindre Discord",
         "joinTelegram": "Rejoindre Telegram"
     },
@@ -164,6 +165,41 @@
             "saving": "Enregistrement...",
             "add": "Ajouter",
             "save": "Sauvegarder"
+        },
+        "jobs": {
+            "title": "Emplois",
+            "add": "Ajouter un emploi",
+            "edit": "Modifier l'emploi",
+            "create": "Créer un emploi",
+            "save": "Enregistrer les modifications",
+            "delete": "Supprimer",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet emploi ?",
+            "titleLabel": "Titre",
+            "description": "Description",
+            "status": "Statut",
+            "active": "Actif",
+            "inactive": "Inactif"
+        },
+        "jobRegistrations": {
+            "title": "Candidatures",
+            "delete": "Supprimer",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette candidature ?",
+            "coverLetter": "Lettre de motivation"
         }
+    },
+    "Jobs": {
+        "title": "Nous recrutons",
+        "description": "Rejoignez notre équipe ! Découvrez les postes ouverts ci-dessous.",
+        "noJobs": "Aucun poste ouvert pour le moment.",
+        "apply": "Postuler"
+    },
+    "JobRegistration": {
+        "title": "Postuler pour",
+        "desc": "Veuillez fournir vos coordonnées et nous examinerons votre candidature.",
+        "backToJobs": "Retour aux offres d'emploi",
+        "coverLetter": "Lettre de motivation / Pourquoi devrions-nous vous embaucher",
+        "apply": "Soumettre la candidature",
+        "applying": "Soumission...",
+        "success": "Candidature soumise avec succès"
     }
 }

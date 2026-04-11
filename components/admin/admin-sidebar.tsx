@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings } from 'lucide-react'
+import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings, Briefcase } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import Link from 'next/link'
@@ -22,6 +22,8 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
     const menuItems = [
         { id: 'overview', label: t('dashboard'), href: '/admin', icon: Home },
         { id: 'registrations', label: 'Registrations', href: '/admin/registrations', icon: UsersIcon },
+        { id: 'jobs', label: t('jobs.title'), href: '/admin/jobs', icon: Briefcase },
+        { id: 'job-registrations', label: t('jobRegistrations.title'), href: '/admin/job-registrations', icon: Briefcase },
         { id: 'formations', label: 'Formations', href: '/admin/formations', icon: BookIcon },
         { id: 'categories', label: 'Categories', href: '/admin/categories', icon: FolderOpen },
         { id: 'admins', label: 'Admins', href: '/admin/admins', icon: Settings },
