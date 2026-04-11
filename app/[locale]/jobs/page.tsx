@@ -14,7 +14,7 @@ export default async function JobsPage() {
     return (
         <main className="min-h-screen bg-background">
             <Navbar />
-            <div className="pt-24 pb-16">
+            <div className="pt-36 pb-20">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
                         <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">

@@ -20,19 +20,23 @@ export function JobsList({ jobs }: { jobs: Job[] }) {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {jobs.map((job) => (
-                <Card key={job.id} className="flex flex-col border border-border/50 bg-card hover:bg-accent/5 transition-colors overflow-hidden group">
-                    <CardHeader>
-                        <CardTitle className="text-xl">{job.title}</CardTitle>
+                <Card key={job.id} className="flex flex-col border border-border/50 bg-gradient-to-b from-card to-card/50 hover:-translate-y-1 hover:shadow-xl hover:border-[#5865F2]/50 transition-all duration-300 overflow-hidden group rounded-xl relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#5865F2] to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <CardHeader className="pb-4 pt-6">
+                        <div className="w-12 h-12 rounded-xl bg-[#5865F2]/10 flex items-center justify-center mb-4 text-[#5865F2] group-hover:scale-110 transition-transform duration-300">
+                            <Briefcase className="w-6 h-6" />
+                        </div>
+                        <CardTitle className="text-2xl font-bold tracking-tight">{job.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1">
-                        <CardDescription className="text-base line-clamp-3">
+                        <CardDescription className="text-base line-clamp-3 leading-relaxed text-muted-foreground">
                             {job.description}
                         </CardDescription>
                     </CardContent>
-                    <CardFooter>
-                        <Button asChild className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white">
+                    <CardFooter className="pt-4 pb-6">
+                        <Button asChild className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white shadow-md hover:shadow-lg transition-all duration-300 group-hover:opacity-90">
                             <Link href={`/jobs/${job.id}/register`}>
                                 {t('apply')}
                             </Link>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings, Briefcase } from 'lucide-react'
+import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings, Briefcase, ChevronDown, ChevronRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import Link from 'next/link'
@@ -15,6 +15,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenuToggle }: AdminSidebarProps) {
     const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false)
+    const [isJobsExpanded, setIsJobsExpanded] = useState(false)
     const mobileMenuOpen = isMobileMenuOpen || internalMobileMenuOpen
     const setMobileMenuOpen = onMobileMenuToggle || setInternalMobileMenuOpen
     const t = useTranslations('Admin')
@@ -22,8 +23,16 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
     const menuItems = [
         { id: 'overview', label: t('dashboard'), href: '/admin', icon: Home },
         { id: 'registrations', label: 'Registrations', href: '/admin/registrations', icon: UsersIcon },
-        { id: 'jobs', label: t('jobs.title'), href: '/admin/jobs', icon: Briefcase },
-        { id: 'job-registrations', label: t('jobRegistrations.title'), href: '/admin/job-registrations', icon: Briefcase },
+        { 
+            id: 'jobs-group', 
+            label: 'Jobs Management', 
+            icon: Briefcase, 
+            isGroup: true,
+            subItems: [
+                { id: 'jobs', label: t('jobs.title'), href: '/admin/jobs' },
+                { id: 'job-registrations', label: t('jobRegistrations.title'), href: '/admin/job-registrations' },
+            ]
+        },
         { id: 'formations', label: 'Formations', href: '/admin/formations', icon: BookIcon },
         { id: 'categories', label: 'Categories', href: '/admin/categories', icon: FolderOpen },
         { id: 'admins', label: 'Admins', href: '/admin/admins', icon: Settings },
@@ -70,11 +79,43 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
                             if (item.id === 'admins' && !isSuperAdmin) {
                                 return null
                             }
+
+                            if (item.isGroup) {
+                                return (
+                                    <div key={item.id} className="space-y-1">
+                                        <button
+                                            onClick={() => setIsJobsExpanded(!isJobsExpanded)}
+                                            className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Icon className="h-4 w-4" />
+                                                {item.label}
+                                            </div>
+                                            {isJobsExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                        </button>
+                                        
+                                        {isJobsExpanded && item.subItems && (
+                                            <div className="pl-10 space-y-1 mt-1">
+                                                {item.subItems.map((sub) => (
+                                                    <Link
+                                                        key={sub.id}
+                                                        href={sub.href!}
+                                                        className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                                        onClick={() => setMobileMenuOpen(false)}
+                                                    >
+                                                        {sub.label}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            }
                             
                             return (
                                 <Link
                                     key={item.id}
-                                    href={item.href}
+                                    href={item.href!}
                                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
