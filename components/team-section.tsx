@@ -9,6 +9,7 @@ const team = [
   { name: "Abdelouahed EdDdaoudy", role: "Media", initials: "ED", image: "/team/abdelouahed.jpg" },
   { name: "Soukaina Bouchane", role: "Communication", initials: "SK", image: "/team/soukaina.jpg" },
   { name: "Khadija Afkir", role: "EventsWorkshop", initials: "KA" },
+  { name: "Raja", role: "Marketing", initials: "RA" },
 ]
 
 const roleColors: Record<string, string> = {
@@ -21,6 +22,7 @@ const roleColors: Record<string, string> = {
   Media: "from-indigo-500 to-purple-500",
   Partnerships: "from-teal-500 to-green-500",
   Communication: "from-violet-500 to-indigo-500",
+  Marketing: "from-red-500 to-orange-500",
 }
 
 export function TeamSection() {
