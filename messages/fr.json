@@ -7,7 +7,8 @@
         "formations": "Formations",
         "jobs": "Emplois",
         "joinDiscord": "Rejoindre Discord",
-        "joinTelegram": "Rejoindre Telegram"
+        "joinTelegram": "Rejoindre Telegram",
+        "donate": "Faire un don"
     },
     "Hero": {
         "community": "Communauté Agile Marocaine",
@@ -92,7 +93,8 @@
     "Footer": {
         "madeWith": "Fait avec",
         "inMorocco": "au Maroc",
-        "rights": "Tous droits réservés."
+        "rights": "Tous droits réservés.",
+        "donate": "Faire un don"
     },
     "Registration": {
         "register": "S'inscrire",
@@ -201,5 +203,24 @@
         "apply": "Soumettre la candidature",
         "applying": "Soumission...",
         "success": "Candidature soumise avec succès"
+    },
+    "Donate": {
+        "title": "Soutenez Notre Communauté",
+        "description": "Votre soutien nous aide à organiser plus d'événements et à continuer de propager l'agilité.",
+        "paypal": {
+            "title": "Faire un don via PayPal",
+            "button": "Faire un don avec PayPal",
+            "description": "Don rapide et sécurisé via PayPal."
+        },
+        "cih": {
+            "title": "Virement Bancaire Local",
+            "description": "Vous pouvez envoyer votre don sur notre compte CIH Bank.",
+            "accountHolder": "Titulaire du compte",
+            "rib": "RIB",
+            "iban": "IBAN",
+            "swift": "Code SWIFT",
+            "copied": "Copié !",
+            "copy": "Copier"
+        }
     }
 }

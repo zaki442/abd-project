@@ -4,6 +4,7 @@ import { FeaturesSection } from "@/components/features-section"
 import { TeamSection } from "@/components/team-section"
 import { RoadmapSection } from "@/components/roadmap-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
+import { DonateSection } from "@/components/donate-section"
 import { Footer } from "@/components/footer"
 import { FormationsSlider } from "@/components/formations/formations-slider"
 import { getFormations, getCategories } from "@/app/actions/admin"
@@ -26,6 +27,7 @@ export default async function Home() {
       <TeamSection />
       <RoadmapSection />
       <TestimonialsSection />
+      <DonateSection />
       <Footer />
     </main>
   )
