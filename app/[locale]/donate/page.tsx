@@ -44,7 +44,7 @@ export default function DonatePage() {
             {/* PayPal Card */}
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
               <Card className="h-full flex flex-col bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/50 transition-colors">
-                <CardHeader>
+                <CardHeader className="pt-8">
                   <div className="w-12 h-12 bg-[#00457C]/10 rounded-lg flex items-center justify-center mb-4">
                     <CreditCard className="w-6 h-6 text-[#0079C1]" />
                   </div>
@@ -68,7 +68,7 @@ export default function DonatePage() {
             {/* CIH Bank Card */}
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
               <Card className="h-full bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/50 transition-colors">
-                <CardHeader>
+                <CardHeader className="pt-8">
                   <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center mb-4">
                     <Building2 className="w-6 h-6 text-red-500" />
                   </div>
