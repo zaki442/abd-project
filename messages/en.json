@@ -7,7 +7,8 @@
         "formations": "Formations",
         "jobs": "Jobs",
         "joinDiscord": "Join Discord",
-        "joinTelegram": "Join Telegram"
+        "joinTelegram": "Join Telegram",
+        "donate": "Donate"
     },
     "Hero": {
         "community": "Moroccan Agile Community",
@@ -94,7 +95,8 @@
     "Footer": {
         "madeWith": "Made with",
         "inMorocco": "in Morocco",
-        "rights": "All rights reserved."
+        "rights": "All rights reserved.",
+        "donate": "Donate"
     },
     "Registration": {
         "register": "Register",
@@ -229,5 +231,24 @@
         "apply": "Submit Application",
         "applying": "Submitting...",
         "success": "Application submitted successfully"
+    },
+    "Donate": {
+        "title": "Support Our Community",
+        "description": "Your support helps us organize more events and continue spreading agility.",
+        "paypal": {
+            "title": "Donate via PayPal",
+            "button": "Donate with PayPal",
+            "description": "Fast and secure donation via PayPal."
+        },
+        "cih": {
+            "title": "Local Bank Transfer",
+            "description": "You can send your donation to our CIH Bank account.",
+            "accountHolder": "Account Holder",
+            "rib": "RIB",
+            "iban": "IBAN",
+            "swift": "SWIFT Code",
+            "copied": "Copied!",
+            "copy": "Copy"
+        }
     }
 }

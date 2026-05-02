@@ -19,6 +19,7 @@ export function Navbar() {
     { href: "/#roadmap", label: t("roadmap") },
     { href: "/formations", label: t("formations") },
     { href: "/jobs", label: t("jobs") },
+    { href: "/donate", label: t("donate") },
   ]
 
   return (

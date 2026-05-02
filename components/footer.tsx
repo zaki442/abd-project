@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
 
 export function Footer() {
   const t = useTranslations("Footer")
@@ -57,6 +58,14 @@ export function Footer() {
             >
               <TelegramIcon className="w-6 h-6 text-[#26A5E4]" />
             </a>
+          </div>
+
+          {/* Quick Links */}
+          <div className="flex items-center gap-6 text-sm font-medium">
+            <Link href="/donate" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
+              <Heart className="w-4 h-4 fill-current" />
+              {t("donate")}
+            </Link>
           </div>
 
           {/* Made in Morocco */}
