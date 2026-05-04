@@ -221,7 +221,9 @@
         "title": "We're Hiring",
         "description": "Join our team! Check out the open positions below.",
         "noJobs": "No open positions at the moment.",
-        "apply": "Apply Now"
+        "apply": "Apply Now",
+        "showMore": "Show more",
+        "showLess": "Show less"
     },
     "JobRegistration": {
         "title": "Apply for",

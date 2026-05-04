@@ -195,7 +195,9 @@
         "title": "Nous recrutons",
         "description": "Rejoignez notre équipe ! Découvrez les postes ouverts ci-dessous.",
         "noJobs": "Aucun poste ouvert pour le moment.",
-        "apply": "Postuler"
+        "apply": "Postuler",
+        "showMore": "Voir plus",
+        "showLess": "Voir moins"
     },
     "JobRegistration": {
         "title": "Postuler pour",
