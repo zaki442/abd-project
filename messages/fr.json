@@ -5,7 +5,7 @@
         "team": "Équipe",
         "roadmap": "Feuille de route",
         "formations": "Formations",
-        "jobs": "Emplois",
+        "jobs": "Appel à bénévoles",
         "joinDiscord": "Rejoindre Discord",
         "joinTelegram": "Rejoindre Telegram",
         "donate": "Faire un don"
@@ -171,13 +171,13 @@
             "save": "Sauvegarder"
         },
         "jobs": {
-            "title": "Emplois",
-            "add": "Ajouter un emploi",
-            "edit": "Modifier l'emploi",
-            "create": "Créer un emploi",
+            "title": "Appel à bénévoles",
+            "add": "Ajouter un appel",
+            "edit": "Modifier l'appel",
+            "create": "Créer un appel",
             "save": "Enregistrer les modifications",
             "delete": "Supprimer",
-            "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet emploi ?",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet appel ?",
             "titleLabel": "Titre",
             "description": "Description",
             "status": "Statut",
@@ -185,16 +185,16 @@
             "inactive": "Inactif"
         },
         "jobRegistrations": {
-            "title": "Candidatures",
+            "title": "Candidatures de bénévolat",
             "delete": "Supprimer",
             "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette candidature ?",
             "coverLetter": "Lettre de motivation"
         }
     },
     "Jobs": {
-        "title": "Nous recrutons",
-        "description": "Rejoignez notre équipe ! Découvrez les postes ouverts ci-dessous.",
-        "noJobs": "Aucun poste ouvert pour le moment.",
+        "title": "Appel à bénévoles",
+        "description": "Rejoignez notre équipe ! Découvrez les opportunités de bénévolat ci-dessous.",
+        "noJobs": "Aucune opportunité pour le moment.",
         "apply": "Postuler",
         "showMore": "Voir plus",
         "showLess": "Voir moins"
@@ -202,8 +202,9 @@
     "JobRegistration": {
         "title": "Postuler pour",
         "desc": "Veuillez fournir vos coordonnées et nous examinerons votre candidature.",
-        "backToJobs": "Retour aux offres d'emploi",
-        "coverLetter": "Lettre de motivation / Pourquoi devrions-nous vous embaucher",
+        "backToJobs": "Retour aux opportunités",
+        "coverLetter": "Lettre de motivation / Pourquoi devrions-nous vous sélectionner",
+        "uploadCv": "Télécharger le CV",
         "apply": "Soumettre la candidature",
         "applying": "Soumission...",
         "success": "Candidature soumise avec succès"

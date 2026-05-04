@@ -5,7 +5,7 @@
         "team": "Team",
         "roadmap": "Roadmap",
         "formations": "Formations",
-        "jobs": "Jobs",
+        "jobs": "Call for volunteers",
         "joinDiscord": "Join Discord",
         "joinTelegram": "Join Telegram",
         "donate": "Donate"
@@ -197,13 +197,13 @@
             "name": "Name"
         },
         "jobs": {
-            "title": "Jobs",
-            "add": "Add Job",
-            "edit": "Edit Job",
-            "create": "Create Job",
+            "title": "Call for volunteers",
+            "add": "Add Call",
+            "edit": "Edit Call",
+            "create": "Create Call",
             "save": "Save Changes",
             "delete": "Delete",
-            "confirmDelete": "Are you sure you want to delete this job?",
+            "confirmDelete": "Are you sure you want to delete this?",
             "titleLabel": "Title",
             "description": "Description",
             "status": "Status",
@@ -211,25 +211,26 @@
             "inactive": "Inactive"
         },
         "jobRegistrations": {
-            "title": "Job Applications",
+            "title": "Volunteer Applications",
             "delete": "Delete",
             "confirmDelete": "Are you sure you want to delete this application?",
             "coverLetter": "Cover Letter"
         }
     },
     "Jobs": {
-        "title": "We're Hiring",
-        "description": "Join our team! Check out the open positions below.",
-        "noJobs": "No open positions at the moment.",
+        "title": "Call for volunteers",
+        "description": "Join our team! Check out the volunteer opportunities below.",
+        "noJobs": "No volunteer opportunities at the moment.",
         "apply": "Apply Now",
         "showMore": "Show more",
         "showLess": "Show less"
     },
     "JobRegistration": {
-        "title": "Apply for",
+        "title": "Volunteer for",
         "desc": "Please provide your details and we will review your application.",
-        "backToJobs": "Back to jobs",
-        "coverLetter": "Cover Letter / Why we should hire you",
+        "backToJobs": "Back to volunteer opportunities",
+        "coverLetter": "Cover Letter / Why we should select you",
+        "uploadCv": "Upload CV",
         "apply": "Submit Application",
         "applying": "Submitting...",
         "success": "Application submitted successfully"

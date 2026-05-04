@@ -19,22 +19,15 @@ export function JobRegistrationForm({ jobId, jobTitle }: JobRegistrationFormProp
     const router = useRouter()
     
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [formData, setFormData] = useState({
-        full_name: '',
-        email: '',
-        phone_number: '',
-        cover_letter: ''
-    })
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsSubmitting(true)
 
         try {
-            const response = await createJobRegistration({
-                job_id: jobId,
-                ...formData
-            })
+            const formDataObj = new FormData(e.currentTarget)
+            formDataObj.append('job_id', jobId)
+
+            const response = await createJobRegistration(formDataObj)
 
             if (response.success) {
                 alert(t('success'))
@@ -50,23 +43,14 @@ export function JobRegistrationForm({ jobId, jobTitle }: JobRegistrationFormProp
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }))
-    }
-
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
             <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name</Label>
                 <Input
                     id="full_name"
                     name="full_name"
                     required
-                    value={formData.full_name}
-                    onChange={handleChange}
                 />
             </div>
             
@@ -77,8 +61,6 @@ export function JobRegistrationForm({ jobId, jobTitle }: JobRegistrationFormProp
                     name="email"
                     type="email"
                     required
-                    value={formData.email}
-                    onChange={handleChange}
                 />
             </div>
             
@@ -87,8 +69,6 @@ export function JobRegistrationForm({ jobId, jobTitle }: JobRegistrationFormProp
                 <Input
                     id="phone_number"
                     name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleChange}
                 />
             </div>
 
@@ -98,8 +78,17 @@ export function JobRegistrationForm({ jobId, jobTitle }: JobRegistrationFormProp
                     id="cover_letter"
                     name="cover_letter"
                     rows={5}
-                    value={formData.cover_letter}
-                    onChange={handleChange}
+                />
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="cv_file">{t('uploadCv')}</Label>
+                <Input
+                    id="cv_file"
+                    name="cv_file"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    required
                 />
             </div>
 

@@ -2,6 +2,7 @@
 
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
+import nodemailer from 'nodemailer'
 
 export interface Job {
     id: string
@@ -195,20 +196,65 @@ export async function getJobRegistrations(page: number = 1, pageSize: number = 5
     }
 }
 
-export async function createJobRegistration(data: {
-    job_id: string
-    full_name: string
-    email: string
-    phone_number?: string
-    cover_letter?: string
-}): Promise<ApiResponse> {
+export async function createJobRegistration(formData: FormData): Promise<ApiResponse> {
     try {
+        const job_id = formData.get('job_id') as string;
+        const full_name = formData.get('full_name') as string;
+        const email = formData.get('email') as string;
+        const phone_number = formData.get('phone_number') as string;
+        const cover_letter = formData.get('cover_letter') as string;
+        const cv_file = formData.get('cv_file') as File | null;
+
         const supabase = await createServerSupabaseClient()
         const { error } = await supabase
             .from('job_registrations')
-            .insert(data)
+            .insert({
+                job_id,
+                full_name,
+                email,
+                phone_number,
+                cover_letter
+            })
 
         if (error) throw error
+
+        const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_SERVER,
+            port: Number(process.env.SMTP_PORT),
+            secure: false,
+            auth: {
+                user: process.env.SMTP_USERNAME,
+                pass: process.env.SMTP_PASSWORD,
+            },
+        });
+
+        const mailOptions: nodemailer.SendMailOptions = {
+            from: process.env.SMTP_USERNAME,
+            to: process.env.SMTP_USERNAME,
+            subject: `New Volunteer Application from ${full_name}`,
+            text: `
+New Application Received:
+
+Name: ${full_name}
+Email: ${email}
+Phone: ${phone_number || 'N/A'}
+
+Cover Letter:
+${cover_letter || 'N/A'}
+            `,
+            attachments: []
+        };
+
+        if (cv_file && cv_file.size > 0) {
+            const arrayBuffer = await cv_file.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            mailOptions.attachments?.push({
+                filename: cv_file.name,
+                content: buffer
+            });
+        }
+
+        await transporter.sendMail(mailOptions);
 
         revalidateJobsPaths()
         return createSuccessResponse('Application submitted successfully')
