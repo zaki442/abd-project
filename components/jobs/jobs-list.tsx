@@ -22,7 +22,7 @@ function JobCard({ job }: { job: Job }) {
                 <CardTitle className="text-2xl font-bold tracking-tight">{job.title}</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col">
-                <CardDescription className={`text-base leading-relaxed text-muted-foreground ${!isExpanded ? 'line-clamp-3' : ''}`}>
+                <CardDescription className={`text-base leading-relaxed text-muted-foreground whitespace-pre-wrap ${!isExpanded ? 'line-clamp-3' : ''}`}>
                     {job.description}
                 </CardDescription>
                 {job.description && job.description.length > 120 && (

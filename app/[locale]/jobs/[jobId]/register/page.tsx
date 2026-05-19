@@ -33,13 +33,23 @@ export default async function JobRegistrationPage({ params }: { params: Promise<
                         {t('backToJobs')}
                     </Link>
 
-                    <div className="space-y-2 mb-8">
-                        <h1 className="text-3xl font-bold tracking-tight">
-                            {t('title')} <span className="text-[#5865F2]">{job.title}</span>
-                        </h1>
-                        <p className="text-muted-foreground">
-                            {t('desc')}
-                        </p>
+                    <div className="space-y-6 mb-8">
+                        <div className="space-y-2">
+                            <h1 className="text-3xl font-bold tracking-tight">
+                                {t('title')} <span className="text-[#5865F2]">{job.title}</span>
+                            </h1>
+                            <p className="text-muted-foreground">
+                                {t('desc')}
+                            </p>
+                        </div>
+
+                        {job.description && (
+                            <div className="bg-muted/30 p-5 rounded-xl border border-border/50">
+                                <p className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                                    {job.description}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     <div className="bg-card border border-border/50 rounded-lg p-6 md:p-8 shadow-sm">
