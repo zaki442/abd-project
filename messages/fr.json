@@ -5,7 +5,7 @@
         "team": "Équipe",
         "roadmap": "Feuille de route",
         "formations": "Formations",
-        "jobs": "Appel à bénévoles",
+        "jobs": "Appel aux volontaires",
         "joinDiscord": "Rejoindre Discord",
         "joinTelegram": "Rejoindre Telegram",
         "donate": "Faire un don"
@@ -171,7 +171,7 @@
             "save": "Sauvegarder"
         },
         "jobs": {
-            "title": "Appel à bénévoles",
+            "title": "Appel aux volontaires",
             "add": "Ajouter un appel",
             "edit": "Modifier l'appel",
             "create": "Créer un appel",
@@ -192,7 +192,7 @@
         }
     },
     "Jobs": {
-        "title": "Appel à bénévoles",
+        "title": "Appel aux volontaires",
         "description": "Rejoignez notre équipe ! Découvrez les opportunités de bénévolat ci-dessous.",
         "noJobs": "Aucune opportunité pour le moment.",
         "apply": "Postuler",
