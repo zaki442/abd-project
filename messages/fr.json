@@ -3,12 +3,12 @@
         "home": "Accueil",
         "vision": "Vision",
         "team": "Équipe",
-        "roadmap": "Feuille de route",
+        "roadmap": "Roadmap",
         "formations": "Formations",
-        "jobs": "Appel aux volontaires",
+        "jobs": "Volontaires",
         "joinDiscord": "Rejoindre Discord",
         "joinTelegram": "Rejoindre Telegram",
-        "donate": "Faire un don"
+        "donate": "Donation"
     },
     "Hero": {
         "community": "Communauté Agile Marocaine",
