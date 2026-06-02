@@ -253,5 +253,21 @@
             "copied": "Copied!",
             "copy": "Copy"
         }
+    },
+    "Feedback": {
+        "title": "Share your feedback",
+        "description": "We value your opinion. Let us know what you think about our community.",
+        "fullName": "Full Name",
+        "role": "Role (Optional)",
+        "feedback": "Feedback",
+        "submit": "Submit Feedback",
+        "submitting": "Submitting...",
+        "success": "Thank you for your feedback!"
+    },
+    "AdminFeedbacks": {
+        "title": "Community Feedbacks",
+        "delete": "Delete",
+        "confirmDelete": "Are you sure you want to delete this feedback?",
+        "role": "Role"
     }
 }

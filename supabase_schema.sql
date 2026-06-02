@@ -225,3 +225,27 @@ create policy "Enable read and write for job registrations admins"
 on job_registrations
 for all
 using (true);
+
+-- =============================================
+-- FEEDBACKS TABLE
+-- =============================================
+
+create table feedbacks (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  full_name text not null,
+  role text,
+  feedback text not null
+);
+
+alter table feedbacks enable row level security;
+
+create policy "Enable insert for public feedbacks"
+on feedbacks
+for insert
+with check (true);
+
+create policy "Enable read and write for feedbacks admins"
+on feedbacks
+for all
+using (true);

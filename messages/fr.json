@@ -227,5 +227,21 @@
             "copied": "Copié !",
             "copy": "Copier"
         }
+    },
+    "Feedback": {
+        "title": "Partagez votre avis",
+        "description": "Votre opinion nous intéresse. Dites-nous ce que vous pensez de notre communauté.",
+        "fullName": "Nom Complet",
+        "role": "Rôle (Optionnel)",
+        "feedback": "Votre avis",
+        "submit": "Envoyer l'avis",
+        "submitting": "Envoi...",
+        "success": "Merci pour votre avis !"
+    },
+    "AdminFeedbacks": {
+        "title": "Avis de la communauté",
+        "delete": "Supprimer",
+        "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet avis ?",
+        "role": "Rôle"
     }
 }
