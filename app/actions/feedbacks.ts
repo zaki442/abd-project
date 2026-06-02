@@ -3,7 +3,7 @@
 import { createServerSupabaseAdminClient, createServerSupabaseClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 
-export async function submitFeedback(data: { full_name: string; role?: string; feedback: string }) {
+export async function submitFeedback(data: { full_name: string; email?: string; role?: string; feedback: string }) {
     try {
         const supabase = await createServerSupabaseClient()
         
@@ -11,6 +11,7 @@ export async function submitFeedback(data: { full_name: string; role?: string; f
             .from('feedbacks')
             .insert({
                 full_name: data.full_name,
+                email: data.email || null,
                 role: data.role || null,
                 feedback: data.feedback
             })

@@ -22,6 +22,7 @@ export function FeedbackForm() {
         const formData = new FormData(event.currentTarget)
         const data = {
             full_name: formData.get('fullName') as string,
+            email: formData.get('email') as string,
             role: formData.get('role') as string,
             feedback: formData.get('feedback') as string,
         }
@@ -62,7 +63,10 @@ export function FeedbackForm() {
     }
 
     return (
-        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 sm:p-8 max-w-xl mx-auto w-full">
+        <div className="bg-zinc-900/60 backdrop-blur-xl rounded-2xl border border-zinc-800/50 p-6 sm:p-10 max-w-xl mx-auto w-full shadow-2xl shadow-black/40 relative overflow-hidden">
+            {/* Subtle top glow */}
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-500/50 to-transparent"></div>
+
             <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-white mb-2">{t('title')}</h2>
                 <p className="text-gray-400">{t('description')}</p>
@@ -77,6 +81,18 @@ export function FeedbackForm() {
                         required
                         className="bg-zinc-950 border-zinc-800 text-white"
                         placeholder="e.g. John Doe"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="email" className="text-white">{t('email') || 'Email'} <span className="text-red-500">*</span></Label>
+                    <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        className="bg-zinc-950 border-zinc-800 text-white"
+                        placeholder="e.g. john@example.com"
                     />
                 </div>
 

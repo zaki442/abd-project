@@ -232,6 +232,7 @@
         "title": "Partagez votre avis",
         "description": "Votre opinion nous intéresse. Dites-nous ce que vous pensez de notre communauté.",
         "fullName": "Nom Complet",
+        "email": "Email",
         "role": "Rôle (Optionnel)",
         "feedback": "Votre avis",
         "submit": "Envoyer l'avis",

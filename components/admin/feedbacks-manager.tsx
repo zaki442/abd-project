@@ -29,6 +29,7 @@ interface Feedback {
     id: string
     created_at: string
     full_name: string
+    email: string | null
     role: string | null
     feedback: string
 }
@@ -95,6 +96,7 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                         <TableRow className="border-zinc-800 hover:bg-transparent">
                             <TableHead className="text-zinc-400">{tAdmin('table.date')}</TableHead>
                             <TableHead className="text-zinc-400">{tAdmin('table.fullName')}</TableHead>
+                            <TableHead className="text-zinc-400">{tAdmin('table.email')}</TableHead>
                             <TableHead className="text-zinc-400">{t('role')}</TableHead>
                             <TableHead className="text-zinc-400 max-w-[400px]">Feedback</TableHead>
                             <TableHead className="text-right text-zinc-400">{tAdmin('table.actions')}</TableHead>
@@ -103,7 +105,7 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                     <TableBody>
                         {filteredFeedbacks.length === 0 ? (
                             <TableRow className="border-zinc-800 hover:bg-transparent">
-                                <TableCell colSpan={5} className="h-24 text-center text-zinc-500">
+                                <TableCell colSpan={6} className="h-24 text-center text-zinc-500">
                                     {tAdmin('table.noResults')}
                                 </TableCell>
                             </TableRow>
@@ -115,6 +117,9 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                                     </TableCell>
                                     <TableCell className="text-zinc-300">
                                         {fb.full_name}
+                                    </TableCell>
+                                    <TableCell className="text-zinc-400 text-sm">
+                                        {fb.email || '-'}
                                     </TableCell>
                                     <TableCell className="text-zinc-400 text-sm">
                                         {fb.role || '-'}

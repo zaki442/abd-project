@@ -258,6 +258,7 @@
         "title": "Share your feedback",
         "description": "We value your opinion. Let us know what you think about our community.",
         "fullName": "Full Name",
+        "email": "Email",
         "role": "Role (Optional)",
         "feedback": "Feedback",
         "submit": "Submit Feedback",

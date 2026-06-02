@@ -234,6 +234,7 @@ create table feedbacks (
   id uuid default gen_random_uuid() primary key,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   full_name text not null,
+  email text,
   role text,
   feedback text not null
 );
