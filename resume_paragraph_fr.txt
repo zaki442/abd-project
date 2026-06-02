@@ -1,0 +1,8 @@
+**Projet : Plateforme Web Agile B Darija**
+
+Conception et développement complets de la plateforme web communautaire "Agile B Darija" (Next.js, React, Tailwind CSS), visant à promouvoir les pratiques agiles au Maroc. La plateforme propose une expérience utilisateur multilingue fluide et intègre des fonctionnalités clés telles que :
+- Un système complet de gestion des appels aux bénévoles (candidatures, offres).
+- Une section dédiée aux formations et événements communautaires.
+- Un système de dons en ligne intégré avec support pour les paiements locaux (CIH) et internationaux (PayPal).
+- Un tableau de bord d'administration sécurisé pour la gestion des candidatures, des offres et du contenu du site.
+- Optimisation SEO et interface responsive (mobile-first) avec un design moderne.
