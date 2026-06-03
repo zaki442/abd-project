@@ -8,7 +8,9 @@
         "jobs": "فرص عمل",
         "joinDiscord": "انضم إلى ديسكورد",
         "joinTelegram": "انضم إلى تيليجرام",
-        "donate": "تبرع"
+        "donate": "تبرع",
+        "others": "أخرى",
+        "feedbacks": "آراء"
     },
     "Hero": {
         "community": "مجتمع الأجايل المغربي",

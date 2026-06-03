@@ -2,11 +2,17 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { LanguageSwitcher } from "./language-switcher"
 import { Link } from "@/i18n/routing"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -18,7 +24,6 @@ export function Navbar() {
     { href: "/#team", label: t("team") },
     { href: "/#roadmap", label: t("roadmap") },
     { href: "/formations", label: t("formations") },
-    { href: "/jobs", label: t("jobs") },
     { href: "/donate", label: t("donate") },
   ]
 
@@ -50,6 +55,25 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium flex items-center outline-none">
+                {t("others")} <ChevronDown className="ml-1 h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href="/jobs" className="w-full cursor-pointer">
+                    {t("jobs")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/feedbacks" className="w-full cursor-pointer">
+                    {t("feedbacks")}
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <LanguageSwitcher />
 
           </div>
@@ -77,6 +101,25 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              
+              <div className="h-px bg-border my-2" />
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                {t("others")}
+              </div>
+              <Link
+                href="/jobs"
+                onClick={() => setIsOpen(false)}
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium pl-2"
+              >
+                {t("jobs")}
+              </Link>
+              <Link
+                href="/feedbacks"
+                onClick={() => setIsOpen(false)}
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium pl-2"
+              >
+                {t("feedbacks")}
+              </Link>
 
             </div>
           </div>

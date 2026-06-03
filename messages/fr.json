@@ -8,7 +8,9 @@
         "jobs": "Volontaires",
         "joinDiscord": "Rejoindre Discord",
         "joinTelegram": "Rejoindre Telegram",
-        "donate": "Faire un don"
+        "donate": "Faire un don",
+        "others": "Autre",
+        "feedbacks": "Avis"
     },
     "Hero": {
         "community": "Communauté Agile Marocaine",
