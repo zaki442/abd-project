@@ -11,7 +11,7 @@ import { getFormations, getCategories } from "@/app/actions/admin"
 
 export default async function Home() {
   const [formations, categories] = await Promise.all([
-    getFormations(),
+    getFormations(1, 1000, true),
     getCategories()
   ])
 

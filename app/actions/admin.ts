@@ -48,6 +48,7 @@ interface Formation {
     date: string
     price: string
     image_url: string
+    status: string
     categories: Array<{ id: string; name: string }>
 }
 
@@ -576,13 +577,13 @@ export async function getStatsByFormation(page: number = 1, pageSize: number = 1
 // FORMATIONS MANAGEMENT
 // ==========================================
 
-export async function getFormations(page: number = 1, pageSize: number = 1000): Promise<PaginatedResponse<Formation>> {
+export async function getFormations(page: number = 1, pageSize: number = 1000, activeOnly: boolean = false): Promise<PaginatedResponse<Formation>> {
     try {
         const supabase = await createServerSupabaseClient()
         const from = (page - 1) * pageSize
         const to = from + pageSize - 1
 
-        const { data, error, count } = await supabase
+        let query = supabase
             .from('formations')
             .select(`
                 *,
@@ -592,6 +593,12 @@ export async function getFormations(page: number = 1, pageSize: number = 1000): 
             `, { count: 'exact' })
             .order('created_at', { ascending: false })
             .range(from, to)
+
+        if (activeOnly) {
+            query = query.eq('status', 'ACTIVE')
+        }
+
+        const { data, error, count } = await query
 
         if (error) {
             console.error('Error fetching formations:', error)
@@ -649,6 +656,7 @@ export async function createFormation(data: {
     date: string
     price: string
     image_url: string
+    status: string
     category_ids: string[]
 }): Promise<ApiResponse> {
     try {
@@ -663,6 +671,7 @@ export async function createFormation(data: {
                 date: data.date,
                 price: data.price,
                 image_url: data.image_url,
+                status: data.status,
             })
             .select()
             .single()
@@ -713,6 +722,7 @@ export async function updateFormation(id: string, data: {
     date: string
     price: string
     image_url: string
+    status: string
     category_ids: string[]
 }): Promise<ApiResponse> {
     try {
@@ -728,6 +738,7 @@ export async function updateFormation(id: string, data: {
                     date: data.date,
                     price: data.price,
                     image_url: data.image_url,
+                    status: data.status,
                 })
                 .eq('id', id),
             supabase

@@ -45,6 +45,7 @@ type Formation = {
     date: string
     price: string
     image_url: string
+    status: string
     categories: Category[]
 }
 
@@ -66,13 +67,15 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         price: string
         category_ids: string[]
         image_url: string
+        status: string
     }>({
         title: '',
         description: '',
         date: '',
         price: '',
         category_ids: [],
-        image_url: ''
+        image_url: '',
+        status: 'ACTIVE'
     })
     const [uploading, setUploading] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null) // Track editing state
@@ -124,7 +127,8 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             date: '',
             price: '',
             category_ids: [],
-            image_url: ''
+            image_url: '',
+            status: 'ACTIVE'
         })
         setEditingId(null)
     }
@@ -144,7 +148,8 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             date: formation.date,
             price: formation.price,
             category_ids: formation.categories.map(c => c.id),
-            image_url: formation.image_url
+            image_url: formation.image_url,
+            status: formation.status || 'ACTIVE'
         })
         setEditingId(formation.id)
         setIsDialogOpen(true)
@@ -262,6 +267,22 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                             </div>
 
                             <div className="space-y-2">
+                                <label className="text-sm font-medium">Status</label>
+                                <Select
+                                    value={formData.status}
+                                    onValueChange={(value) => setFormData({ ...formData, status: value })}
+                                >
+                                    <SelectTrigger className="bg-zinc-900 border-zinc-700">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="ACTIVE">Active (Shown)</SelectItem>
+                                        <SelectItem value="INACTIVE">Inactive (Hidden)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
                                 <label className="text-sm font-medium">Categories</label>
                                 <div className="grid grid-cols-2 gap-2 bg-zinc-900 p-3 rounded-md border border-zinc-700">
                                     {categories.map((cat) => (
@@ -324,6 +345,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                             <TableHead className="text-zinc-400">Title</TableHead>
                             <TableHead className="text-zinc-400">Category</TableHead>
                             <TableHead className="text-zinc-400">Date</TableHead>
+                            <TableHead className="text-zinc-400">Status</TableHead>
                             <TableHead className="text-right text-zinc-400">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -350,6 +372,15 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                             : 'Uncategorized'}
                                     </TableCell>
                                     <TableCell className="text-zinc-300">{f.date}</TableCell>
+                                    <TableCell>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                            f.status === 'ACTIVE' 
+                                                ? 'bg-emerald-500/10 text-emerald-500' 
+                                                : 'bg-zinc-500/10 text-zinc-500'
+                                        }`}>
+                                            {f.status === 'ACTIVE' ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </TableCell>
                                     <TableCell className="text-right">
                                         <Button
                                             variant="ghost"
