@@ -32,6 +32,10 @@ export function FormationsPageContent({ formations = [], categories = [] }: Form
             ? formations
             : formations.filter((f) => f.categories.some((c) => c.id === selectedCategory))
 
+    const activeCategories = categories.filter((cat) =>
+        formations.some((f) => f.categories.some((c) => c.id === cat.id))
+    )
+
     return (
         <section className="w-full">
             <div className="flex justify-center mb-12">
@@ -48,7 +52,7 @@ export function FormationsPageContent({ formations = [], categories = [] }: Form
                         >
                             All
                         </TabsTrigger>
-                        {categories.map((cat) => (
+                        {activeCategories.map((cat) => (
                             <TabsTrigger
                                 key={cat.id}
                                 value={cat.id}

@@ -41,6 +41,10 @@ export function FormationsSlider({ formations = [], categories = [] }: Formation
         ? formations
         : formations.filter(f => f.categories.some(c => c.id === selectedCategory))
 
+    const activeCategories = categories.filter((cat) =>
+        formations.some((f) => f.categories.some((c) => c.id === cat.id))
+    )
+
     // Fallback if no formations provided (optional, or just show empty)
     // For now we assume existing formations if passed are valid.
 
@@ -63,7 +67,7 @@ export function FormationsSlider({ formations = [], categories = [] }: Formation
                             >
                                 All
                             </TabsTrigger>
-                            {categories.map((cat) => (
+                            {activeCategories.map((cat) => (
                                 <TabsTrigger
                                     key={cat.id}
                                     value={cat.id}
