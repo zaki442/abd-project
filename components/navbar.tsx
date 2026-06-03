@@ -20,11 +20,10 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/", label: t("home") },
-    { href: "/#vision", label: t("vision") },
     { href: "/#team", label: t("team") },
-    { href: "/#roadmap", label: t("roadmap") },
     { href: "/formations", label: t("formations") },
     { href: "/donate", label: t("donate") },
+    { href: "/#about", label: t("about") },
   ]
 
   return (
