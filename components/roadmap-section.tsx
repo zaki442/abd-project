@@ -103,7 +103,7 @@ export function RoadmapSection() {
 
               return (
                 <Card key={list.id} className="bg-card border-border h-full flex flex-col">
-                  <CardHeader className="pb-4">
+                  <CardHeader className="pt-6 pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Icon className={`w-5 h-5 ${style.color}`} />
                       <span className="text-foreground truncate" title={list.name}>{list.name}</span>
