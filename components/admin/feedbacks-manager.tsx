@@ -32,6 +32,7 @@ interface Feedback {
     email: string | null
     role: string | null
     feedback: string
+    image_url?: string | null
 }
 
 export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: Feedback[] }) {
@@ -98,6 +99,7 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                             <TableHead className="text-zinc-400">{tAdmin('table.fullName')}</TableHead>
                             <TableHead className="text-zinc-400">{tAdmin('table.email')}</TableHead>
                             <TableHead className="text-zinc-400">{t('role')}</TableHead>
+                            <TableHead className="text-zinc-400">Image</TableHead>
                             <TableHead className="text-zinc-400 max-w-[400px]">Feedback</TableHead>
                             <TableHead className="text-right text-zinc-400">{tAdmin('table.actions')}</TableHead>
                         </TableRow>
@@ -123,6 +125,17 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                                     </TableCell>
                                     <TableCell className="text-zinc-400 text-sm">
                                         {fb.role || '-'}
+                                    </TableCell>
+                                    <TableCell className="text-zinc-300">
+                                        {fb.image_url ? (
+                                            <img
+                                                src={fb.image_url}
+                                                alt={`${fb.full_name} feedback image`}
+                                                className="h-14 w-14 rounded-md border border-zinc-800 object-cover"
+                                            />
+                                        ) : (
+                                            <span className="text-zinc-500">—</span>
+                                        )}
                                     </TableCell>
                                     <TableCell className="text-zinc-300 max-w-[400px]">
                                         <p className="line-clamp-3 text-sm">{fb.feedback}</p>
