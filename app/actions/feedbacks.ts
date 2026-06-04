@@ -3,20 +3,49 @@
 import { createServerSupabaseAdminClient, createServerSupabaseClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 
-export async function submitFeedback(data: { full_name: string; email?: string; role?: string; feedback: string }) {
+export async function submitFeedback(data: { full_name: string; email?: string; role?: string; feedback: string; image_url?: string }) {
     try {
         const supabase = await createServerSupabaseClient()
-        
+
+        const payload: {
+            full_name: string
+            email: string | null
+            role: string | null
+            feedback: string
+            image_url?: string
+        } = {
+            full_name: data.full_name,
+            email: data.email || null,
+            role: data.role || null,
+            feedback: data.feedback,
+        }
+
+        if (data.image_url) {
+            payload.image_url = data.image_url
+        }
+
         const { error } = await supabase
             .from('feedbacks')
-            .insert({
-                full_name: data.full_name,
-                email: data.email || null,
-                role: data.role || null,
-                feedback: data.feedback
-            })
+            .insert(payload)
 
         if (error) {
+            const missingImageColumn = /column .*image_url/i.test(error.message)
+
+            if (data.image_url && missingImageColumn) {
+                const { image_url: _image_url, ...fallbackPayload } = payload
+
+                const { error: fallbackError } = await supabase
+                    .from('feedbacks')
+                    .insert(fallbackPayload)
+
+                if (fallbackError) {
+                    console.error('Error inserting feedback without image URL:', fallbackError)
+                    return { error: 'Failed to submit feedback' }
+                }
+
+                return { success: true }
+            }
+
             console.error('Error inserting feedback:', error)
             return { error: 'Failed to submit feedback' }
         }

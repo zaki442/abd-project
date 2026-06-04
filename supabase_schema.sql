@@ -236,7 +236,8 @@ create table feedbacks (
   full_name text not null,
   email text,
   role text,
-  feedback text not null
+  feedback text not null,
+  image_url text
 );
 
 alter table feedbacks enable row level security;

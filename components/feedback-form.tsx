@@ -8,34 +8,72 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { submitFeedback } from '@/app/actions/feedbacks'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ImageIcon } from 'lucide-react'
+import { createBrowserClient } from '@supabase/ssr'
 
 export function FeedbackForm() {
     const t = useTranslations('Feedback')
     const [isLoading, setIsLoading] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const [imagePreview, setImagePreview] = useState<string | null>(null)
+
+    async function uploadFeedbackImage(file: File) {
+        const supabase = createBrowserClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
+
+        const fileExt = file.name.split('.').pop() || 'png'
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`
+
+        const { error: uploadError } = await supabase.storage
+            .from('formations')
+            .upload(fileName, file)
+
+        if (uploadError) {
+            throw uploadError
+        }
+
+        const { data } = supabase.storage
+            .from('formations')
+            .getPublicUrl(fileName)
+
+        return data.publicUrl
+    }
 
     async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setIsLoading(true)
 
         const formData = new FormData(event.currentTarget)
-        const data = {
-            full_name: formData.get('fullName') as string,
-            email: formData.get('email') as string,
-            role: formData.get('role') as string,
-            feedback: formData.get('feedback') as string,
-        }
+        const imageFile = formData.get('image') as File | null
 
-        const result = await submitFeedback(data)
+        try {
+            const data = {
+                full_name: formData.get('fullName') as string,
+                email: formData.get('email') as string,
+                role: formData.get('role') as string,
+                feedback: formData.get('feedback') as string,
+                image_url: undefined as string | undefined,
+            }
 
-        setIsLoading(false)
+            if (imageFile && imageFile.size > 0) {
+                data.image_url = await uploadFeedbackImage(imageFile)
+            }
 
-        if (result.error) {
-            toast.error(result.error)
-        } else {
-            toast.success(t('success'))
-            setIsSubmitted(true)
+            const result = await submitFeedback(data)
+
+            if (result.error) {
+                toast.error(result.error)
+            } else {
+                toast.success(t('success'))
+                setIsSubmitted(true)
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error)
+            toast.error('Failed to upload image. Please try again.')
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -118,6 +156,31 @@ export function FeedbackForm() {
                     />
                 </div>
 
+                <div className="space-y-2">
+                    <Label htmlFor="image" className="text-white">Upload image (optional)</Label>
+                    <Input
+                        id="image"
+                        name="image"
+                        type="file"
+                        accept="image/*"
+                        className="bg-zinc-950 border-zinc-800 text-white file:mr-4 file:rounded-full file:border-0 file:bg-zinc-800 file:px-3 file:py-2 file:text-zinc-100"
+                        onChange={(event) => {
+                            const file = event.target.files?.[0]
+                            if (!file) {
+                                setImagePreview(null)
+                                return
+                            }
+
+                            setImagePreview(URL.createObjectURL(file))
+                        }}
+                    />
+                    {imagePreview && (
+                        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-3">
+                            <img src={imagePreview} alt="Preview" className="h-32 w-full rounded-lg object-cover" />
+                        </div>
+                    )}
+                </div>
+
                 <Button 
                     type="submit" 
                     className="w-full bg-white text-black hover:bg-gray-200"
@@ -129,7 +192,10 @@ export function FeedbackForm() {
                             {t('submitting')}
                         </>
                     ) : (
-                        t('submit')
+                        <>
+                            <ImageIcon className="mr-2 h-4 w-4" />
+                            {t('submit')}
+                        </>
                     )}
                 </Button>
             </form>
