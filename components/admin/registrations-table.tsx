@@ -328,15 +328,10 @@ export function RegistrationsTable({
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[100px]">{t('date')}</TableHead>
+                            <TableHead className="w-[110px]">{t('date')}</TableHead>
                             <TableHead>{t('fullName')}</TableHead>
                             <TableHead>{t('email')}</TableHead>
-                            <TableHead>{t('phoneNumber')}</TableHead>
-                            <TableHead>{t('whereDidYouHear')}</TableHead>
-                            <TableHead>Spécialité</TableHead>
-                            <TableHead>Ville</TableHead>
                             <TableHead>{t('formation')}</TableHead>
-                            <TableHead>Formation Date</TableHead>
                             <TableHead className="text-end">{t('actions')}</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -364,18 +359,18 @@ export function RegistrationsTable({
                                     </TableCell>
                                     <TableCell>{reg.full_name}</TableCell>
                                     <TableCell>{reg.email}</TableCell>
-                                    <TableCell>{reg.phone_number || '-'}</TableCell>
-                                    <TableCell>{getWhereDidYouHearLabel(reg.where_did_you_hear)}</TableCell>
-                                    <TableCell>{reg.specialite || '-'}</TableCell>
-                                    <TableCell>{reg.ville || '-'}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                                             {getFormationTitle(reg.formation_id)}
                                         </span>
                                     </TableCell>
-                                    <TableCell>{getFormationDate(reg.formation_id)}</TableCell>
                                     <TableCell className="text-end">
                                         <div className="flex justify-end gap-1">
+                                            <RegistrationDialog
+                                                mode="view"
+                                                registration={reg}
+                                                formations={formations}
+                                            />
                                             <RegistrationDialog
                                                 mode="edit"
                                                 registration={reg}

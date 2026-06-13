@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createRegistration, updateRegistration } from '@/app/actions/admin'
 import { toast } from 'sonner'
-import { Plus, Pencil, Loader2 } from 'lucide-react'
+import { Plus, Pencil, Loader2, Eye } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface Registration {
@@ -36,7 +36,7 @@ interface Formation {
 }
 
 interface RegistrationDialogProps {
-    mode: 'create' | 'edit'
+    mode: 'create' | 'edit' | 'view'
     registration?: Registration
     formations: Formation[]
     onSuccess?: (data: Registration) => void
@@ -53,6 +53,24 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
     const [open, setOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
     const t = useTranslations('Admin.dialog')
+
+    const getFormationTitle = (id: string) => {
+        const formation = formations.find((item) => item.id === id)
+        return formation?.title || id
+    }
+
+    const getWhereDidYouHearLabel = (value?: string) => {
+        if (!value) return '—'
+
+        const labels: Record<string, string> = {
+            linkedin: t('linkedin'),
+            facebook: t('facebook'),
+            instagram: t('instagram'),
+            tiktok: t('tiktok'),
+        }
+
+        return labels[value] || value
+    }
 
     const [formData, setFormData] = useState({
         full_name: registration?.full_name || '',
@@ -125,25 +143,55 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                         <Plus className="h-4 w-4" />
                         {t('addRegistration')}
                     </Button>
+                ) : mode === 'view' ? (
+                    <Button variant="ghost" size="icon" className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/20" aria-label="View registration details">
+                        <Eye className="h-4 w-4" />
+                    </Button>
                 ) : (
-                    <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-600 hover:bg-blue-950/20">
+                    <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-600 hover:bg-blue-950/20" aria-label="Edit registration">
                         <Pencil className="h-4 w-4" />
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800">
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>
-                            {mode === 'create' ? t('addNew') : t('edit')}
-                        </DialogTitle>
-                        <DialogDescription>
-                            {mode === 'create'
-                                ? t('enterInfo')
-                                : t('modifyInfo')}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
+            <DialogContent className="sm:max-w-[540px] bg-zinc-950 border-zinc-800 text-white">
+                {mode === 'view' ? (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Registration details</DialogTitle>
+                            <DialogDescription>See the full information saved for this applicant.</DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-1 rounded-lg border border-zinc-800 bg-zinc-900/70 p-4">
+                                <span className="text-xs uppercase tracking-[0.2em] text-zinc-400">Applicant</span>
+                                <p className="text-lg font-semibold text-white">{registration?.full_name || '—'}</p>
+                                <p className="text-sm text-zinc-300">{registration?.email || '—'}</p>
+                            </div>
+                            <div className="grid gap-3 md:grid-cols-2">
+                                <DetailItem label="Phone" value={registration?.phone_number || '—'} />
+                                <DetailItem label="How did you hear about us?" value={getWhereDidYouHearLabel(registration?.where_did_you_hear)} />
+                                <DetailItem label="Speciality" value={registration?.specialite || '—'} />
+                                <DetailItem label="City" value={registration?.ville || '—'} />
+                                <DetailItem label="Formation" value={getFormationTitle(registration?.formation_id || '')} />
+                                <DetailItem label="Registered on" value={registration?.created_at ? new Date(registration.created_at).toLocaleString() : '—'} />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setOpen(false)}>Close</Button>
+                        </DialogFooter>
+                    </>
+                ) : (
+                    <form onSubmit={handleSubmit}>
+                        <DialogHeader>
+                            <DialogTitle>
+                                {mode === 'create' ? t('addNew') : t('edit')}
+                            </DialogTitle>
+                            <DialogDescription>
+                                {mode === 'create'
+                                    ? t('enterInfo')
+                                    : t('modifyInfo')}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
                             <Label htmlFor="full_name">{t('fullName')}</Label>
                             <Input
@@ -224,22 +272,32 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                             </select>
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button type="submit" disabled={isPending}>
-                            {isPending ? (
-                                <>
-                                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
-                                    {t('saving')}
-                                </>
-                            ) : mode === 'create' ? (
-                                t('add')
-                            ) : (
-                                t('save')
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </form>
+                        <DialogFooter>
+                            <Button type="submit" disabled={isPending}>
+                                {isPending ? (
+                                    <>
+                                        <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                                        {t('saving')}
+                                    </>
+                                ) : mode === 'create' ? (
+                                    t('add')
+                                ) : (
+                                    t('save')
+                                )}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                )}
             </DialogContent>
         </Dialog>
+    )
+}
+
+function DetailItem({ label, value }: { label: string; value: string }) {
+    return (
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">{label}</p>
+            <p className="mt-1 text-sm text-white">{value}</p>
+        </div>
     )
 }
