@@ -2,7 +2,6 @@ import { Navbar } from "@/components/navbar"
 import { HeroSection } from "@/components/hero-section"
 import { FeaturesSection } from "@/components/features-section"
 import { TeamSection } from "@/components/team-section"
-import { RoadmapSection } from "@/components/roadmap-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { DonateSection } from "@/components/donate-section"
 import { Footer } from "@/components/footer"
@@ -25,7 +24,6 @@ export default async function Home() {
       <FeaturesSection />
       <FormationsSlider formations={formationsArray} categories={categories} />
       <TeamSection />
-      <RoadmapSection />
       <TestimonialsSection />
       <DonateSection />
       <Footer />
