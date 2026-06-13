@@ -38,7 +38,7 @@ export function AdminLoginForm() {
     }
 
     return (
-        <Card className="border-zinc-800 bg-zinc-950/50 backdrop-blur-xl">
+        <Card className="border-white/10 bg-black/70 text-foreground shadow-2xl backdrop-blur-xl">
             <CardHeader className="space-y-1">
                 <div className="flex justify-center mb-4">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -46,7 +46,7 @@ export function AdminLoginForm() {
                     </div>
                 </div>
                 <CardTitle className="text-2xl font-bold text-center text-white">{t('access')}</CardTitle>
-                <CardDescription className="text-center text-zinc-400">
+                <CardDescription className="text-center text-zinc-200">
                     {t('enterPassword')}
                 </CardDescription>
             </CardHeader>
@@ -58,7 +58,7 @@ export function AdminLoginForm() {
                             placeholder={t('nameLabel')}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-500"
+                            className="bg-zinc-950/80 border-zinc-700 text-white placeholder:text-zinc-400"
                         />
                     </div>
                     <div className="space-y-2">
@@ -67,11 +67,11 @@ export function AdminLoginForm() {
                             placeholder={t('passwordLabel')}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-500"
+                            className="bg-zinc-950/80 border-zinc-700 text-white placeholder:text-zinc-400"
                         />
                     </div>
                     {error && (
-                        <div className="flex items-center gap-2 text-sm text-red-500 bg-red-950/20 p-3 rounded-md">
+                        <div className="flex items-center gap-2 rounded-md border border-red-800/60 bg-red-950/30 p-3 text-sm text-red-100">
                             <AlertCircle className="h-4 w-4" />
                             {error}
                         </div>

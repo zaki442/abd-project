@@ -14,7 +14,7 @@ export function AdminLayoutWrapper({ adminName, children, navbarContent }: Admin
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     return (
-        <div className="flex h-screen bg-black">
+        <div className="flex h-screen bg-[linear-gradient(135deg,#020617_0%,#0b1220_45%,#111827_100%)] text-foreground">
             <AdminSidebar adminName={adminName} isMobileMenuOpen={isMobileMenuOpen} onMobileMenuToggle={setIsMobileMenuOpen} />
             
             {/* Main Content */}

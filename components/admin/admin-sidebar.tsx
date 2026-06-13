@@ -46,27 +46,27 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
             {/* Mobile menu overlay */}
             {mobileMenuOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/70 z-40 lg:hidden"
                     onClick={() => setMobileMenuOpen(false)}
                 />
             )}
             
             {/* Sidebar */}
             <div className={`
-                fixed left-0 top-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 z-50
+                fixed left-0 top-0 h-full w-64 bg-[linear-gradient(180deg,#020617_0%,#0b1220_100%)] border-r border-white/10 shadow-2xl z-50
                 transform transition-transform duration-300 ease-in-out
                 lg:relative lg:translate-x-0 lg:z-auto
                 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <div className="flex h-full flex-col">
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+                    <div className="flex items-center justify-between p-6 border-b border-white/10">
                         <h2 className="text-xl font-bold text-white">Admin Panel</h2>
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="lg:hidden text-white hover:bg-zinc-800"
+                            className="lg:hidden text-zinc-100 hover:bg-white/10"
                         >
                             <X className="h-5 w-5" />
                         </Button>
@@ -86,7 +86,7 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
                                     <div key={item.id} className="space-y-1">
                                         <button
                                             onClick={() => setIsJobsExpanded(!isJobsExpanded)}
-                                            className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                            className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-white"
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Icon className="h-4 w-4" />
@@ -101,7 +101,7 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
                                                     <Link
                                                         key={sub.id}
                                                         href={sub.href!}
-                                                        className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                                        className="block rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-white"
                                                         onClick={() => setMobileMenuOpen(false)}
                                                     >
                                                         {sub.label}
@@ -117,7 +117,7 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
                                 <Link
                                     key={item.id}
                                     href={item.href!}
-                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-white"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     <Icon className="h-4 w-4" />

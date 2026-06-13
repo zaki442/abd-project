@@ -22,7 +22,7 @@ export default async function AdminLayout({
 
     if (!isAuthenticated) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-black p-4">
+            <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,rgba(26,55,97,0.18),transparent_32%),linear-gradient(135deg,#020617_0%,#0b1220_45%,#111827_100%)] p-4 text-foreground">
                 <div className="w-full max-w-md">
                     <AdminLoginForm />
                 </div>
