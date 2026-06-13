@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dialog'
 import { Plus, Trash2, Loader2, Pencil } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 interface JobsManagerProps {
     jobs: Job[]
@@ -83,10 +84,11 @@ export function JobsManager({ jobs }: JobsManagerProps) {
             }
 
             if (result.success) {
+                toast.success(result.message)
                 setIsDialogOpen(false)
                 resetForm()
             } else {
-                alert(result.message)
+                toast.error(result.message)
             }
         })
     }
@@ -96,7 +98,9 @@ export function JobsManager({ jobs }: JobsManagerProps) {
             startTransition(async () => {
                 const result = await deleteJob(id)
                 if (!result.success) {
-                    alert(result.message)
+                    toast.error(result.message)
+                } else {
+                    toast.success(result.message)
                 }
             })
         }

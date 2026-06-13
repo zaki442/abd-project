@@ -31,6 +31,7 @@ import {
 import { Plus, Trash2, Loader2, Image as ImageIcon, Pencil } from 'lucide-react' // Added Pencil
 import { useTranslations } from 'next-intl'
 import { createBrowserClient } from '@supabase/ssr'
+import { toast } from 'sonner'
 
 // Define types based on our DB schema
 type Category = {
@@ -114,7 +115,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             setFormData(prev => ({ ...prev, image_url: data.publicUrl }))
         } catch (error) {
             console.error('Error uploading image: ', error)
-            alert('Error uploading image')
+            toast.error('Error uploading image')
         } finally {
             setUploading(false)
         }
@@ -170,7 +171,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         e.preventDefault()
 
         if (!formData.image_url) {
-            alert('Please upload an image')
+            toast.error('Please upload an image')
             return
         }
 
@@ -183,10 +184,11 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             }
 
             if (result.success) {
+                toast.success(result.message)
                 setIsDialogOpen(false)
                 resetForm()
             } else {
-                alert(result.message)
+                toast.error(result.message)
             }
         })
     }
@@ -196,7 +198,9 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             startTransition(async () => {
                 const result = await deleteFormation(id)
                 if (!result.success) {
-                    alert(result.message)
+                    toast.error(result.message)
+                } else {
+                    toast.success(result.message)
                 }
             })
         }

@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/dialog'
 import { Plus, Trash2, Pencil, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 type Category = {
     id: string
@@ -76,10 +77,11 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
             }
 
             if (result.success) {
+                toast.success(result.message)
                 setIsDialogOpen(false)
                 resetForm()
             } else {
-                alert(result.message)
+                toast.error(result.message)
             }
         })
     }
@@ -89,7 +91,9 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
             startTransition(async () => {
                 const result = await deleteCategory(id)
                 if (!result.success) {
-                    alert(result.message)
+                    toast.error(result.message)
+                } else {
+                    toast.success(result.message)
                 }
             })
         }
