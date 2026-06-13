@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { registerUser } from '@/app/actions/register'
 import { toast } from 'sonner'
-import { Loader2, User, Mail, ArrowRight, Phone, Megaphone, Calendar, Tag, ChevronLeft, ChevronDown } from 'lucide-react'
+import { Loader2, User, Mail, ArrowRight, Phone, Megaphone, Calendar, Tag, ChevronLeft, ChevronDown, Briefcase, MapPin } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/routing'
 import Image from 'next/image'
@@ -162,6 +162,36 @@ export function RegistrationForm({
                                     type="tel"
                                     placeholder="+212 600 000 000"
                                     className="pl-10 h-11"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="specialite" className="text-sm font-medium">
+                                {t('specialite')}
+                            </Label>
+                            <div className="relative">
+                                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    id="specialite"
+                                    name="specialite"
+                                    placeholder={t('specialite')}
+                                    className="pl-10 h-11"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="ville" className="text-sm font-medium">
+                                {t('ville')}
+                            </Label>
+                            <div className="relative">
+                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    id="ville"
+                                    name="ville"
+                                    placeholder={t('ville')}
+                                    className="pl-10 h-11"
+                                    required
                                 />
                             </div>
                         </div>

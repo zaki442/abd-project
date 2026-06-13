@@ -25,6 +25,8 @@ interface Registration {
     email: string
     phone_number?: string
     where_did_you_hear?: string
+    specialite?: string
+    ville?: string
     formation_id: string
 }
 
@@ -57,6 +59,8 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
         email: registration?.email || '',
         phone_number: registration?.phone_number || '',
         where_did_you_hear: registration?.where_did_you_hear || '',
+        specialite: registration?.specialite || '',
+        ville: registration?.ville || '',
         formation_id: registration?.formation_id || (formations[0]?.id ?? ''),
     })
 
@@ -68,6 +72,8 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                 email: registration.email || '',
                 phone_number: registration.phone_number || '',
                 where_did_you_hear: registration.where_did_you_hear || '',
+                specialite: registration.specialite || '',
+                ville: registration.ville || '',
                 formation_id: registration.formation_id || (formations[0]?.id ?? ''),
             })
         }
@@ -77,6 +83,8 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                 email: '',
                 phone_number: '',
                 where_did_you_hear: '',
+                specialite: '',
+                ville: '',
                 formation_id: formations[0]?.id ?? '',
             })
         }
@@ -91,7 +99,7 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                 if (result.success) {
                     toast.success(result.message)
                     setOpen(false)
-                    setFormData({ full_name: '', email: '', phone_number: '', where_did_you_hear: '', formation_id: formations[0]?.id ?? '' })
+                    setFormData({ full_name: '', email: '', phone_number: '', where_did_you_hear: '', specialite: '', ville: '', formation_id: formations[0]?.id ?? '' })
                     onSuccess?.({ id: '', created_at: new Date().toISOString(), ...formData })
                 } else {
                     toast.error(result.message)
@@ -181,6 +189,24 @@ export function RegistrationDialog({ mode, registration, formations, onSuccess }
                                     </option>
                                 ))}
                             </select>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="specialite">Spécialité</Label>
+                            <Input
+                                id="specialite"
+                                value={formData.specialite || ''}
+                                onChange={(e) => setFormData({ ...formData, specialite: e.target.value })}
+                                placeholder="e.g. IT, Management..."
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="ville">Ville</Label>
+                            <Input
+                                id="ville"
+                                value={formData.ville || ''}
+                                onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
+                                placeholder="e.g. Casablanca"
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="formation">{t('formation')}</Label>

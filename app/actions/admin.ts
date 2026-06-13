@@ -462,6 +462,8 @@ export async function createRegistration(data: {
     email: string
     phone_number?: string
     where_did_you_hear?: string
+    specialite?: string
+    ville?: string
     formation_id: string
 }): Promise<ApiResponse> {
     const supabase = await createServerSupabaseClient()
@@ -473,6 +475,8 @@ export async function createRegistration(data: {
             email: data.email,
             phone_number: data.phone_number,
             where_did_you_hear: data.where_did_you_hear,
+            specialite: data.specialite,
+            ville: data.ville,
             formation_id: data.formation_id,
         })
 
@@ -491,6 +495,8 @@ export async function updateRegistration(
         email?: string
         phone_number?: string
         where_did_you_hear?: string
+        specialite?: string
+        ville?: string
         formation_id?: string
     }
 ): Promise<ApiResponse> {

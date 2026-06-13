@@ -9,9 +9,11 @@ export async function registerUser(prevState: any, formData: FormData) {
     const email = formData.get('email') as string
     const phoneNumber = formData.get('phone_number') as string
     const whereDidYouHear = formData.get('where_did_you_hear') as string
+    const specialite = formData.get('specialite') as string
+    const ville = formData.get('ville') as string
     const formationId = formData.get('formation_id') as string
 
-    if (!fullName || !email || !formationId) {
+    if (!fullName || !email || !formationId || !specialite || !ville) {
         return {
             success: false,
             message: 'Email and name are required.',
@@ -27,6 +29,8 @@ export async function registerUser(prevState: any, formData: FormData) {
                     email: email,
                     phone_number: phoneNumber,
                     where_did_you_hear: whereDidYouHear,
+                    specialite: specialite,
+                    ville: ville,
                     formation_id: formationId,
                 },
             ])

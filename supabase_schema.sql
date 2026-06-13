@@ -6,6 +6,8 @@ create table registrations (
   email text not null,
   phone_number text,
   where_did_you_hear text,
+  specialite text,
+  ville text,
   formation_id text not null
 );
 

@@ -117,7 +117,9 @@
         "linkedin": "LinkedIn",
         "facebook": "Facebook",
         "instagram": "Instagram",
-        "tiktok": "TikTok"
+        "tiktok": "TikTok",
+        "specialite": "التخصص",
+        "ville": "المدينة"
     },
     "Admin": {
         "dashboard": "لوحة التحكم",

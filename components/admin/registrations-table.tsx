@@ -31,6 +31,8 @@ interface Registration {
     email: string
     phone_number?: string
     where_did_you_hear?: string
+    specialite?: string
+    ville?: string
     formation_id: string
 }
 
@@ -174,11 +176,11 @@ export function RegistrationsTable({
         setIsExporting(true)
         try {
             const dataToExport = await exportAllRegistrations(searchQuery)
-            const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},${t('formation')},Formation Date`]
+            const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},Spécialité,Ville,${t('formation')},Formation Date`]
             const rows = dataToExport.map(reg => {
                 const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
                 const formationDate = getFormationDate(reg.formation_id)
-                return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}", "${formationName}",${formationDate}`
+                return `${reg.id},${reg.created_at},"${reg.full_name}",${reg.email},${reg.phone_number || ''},"${(reg.where_did_you_hear || '').replace(/"/g, '""')}","${(reg.specialite || '').replace(/"/g, '""')}","${(reg.ville || '').replace(/"/g, '""')}","${formationName}",${formationDate}`
             })
 
             const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n")
@@ -331,6 +333,8 @@ export function RegistrationsTable({
                             <TableHead>{t('email')}</TableHead>
                             <TableHead>{t('phoneNumber')}</TableHead>
                             <TableHead>{t('whereDidYouHear')}</TableHead>
+                            <TableHead>Spécialité</TableHead>
+                            <TableHead>Ville</TableHead>
                             <TableHead>{t('formation')}</TableHead>
                             <TableHead>Formation Date</TableHead>
                             <TableHead className="text-end">{t('actions')}</TableHead>
@@ -339,7 +343,7 @@ export function RegistrationsTable({
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="h-24 text-center">
+                                <TableCell colSpan={10} className="h-24 text-center">
                                     <div className="flex items-center justify-center space-x-2">
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                         <span>Loading...</span>
@@ -348,7 +352,7 @@ export function RegistrationsTable({
                             </TableRow>
                         ) : registrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="h-24 text-center">
+                                <TableCell colSpan={10} className="h-24 text-center">
                                     {searchQuery ? t('noResults') : 'No registrations found'}
                                 </TableCell>
                             </TableRow>
@@ -362,6 +366,8 @@ export function RegistrationsTable({
                                     <TableCell>{reg.email}</TableCell>
                                     <TableCell>{reg.phone_number || '-'}</TableCell>
                                     <TableCell>{getWhereDidYouHearLabel(reg.where_did_you_hear)}</TableCell>
+                                    <TableCell>{reg.specialite || '-'}</TableCell>
+                                    <TableCell>{reg.ville || '-'}</TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                                             {getFormationTitle(reg.formation_id)}
