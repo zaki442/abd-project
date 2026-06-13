@@ -9,7 +9,7 @@ const team = [
   { name: "Abdelouahed EdDdaoudy", role: "Media", initials: "ED", image: "/team/abdelouahed.jpg" },
   { name: "Soukaina Bouchane", role: "Communication", initials: "SK", image: "/team/soukaina.jpg" },
   { name: "Khadija Afkir", role: "EventsWorkshop", initials: "KA" },
-  { name: "Raja", role: "Marketing", initials: "RA" },
+  { name: "Rajae", role: "Marketing", initials: "RA" },
 ]
 
 const roleColors: Record<string, string> = {
