@@ -16,14 +16,7 @@ import {
 import { format } from 'date-fns'
 import { deleteFeedback } from '@/app/actions/feedbacks'
 import { toast } from 'sonner'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
+import { ConfirmDeleteDialog } from './confirm-delete-dialog'
 
 interface Feedback {
     id: string
@@ -42,7 +35,6 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
     const [feedbacks, setFeedbacks] = useState<Feedback[]>(initialFeedbacks)
     const [searchQuery, setSearchQuery] = useState('')
     const [isDeleting, setIsDeleting] = useState<string | null>(null)
-    const [feedbackToDelete, setFeedbackToDelete] = useState<string | null>(null)
 
     // Filter feedbacks based on search
     const filteredFeedbacks = feedbacks.filter(fb =>
@@ -51,23 +43,20 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
         (fb.role && fb.role.toLowerCase().includes(searchQuery.toLowerCase()))
     )
 
-    const handleDelete = async () => {
-        if (!feedbackToDelete) return
-
-        setIsDeleting(feedbackToDelete)
+    const handleDelete = async (id: string) => {
+        setIsDeleting(id)
         try {
-            const result = await deleteFeedback(feedbackToDelete)
+            const result = await deleteFeedback(id)
             if (result.error) {
                 toast.error(result.error)
             } else {
                 toast.success('Feedback deleted successfully')
-                setFeedbacks(prev => prev.filter(fb => fb.id !== feedbackToDelete))
+                setFeedbacks(prev => prev.filter(fb => fb.id !== id))
             }
         } catch (error) {
             toast.error('Failed to delete feedback')
         } finally {
             setIsDeleting(null)
-            setFeedbackToDelete(null)
         }
     }
 
@@ -141,19 +130,12 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                                         <p className="line-clamp-3 text-sm">{fb.feedback}</p>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => setFeedbackToDelete(fb.id)}
-                                            className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
-                                            disabled={isDeleting === fb.id}
-                                        >
-                                            {isDeleting === fb.id ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            ) : (
-                                                <Trash2 className="h-4 w-4" />
-                                            )}
-                                        </Button>
+                                        <ConfirmDeleteDialog
+                                            onConfirm={() => handleDelete(fb.id)}
+                                            isPending={isDeleting === fb.id}
+                                            title={t('delete')}
+                                            description={t('confirmDelete')}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -162,31 +144,6 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                 </Table>
             </div>
 
-            <Dialog open={!!feedbackToDelete} onOpenChange={(open) => !open && setFeedbackToDelete(null)}>
-                <DialogContent className="bg-zinc-950 border-zinc-800">
-                    <DialogHeader>
-                        <DialogTitle className="text-white">{t('delete')}</DialogTitle>
-                        <DialogDescription className="text-zinc-400">
-                            {t('confirmDelete')}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setFeedbackToDelete(null)}
-                            className="bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={handleDelete}
-                            className="bg-red-500 text-white hover:bg-red-600"
-                        >
-                            {t('delete')}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     )
 }

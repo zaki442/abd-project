@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { createFormation, deleteFormation, updateFormation } from '@/app/actions/admin' // Added updateFormation
+import { ConfirmDeleteDialog } from './confirm-delete-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '../ui/textarea'
@@ -194,16 +195,14 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
     }
 
     const handleDelete = (id: string) => {
-        if (confirm('Are you sure you want to delete this formation?')) {
-            startTransition(async () => {
-                const result = await deleteFormation(id)
-                if (!result.success) {
-                    toast.error(result.message)
-                } else {
-                    toast.success(result.message)
-                }
-            })
-        }
+        startTransition(async () => {
+            const result = await deleteFormation(id)
+            if (!result.success) {
+                toast.error(result.message)
+            } else {
+                toast.success(result.message)
+            }
+        })
     }
 
     return (
@@ -394,15 +393,12 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                         >
                                             <Pencil className="h-4 w-4" />
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDelete(f.id)}
-                                            className="text-zinc-500 hover:text-red-500 hover:bg-red-950/20"
-                                            disabled={isPending}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                        <ConfirmDeleteDialog
+                                            onConfirm={() => handleDelete(f.id)}
+                                            isPending={isPending}
+                                            title="Delete Formation"
+                                            description={`Are you sure you want to delete the formation "${f.title}"?`}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))

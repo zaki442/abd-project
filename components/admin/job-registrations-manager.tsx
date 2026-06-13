@@ -11,9 +11,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { Trash2, Loader2, Eye } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { ConfirmDeleteDialog } from './confirm-delete-dialog'
+import { toast } from 'sonner'
 
 interface JobRegistrationsManagerProps {
     registrations: JobRegistration[]
@@ -24,14 +26,14 @@ export function JobRegistrationsManager({ registrations }: JobRegistrationsManag
     const t = useTranslations('Admin.jobRegistrations')
 
     const handleDelete = (id: string) => {
-        if (confirm(t('confirmDelete'))) {
-            startTransition(async () => {
-                const result = await deleteJobRegistration(id)
-                if (!result.success) {
-                    alert(result.message)
-                }
-            })
-        }
+        startTransition(async () => {
+            const result = await deleteJobRegistration(id)
+            if (!result.success) {
+                toast.error(result.message)
+            } else {
+                toast.success(result.message)
+            }
+        })
     }
 
     return (
@@ -99,15 +101,12 @@ export function JobRegistrationsManager({ registrations }: JobRegistrationsManag
                                         )}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDelete(reg.id)}
-                                            className="text-zinc-500 hover:text-red-500 hover:bg-red-950/20"
-                                            disabled={isPending}
-                                        >
-                                            {isPending ? <Loader2 className="w-4 h-4 animate-spin"/> : <Trash2 className="h-4 w-4" />}
-                                        </Button>
+                                        <ConfirmDeleteDialog
+                                            onConfirm={() => handleDelete(reg.id)}
+                                            isPending={isPending}
+                                            title={t('confirmDelete')}
+                                            description={`Are you sure you want to delete the job application from "${reg.full_name}"?`}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))

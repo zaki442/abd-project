@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { deleteAdmin } from '@/app/actions/admin'
 import { AdminDialog } from './admin-dialog'
+import { ConfirmDeleteDialog } from './confirm-delete-dialog'
 import { toast } from 'sonner'
 import { Trash2, Loader2, ShieldCheck } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -34,8 +35,6 @@ export function AdminsManager({ admins: initialAdmins }: AdminsManagerProps) {
     const t = useTranslations('Admin.table')
 
     const handleDelete = async (id: string, name: string) => {
-        if (!confirm(`Are you sure you want to delete admin "${name}"?`)) return
-
         setDeletingId(id)
         startTransition(async () => {
             const result = await deleteAdmin(id) as any
@@ -99,19 +98,12 @@ export function AdminsManager({ admins: initialAdmins }: AdminsManagerProps) {
                                                 admin={admin}
                                                 onSuccess={handleSuccess}
                                             />
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleDelete(admin.id, admin.name)}
-                                                disabled={isPending && deletingId === admin.id}
-                                                className="text-red-400 hover:text-red-500 hover:bg-red-950/20"
-                                            >
-                                                {isPending && deletingId === admin.id ? (
-                                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                                ) : (
-                                                    <Trash2 className="h-4 w-4" />
-                                                )}
-                                            </Button>
+                                            <ConfirmDeleteDialog
+                                                onConfirm={() => handleDelete(admin.id, admin.name)}
+                                                isPending={isPending && deletingId === admin.id}
+                                                title="Delete Admin"
+                                                description={`Are you sure you want to delete admin "${admin.name}"?`}
+                                            />
                                         </div>
                                     </TableCell>
                                 </TableRow>

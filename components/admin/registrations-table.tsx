@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { deleteRegistration, getRegistrations, exportAllRegistrations } from '@/app/actions/admin'
 import { RegistrationDialog } from './registration-dialog'
+import { ConfirmDeleteDialog } from './confirm-delete-dialog'
 import { toast } from 'sonner'
 import { Trash2, Search, Loader2, Download, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -144,8 +145,6 @@ export function RegistrationsTable({
     const displayCount = registrations.length
 
     const handleDelete = async (id: string) => {
-        if (!confirm(t('confirmDelete'))) return
-
         setDeletingId(id)
         startTransition(async () => {
             const result = await deleteRegistration(id)
@@ -377,19 +376,12 @@ export function RegistrationsTable({
                                                 formations={formations}
                                                 onSuccess={handleEditSuccess}
                                             />
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleDelete(reg.id)}
-                                                disabled={isPending && deletingId === reg.id}
-                                                className="text-red-500 hover:text-red-600 hover:bg-red-950/20"
-                                            >
-                                                {isPending && deletingId === reg.id ? (
-                                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                                ) : (
-                                                    <Trash2 className="h-4 w-4" />
-                                                )}
-                                            </Button>
+                                            <ConfirmDeleteDialog
+                                                onConfirm={() => handleDelete(reg.id)}
+                                                isPending={isPending && deletingId === reg.id}
+                                                title={t('confirmDelete')}
+                                                description={`Are you sure you want to delete the registration for "${reg.full_name}"?`}
+                                            />
                                         </div>
                                     </TableCell>
                                 </TableRow>
