@@ -5,74 +5,79 @@
 
 /* Custom color palette for ABD */
 :root {
-  --background: #1A3761;
-  --foreground: #F5F2EC;
-  --card: #F5F2EC;
-  --card-foreground: #1A3761;
-  --popover: #F5F2EC;
-  --popover-foreground: #1A3761;
-  --primary: #F5F2EC;
-  --primary-foreground: #1A3761;
-  --secondary: #C7C0B6;
-  --secondary-foreground: #1A3761;
-  --muted: #C7C0B6;
-  --muted-foreground: #1A3761;
-  --accent: #F5F2EC;
-  --accent-foreground: #1A3761;
+  color-scheme: dark;
+  --background: #020617;
+  --foreground: #F8F5EE;
+  --card: #0F172A;
+  --card-foreground: #F8F5EE;
+  --popover: #111827;
+  --popover-foreground: #F8F5EE;
+  --primary: #1A3761;
+  --primary-foreground: #F8F5EE;
+  --secondary: #D9D4C8;
+  --secondary-foreground: #0B1220;
+  --muted: #1F2937;
+  --muted-foreground: #E5E7EB;
+  --accent: #F8F5EE;
+  --accent-foreground: #111827;
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: #C7C0B6;
-  --input: #C7C0B6;
-  --ring: #F5F2EC;
-  --chart-1: #F5F2EC;
-  --chart-2: #C7C0B6;
+  --destructive-foreground: #fff7ed;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: #111827;
+  --ring: #F8F5EE;
+  --chart-1: #F8F5EE;
+  --chart-2: #D9D4C8;
   --chart-3: #1A3761;
   --chart-4: #000000;
-  --chart-5: #F5F2EC;
+  --chart-5: #F8F5EE;
   --radius: 0.75rem;
-  --sidebar: #1A3761;
-  --sidebar-foreground: #F5F2EC;
-  --sidebar-primary: #F5F2EC;
-  --sidebar-primary-foreground: #1A3761;
-  --sidebar-accent: #C7C0B6;
-  --sidebar-accent-foreground: #1A3761;
-  --sidebar-border: #C7C0B6;
-  --sidebar-ring: #F5F2EC;
+  --sidebar: #020617;
+  --sidebar-foreground: #F8F5EE;
+  --sidebar-primary: #1A3761;
+  --sidebar-primary-foreground: #F8F5EE;
+  --sidebar-accent: #111827;
+  --sidebar-accent-foreground: #F8F5EE;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #F8F5EE;
+  --black: #020617;
+  --black-soft: #111827;
 }
 
 .dark {
-  --background: #1A3761;
-  --foreground: #F5F2EC;
-  --card: #F5F2EC;
-  --card-foreground: #1A3761;
-  --popover: #F5F2EC;
-  --popover-foreground: #1A3761;
-  --primary: #F5F2EC;
-  --primary-foreground: #1A3761;
-  --secondary: #C7C0B6;
-  --secondary-foreground: #1A3761;
-  --muted: #C7C0B6;
-  --muted-foreground: #1A3761;
-  --accent: #F5F2EC;
-  --accent-foreground: #1A3761;
+  --background: #020617;
+  --foreground: #F8F5EE;
+  --card: #0F172A;
+  --card-foreground: #F8F5EE;
+  --popover: #111827;
+  --popover-foreground: #F8F5EE;
+  --primary: #1A3761;
+  --primary-foreground: #F8F5EE;
+  --secondary: #D9D4C8;
+  --secondary-foreground: #0B1220;
+  --muted: #1F2937;
+  --muted-foreground: #E5E7EB;
+  --accent: #F8F5EE;
+  --accent-foreground: #111827;
   --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: #C7C0B6;
-  --input: #C7C0B6;
-  --ring: #F5F2EC;
-  --chart-1: #F5F2EC;
-  --chart-2: #C7C0B6;
+  --destructive-foreground: #fff7ed;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: #111827;
+  --ring: #F8F5EE;
+  --chart-1: #F8F5EE;
+  --chart-2: #D9D4C8;
   --chart-3: #1A3761;
   --chart-4: #000000;
-  --chart-5: #F5F2EC;
-  --sidebar: #1A3761;
-  --sidebar-foreground: #F5F2EC;
-  --sidebar-primary: #F5F2EC;
-  --sidebar-primary-foreground: #1A3761;
-  --sidebar-accent: #C7C0B6;
-  --sidebar-accent-foreground: #1A3761;
-  --sidebar-border: #C7C0B6;
-  --sidebar-ring: #F5F2EC;
+  --chart-5: #F8F5EE;
+  --sidebar: #020617;
+  --sidebar-foreground: #F8F5EE;
+  --sidebar-primary: #1A3761;
+  --sidebar-primary-foreground: #F8F5EE;
+  --sidebar-accent: #111827;
+  --sidebar-accent-foreground: #F8F5EE;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #F8F5EE;
+  --black: #020617;
+  --black-soft: #111827;
 }
 
 @theme inline {
@@ -119,10 +124,43 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
   }
 
   body {
     @apply bg-background text-foreground;
+    min-height: 100vh;
+    background-color: var(--background);
+    background-image:
+      radial-gradient(circle at top, rgba(26, 55, 97, 0.18) 0%, rgba(2, 6, 23, 0) 32%),
+      linear-gradient(135deg, #020617 0%, #0b1220 45%, #111827 100%);
+    color: var(--foreground);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li,
+  label,
+  small,
+  span {
+    color: inherit;
+  }
+
+  ::selection {
+    background: rgba(248, 245, 238, 0.18);
+    color: #ffffff;
   }
 }
 
