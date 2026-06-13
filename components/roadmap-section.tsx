@@ -27,12 +27,12 @@ interface TrelloCard {
 
 // Color and Icon cycling for lists
 const styleVariants = [
-  { icon: Circle, color: "text-muted-foreground", bgColor: "bg-muted/50" },
-  { icon: Clock, color: "text-blue-400", bgColor: "bg-blue-500/10" },
-  { icon: CheckCircle2, color: "text-green-400", bgColor: "bg-green-500/10" },
-  { icon: List, color: "text-purple-400", bgColor: "bg-purple-500/10" },
-  { icon: List, color: "text-orange-400", bgColor: "bg-orange-500/10" },
-  { icon: List, color: "text-sky-400", bgColor: "bg-sky-500/10" },
+  { icon: Circle, color: "text-[#C7C0B6]", bgColor: "bg-[#C7C0B6]/20" },
+  { icon: Clock, color: "text-[#F5F2EC]", bgColor: "bg-[#F5F2EC]/10" },
+  { icon: CheckCircle2, color: "text-[#1A3761]", bgColor: "bg-[#1A3761]/20" },
+  { icon: List, color: "text-[#F5F2EC]", bgColor: "bg-[#F5F2EC]/10" },
+  { icon: List, color: "text-[#C7C0B6]", bgColor: "bg-[#C7C0B6]/20" },
+  { icon: List, color: "text-[#F5F2EC]", bgColor: "bg-[#F5F2EC]/10" },
 ]
 
 export function RoadmapSection() {
@@ -82,9 +82,9 @@ export function RoadmapSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            <span className="gradient-text">{t("title")}</span>
+            <span className="text-[#F5F2EC]">{t("title")}</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          <p className="text-[#C7C0B6]/80 max-w-2xl mx-auto text-lg">
             {t("description")}
           </p>
         </div>
@@ -102,26 +102,26 @@ export function RoadmapSection() {
               const Icon = style.icon
 
               return (
-                <Card key={list.id} className="bg-card border-border h-full flex flex-col">
+                <Card key={list.id} className="bg-[#F5F2EC] border-[#C7C0B6] h-full flex flex-col shadow-lg">
                   <CardHeader className="pt-6 pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Icon className={`w-5 h-5 ${style.color}`} />
-                      <span className="text-foreground truncate" title={list.name}>{list.name}</span>
-                      <span className="ml-auto text-sm text-muted-foreground bg-secondary px-2 py-0.5 rounded-full shrink-0">
+                      <span className="text-[#1A3761] truncate" title={list.name}>{list.name}</span>
+                      <span className="ml-auto text-sm text-[#1A3761] bg-[#C7C0B6] px-2 py-0.5 rounded-full shrink-0">
                         {listCards.length}
                       </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 flex-1 overflow-y-auto max-h-[500px] custom-scrollbar">
                     {listCards.length === 0 ? (
-                      <div className="text-sm text-muted-foreground/50 text-center py-4 italic">
+                      <div className="text-sm text-[#1A3761]/50 text-center py-4 italic">
                         {t("noItems")}
                       </div>
                     ) : (
                       listCards.map((card) => (
                         <div
                           key={card.id}
-                          className={`p-4 rounded-lg ${style.bgColor} border border-border hover:border-primary/30 transition-colors cursor-pointer group`}
+                          className={`p-4 rounded-lg ${style.bgColor} border border-[#C7C0B6] hover:border-[#1A3761]/30 transition-colors cursor-pointer group`}
                         >
                           <div className="flex flex-col gap-2">
                             {/* Labels */}
@@ -137,7 +137,7 @@ export function RoadmapSection() {
                                     }}
                                   >
                                     {label.name || ""}
-                                    {/* If label has no name, we might just show color stripe. 
+                                    {/* If label has no name, we might just show color stripe.
                                                     But Trello labels often have names. If empty, maybe just a colored dot or stripe?
                                                     For this design, let's keep it simple. If name is empty, it might be an empty box.
                                                 */}
@@ -145,7 +145,7 @@ export function RoadmapSection() {
                                 ))}
                               </div>
                             )}
-                            <p className="text-sm text-foreground font-medium group-hover:text-primary transition-colors">
+                            <p className="text-sm text-[#1A3761] font-medium group-hover:text-[#1A3761]/80 transition-colors">
                               {card.name}
                             </p>
                           </div>

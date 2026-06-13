@@ -13,29 +13,29 @@ const team = [
 ]
 
 const roleColors: Record<string, string> = {
-  "Community Lead": "from-purple-500 to-pink-500",
-  Operations: "from-blue-500 to-cyan-500",
-  Tech: "from-green-500 to-emerald-500",
-  Content: "from-orange-500 to-yellow-500",
-  Events: "from-pink-500 to-rose-500",
-  EventsWorkshop: "from-pink-500 to-rose-500",
-  Media: "from-indigo-500 to-purple-500",
-  Partnerships: "from-teal-500 to-green-500",
-  Communication: "from-violet-500 to-indigo-500",
-  Marketing: "from-red-500 to-orange-500",
+  "Community Lead": "from-[#1A3761] to-[#C7C0B6]",
+  Operations: "from-[#1A3761] to-[#F5F2EC]",
+  Tech: "from-[#C7C0B6] to-[#F5F2EC]",
+  Content: "from-[#1A3761] to-[#C7C0B6]",
+  Events: "from-[#F5F2EC] to-[#C7C0B6]",
+  EventsWorkshop: "from-[#F5F2EC] to-[#C7C0B6]",
+  Media: "from-[#1A3761] to-[#F5F2EC]",
+  Partnerships: "from-[#C7C0B6] to-[#1A3761]",
+  Communication: "from-[#1A3761] to-[#C7C0B6]",
+  Marketing: "from-[#1A3761] to-[#F5F2EC]",
 }
 
 export function TeamSection() {
   const t = useTranslations("Team")
 
   return (
-    <section id="team" className="py-24 px-4 sm:px-6 lg:px-8 bg-secondary/30">
+    <section id="team" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#C7C0B6]/20">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            <span className="gradient-text">{t("title")}</span>
+            <span className="text-[#F5F2EC]">{t("title")}</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          <p className="text-[#C7C0B6]/80 max-w-2xl mx-auto text-lg">
             {t("description")}
           </p>
         </div>
@@ -44,11 +44,11 @@ export function TeamSection() {
           {team.map((member, index) => (
             <Card
               key={index}
-              className="bg-card border-border hover:border-primary/50 transition-all duration-300 group"
+              className="bg-[#F5F2EC] border-[#C7C0B6] hover:border-[#1A3761]/50 transition-all duration-300 group shadow-lg hover:shadow-xl"
             >
               <CardContent className="p-4 sm:p-6 text-center">
                 {member.image ? (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform ring-2 ring-primary/30">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mx-auto mb-4 group-hover:scale-110 transition-transform ring-2 ring-[#1A3761]/30">
                     <Image
                       src={member.image}
                       alt={member.name}
@@ -59,13 +59,13 @@ export function TeamSection() {
                   </div>
                 ) : (
                   <div
-                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br ${roleColors[member.role] || "from-purple-500 to-pink-500"} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
+                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br ${roleColors[member.role] || "from-[#1A3761] to-[#C7C0B6]"} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
                   >
                     <span className="text-lg sm:text-xl font-bold text-white">{member.initials}</span>
                   </div>
                 )}
-                <h3 className="font-semibold text-foreground text-sm sm:text-base">{member.name}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm mt-1">{t(`roles.${member.role}` as any)}</p>
+                <h3 className="font-semibold text-[#1A3761] text-sm sm:text-base">{member.name}</h3>
+                <p className="text-[#1A3761]/70 text-xs sm:text-sm mt-1">{t(`roles.${member.role}` as any)}</p>
               </CardContent>
             </Card>
           ))}

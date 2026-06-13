@@ -7,7 +7,7 @@ export function Footer() {
   const t = useTranslations("Footer")
 
   return (
-    <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
+    <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-[#C7C0B6]/30 bg-[#1A3761]">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center gap-8">
           {/* Logo */}
@@ -26,7 +26,7 @@ export function Footer() {
               href="https://chat.whatsapp.com/LWiHMkNtbV8LfRjJ34ZJpV"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 rounded-full bg-[#25D366]/20 hover:bg-[#25D366]/30 flex items-center justify-center transition-colors"
+              className="w-12 h-12 rounded-full bg-[#25D366]/20 hover:bg-[#25D366]/30 flex items-center justify-center transition-colors border border-[#C7C0B6]/30"
               aria-label="WhatsApp"
             >
               <WhatsAppIcon className="w-6 h-6 text-[#25D366]" />
@@ -35,22 +35,22 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="flex items-center gap-6 text-sm font-medium">
-            <Link href="/donate" className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
+            <Link href="/donate" className="text-[#F5F2EC] hover:text-[#C7C0B6] transition-colors flex items-center gap-2">
               <Heart className="w-4 h-4 fill-current" />
               {t("donate")}
             </Link>
           </div>
 
           {/* Made in Morocco */}
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="flex items-center gap-2 text-[#C7C0B6]/80">
             <span>{t("madeWith")}</span>
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+            <Heart className="w-4 h-4 text-[#F5F2EC] fill-[#F5F2EC]" />
             <span>{t("inMorocco")}</span>
             <span className="ml-1">🇲🇦</span>
           </div>
 
           {/* Copyright */}
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[#C7C0B6]/80">
             © {new Date().getFullYear()} Agile B Darija. {t("rights")}
           </p>
         </div>

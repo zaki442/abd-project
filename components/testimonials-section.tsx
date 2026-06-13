@@ -57,20 +57,19 @@ const ReviewCard = ({
         <figure
             className={cn(
                 "relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
-                // dark grey styles as requested, but adapting to theme
-                "border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900",
+                "border-[#C7C0B6] bg-[#F5F2EC] hover:bg-[#F5F2EC]/90",
             )}
         >
             <div className="flex flex-row items-center gap-2">
                 <img className="rounded-full" width="32" height="32" alt="" src={img} />
                 <div className="flex flex-col">
-                    <figcaption className="text-sm font-medium dark:text-white text-white">
+                    <figcaption className="text-sm font-medium text-[#1A3761]">
                         {name}
                     </figcaption>
-                    <p className="text-xs font-medium dark:text-white/40 text-gray-400">{username}</p>
+                    <p className="text-xs font-medium text-[#1A3761]/60">{username}</p>
                 </div>
             </div>
-            <blockquote className="mt-2 text-sm text-gray-300">{body}</blockquote>
+            <blockquote className="mt-2 text-sm text-[#1A3761]/80">{body}</blockquote>
         </figure>
     )
 }
@@ -79,12 +78,12 @@ export function TestimonialsSection() {
     const t = useTranslations("Community")
 
     return (
-        <section className="py-24 bg-zinc-950"> {/* Forcing dark bg as requested */}
+        <section className="py-24 bg-[#C7C0B6]/20">
             <div className="text-center mb-12 px-4">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
-                    {t("title")} <span className="gradient-text">Love</span>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#F5F2EC]">
+                    {t("title")} <span className="text-[#C7C0B6]">Love</span>
                 </h2>
-                <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+                <p className="text-[#C7C0B6]/80 max-w-2xl mx-auto text-lg">
                     {t("description")}
                 </p>
             </div>
@@ -98,8 +97,8 @@ export function TestimonialsSection() {
 
 
                 {/* Gradients for fade effect on edges */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-zinc-950 dark:from-background"></div>
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-zinc-950 dark:from-background"></div>
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#1A3761] to-transparent"></div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#1A3761] to-transparent"></div>
             </div>
         </section>
     )

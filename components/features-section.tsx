@@ -33,9 +33,9 @@ export function FeaturesSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            <span className="gradient-text">{t("mission")}</span>
+            <span className="text-[#F5F2EC]">{t("mission")}</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          <p className="text-[#C7C0B6]/80 max-w-2xl mx-auto text-lg">
             {t("description")}
           </p>
         </div>
@@ -44,14 +44,14 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="bg-card border-border hover:border-primary/50 transition-all duration-300 group"
+              className="bg-[#F5F2EC] border-[#C7C0B6] hover:border-[#1A3761]/50 transition-all duration-300 group shadow-lg hover:shadow-xl"
             >
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-lg gradient-bg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <feature.icon className="w-6 h-6 text-purple-400" />
+                <div className="w-12 h-12 rounded-lg bg-[#1A3761] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <feature.icon className="w-6 h-6 text-[#F5F2EC]" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg font-semibold mb-2 text-[#1A3761]">{feature.title}</h3>
+                <p className="text-[#1A3761]/70 text-sm leading-relaxed">{feature.description}</p>
               </CardContent>
             </Card>
           ))}
