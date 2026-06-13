@@ -64,6 +64,8 @@ interface Registration {
     email: string
     phone_number?: string
     where_did_you_hear?: string
+    specialite?: string
+    ville?: string
     formation_id: string
     created_at: string
 }
