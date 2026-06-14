@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Menu, X, ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
@@ -49,24 +48,24 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[#C7C0B6] hover:text-[#F5F2EC] transition-colors text-sm font-medium"
+                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium"
               >
                 {link.label}
               </Link>
             ))}
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-[#C7C0B6] hover:text-[#F5F2EC] transition-colors text-sm font-medium flex items-center outline-none">
+              <DropdownMenuTrigger className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium flex items-center outline-none">
                 {t("others")} <ChevronDown className="ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-[#F5F2EC] border-[#C7C0B6]">
+              <DropdownMenuContent align="end" className="bg-[#F5F2EC] border-[#C7C0B6]/80 shadow-xl">
                 <DropdownMenuItem asChild>
-                  <Link href="/jobs" className="w-full cursor-pointer text-[#1A3761] hover:text-[#1A3761]/80">
+                  <Link href="/jobs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] hover:bg-[#1A3761]/10 hover:text-[#0F172A] focus:bg-[#1A3761]/10 focus:text-[#0F172A]">
                     {t("jobs")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/feedbacks" className="w-full cursor-pointer text-[#1A3761] hover:text-[#1A3761]/80">
+                  <Link href="/feedbacks" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] hover:bg-[#1A3761]/10 hover:text-[#0F172A] focus:bg-[#1A3761]/10 focus:text-[#0F172A]">
                     {t("feedbacks")}
                   </Link>
                 </DropdownMenuItem>
@@ -95,7 +94,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-[#C7C0B6] hover:text-[#F5F2EC] transition-colors text-sm font-medium"
+                  className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium"
                 >
                   {link.label}
                 </Link>
@@ -108,14 +107,14 @@ export function Navbar() {
               <Link
                 href="/jobs"
                 onClick={() => setIsOpen(false)}
-                className="text-[#C7C0B6] hover:text-[#F5F2EC] transition-colors text-sm font-medium pl-2"
+                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
               >
                 {t("jobs")}
               </Link>
               <Link
                 href="/feedbacks"
                 onClick={() => setIsOpen(false)}
-                className="text-[#C7C0B6] hover:text-[#F5F2EC] transition-colors text-sm font-medium pl-2"
+                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
               >
                 {t("feedbacks")}
               </Link>
