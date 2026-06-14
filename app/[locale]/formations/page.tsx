@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server'
 
 export default async function FormationsPage() {
     const [formations, categories] = await Promise.all([
-        getFormations(1, 1000, true),
+        getFormations(1, 1000, false),
         getCategories(),
     ])
     const t = await getTranslations('Formations')

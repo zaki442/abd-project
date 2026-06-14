@@ -25,6 +25,7 @@ type Formation = {
     date: string
     price: string
     image_url: string
+    status?: string
     categories: Category[]
 }
 
@@ -106,6 +107,7 @@ export function FormationsSlider({ formations = [], categories = [] }: Formation
                                                 date={formation.date}
                                                 price={formation.price}
                                                 imageSrc={formation.image_url}
+                                                status={formation.status}
                                             />
                                         </div>
                                     </CarouselItem>

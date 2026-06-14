@@ -14,10 +14,13 @@ interface FormationCardProps {
     imageSrc: string
     date: string
     price: string
+    status?: string
 }
 
-export function FormationCard({ id, title, description, imageSrc, date, price }: FormationCardProps) {
+export function FormationCard({ id, title, description, imageSrc, date, price, status = 'ACTIVE' }: FormationCardProps) {
     const t = useTranslations('Formations')
+    const isActive = status === 'ACTIVE'
+
     return (
         <Card className="group h-full flex flex-col justify-between overflow-hidden border-0 bg-background/60 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
             <div className="relative aspect-square w-full overflow-hidden">
@@ -52,10 +55,24 @@ export function FormationCard({ id, title, description, imageSrc, date, price }:
             </CardContent>
 
             <CardFooter className="pt-0">
-                <Button asChild size="lg" className="w-full text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-primary/25 transition-all duration-300 group">
-                    <Link href={`/formations/${id}/register`}>
-                        {t('register')}
-                        <ArrowRight className="ms-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <Button
+                    asChild
+                    size="lg"
+                    disabled={!isActive}
+                    className={`w-full text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-primary/25 transition-all duration-300 group ${!isActive ? 'cursor-not-allowed opacity-70 hover:shadow-none' : ''}`}
+                >
+                    <Link
+                        href={isActive ? `/formations/${id}/register` : '#'}
+                        onClick={(event) => {
+                            if (!isActive) {
+                                event.preventDefault()
+                            }
+                        }}
+                        aria-disabled={!isActive}
+                        tabIndex={isActive ? 0 : -1}
+                    >
+                        {isActive ? t('register') : 'Registration closed'}
+                        {isActive && <ArrowRight className="ms-2 h-5 w-5 transition-transform group-hover:translate-x-1" />}
                     </Link>
                 </Button>
             </CardFooter>

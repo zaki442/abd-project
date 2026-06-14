@@ -16,6 +16,7 @@ type Formation = {
     date: string
     price: string
     image_url: string
+    status?: string
     categories: Category[]
 }
 
@@ -76,6 +77,7 @@ export function FormationsPageContent({ formations = [], categories = [] }: Form
                             imageSrc={formation.image_url}
                             date={formation.date}
                             price={formation.price}
+                            status={formation.status}
                         />
                     ))}
                 </div>

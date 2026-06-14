@@ -10,7 +10,7 @@ import { getFormations, getCategories } from "@/app/actions/admin"
 
 export default async function Home() {
   const [formations, categories] = await Promise.all([
-    getFormations(1, 1000, true),
+    getFormations(1, 1000, false),
     getCategories()
   ])
 
