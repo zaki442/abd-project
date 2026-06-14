@@ -26,7 +26,8 @@ export async function registerUser(prevState: any, formData: FormData) {
 
         const { data: existingRegistrations, error: duplicateCheckError } = await supabase
             .from('registrations')
-            .select('id, email')
+            .select('id, email, formation_id')
+            .eq('formation_id', formationId)
             .ilike('email', normalizedEmail)
 
         if (duplicateCheckError) {
@@ -37,10 +38,10 @@ export async function registerUser(prevState: any, formData: FormData) {
             }
         }
 
-        if (hasDuplicateEmail(existingRegistrations || [], email)) {
+        if (hasDuplicateEmail(existingRegistrations || [], email, formationId, 'formation_id')) {
             return {
                 success: false,
-                message: 'This email is already registered. Please use another email address.',
+                message: 'This email is already registered for this formation. Please use another email address.',
             }
         }
 

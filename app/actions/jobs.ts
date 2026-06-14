@@ -211,15 +211,16 @@ export async function createJobRegistration(formData: FormData): Promise<ApiResp
 
         const { data: existingApplications, error: duplicateCheckError } = await supabase
             .from('job_registrations')
-            .select('id, email')
+            .select('id, email, job_id')
+            .eq('job_id', job_id)
             .ilike('email', normalizedEmail)
 
         if (duplicateCheckError) {
             throw duplicateCheckError
         }
 
-        if (hasDuplicateEmail(existingApplications || [], email)) {
-            return createErrorResponse('This email is already registered for a job application. Please use another email address.')
+        if (hasDuplicateEmail(existingApplications || [], email, job_id, 'job_id')) {
+            return createErrorResponse('This email is already registered for this job application. Please use another email address.')
         }
 
         const { error } = await supabase
