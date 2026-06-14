@@ -5,6 +5,7 @@ import { useRouter } from '@/i18n/routing'
 import { useTranslations } from 'next-intl'
 import { createJobRegistration } from '@/app/actions/jobs'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -30,14 +31,14 @@ export function JobRegistrationForm({ jobId, jobTitle }: JobRegistrationFormProp
             const response = await createJobRegistration(formDataObj)
 
             if (response.success) {
-                alert(t('success'))
+                toast.success(response.message || t('success'))
                 router.push('/jobs')
             } else {
-                alert(response.message || 'Error')
+                toast.error(response.message || 'Error')
             }
         } catch (error) {
             console.error('Submission error', error)
-            alert('Error')
+            toast.error('Something went wrong while submitting your application.')
         } finally {
             setIsSubmitting(false)
         }

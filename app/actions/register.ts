@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase'
+import { hasDuplicateEmail, normalizeRegistrationEmail } from '@/lib/registration-utils'
 
 export async function registerUser(prevState: any, formData: FormData) {
     const supabase = createClient()
@@ -21,6 +22,28 @@ export async function registerUser(prevState: any, formData: FormData) {
     }
 
     try {
+        const normalizedEmail = normalizeRegistrationEmail(email)
+
+        const { data: existingRegistrations, error: duplicateCheckError } = await supabase
+            .from('registrations')
+            .select('id, email')
+            .ilike('email', normalizedEmail)
+
+        if (duplicateCheckError) {
+            console.error('Duplicate check error:', duplicateCheckError)
+            return {
+                success: false,
+                message: 'A problem occurred while validating your registration. Please try again.',
+            }
+        }
+
+        if (hasDuplicateEmail(existingRegistrations || [], email)) {
+            return {
+                success: false,
+                message: 'This email is already registered. Please use another email address.',
+            }
+        }
+
         const { error } = await supabase
             .from('registrations')
             .insert([

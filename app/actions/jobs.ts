@@ -1,6 +1,7 @@
 'use server'
 
 import { createServerSupabaseClient } from '@/lib/supabase'
+import { hasDuplicateEmail, normalizeRegistrationEmail } from '@/lib/registration-utils'
 import { revalidatePath } from 'next/cache'
 import nodemailer from 'nodemailer'
 
@@ -206,6 +207,21 @@ export async function createJobRegistration(formData: FormData): Promise<ApiResp
         const cv_file = formData.get('cv_file') as File | null;
 
         const supabase = await createServerSupabaseClient()
+        const normalizedEmail = normalizeRegistrationEmail(email)
+
+        const { data: existingApplications, error: duplicateCheckError } = await supabase
+            .from('job_registrations')
+            .select('id, email')
+            .ilike('email', normalizedEmail)
+
+        if (duplicateCheckError) {
+            throw duplicateCheckError
+        }
+
+        if (hasDuplicateEmail(existingApplications || [], email)) {
+            return createErrorResponse('This email is already registered for a job application. Please use another email address.')
+        }
+
         const { error } = await supabase
             .from('job_registrations')
             .insert({
