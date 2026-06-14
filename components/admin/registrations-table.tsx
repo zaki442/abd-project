@@ -170,11 +170,11 @@ export function RegistrationsTable({
         )
     }
 
-    const exportToCSV = async () => {
+    const exportToCSV = async (removeDuplicates = false) => {
         if (isExporting) return
         setIsExporting(true)
         try {
-            const dataToExport = await exportAllRegistrations(searchQuery)
+            const dataToExport = await exportAllRegistrations(searchQuery, removeDuplicates)
             const headers = [`ID,${t('date')},${t('fullName')},${t('email')},${t('phoneNumber')},${t('whereDidYouHear')},Spécialité,Ville,${t('formation')},Formation Date`]
             const rows = dataToExport.map(reg => {
                 const formationName = getFormationTitle(reg.formation_id).replace(/"/g, '""')
@@ -186,7 +186,7 @@ export function RegistrationsTable({
             const encodedUri = encodeURI(csvContent)
             const link = document.createElement("a")
             link.setAttribute("href", encodedUri)
-            link.setAttribute("download", "registrations.csv")
+            link.setAttribute("download", removeDuplicates ? 'registrations-no-duplicates.csv' : 'registrations.csv')
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
@@ -315,9 +315,13 @@ export function RegistrationsTable({
                     <div className="text-sm text-muted-foreground">
                         {t('showing')}: {displayCount} {t('of')} {totalCount}
                     </div>
-                    <Button variant="outline" size="sm" onClick={exportToCSV} disabled={isExporting}>
+                    <Button variant="outline" size="sm" onClick={() => exportToCSV(false)} disabled={isExporting}>
                         {isExporting ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Download className="me-2 h-4 w-4" />}
                         {t('exportCSV')}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => exportToCSV(true)} disabled={isExporting}>
+                        {isExporting ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Download className="me-2 h-4 w-4" />}
+                        Export without duplicates
                     </Button>
                     <RegistrationDialog mode="create" formations={formations} onSuccess={handleCreateSuccess} />
                 </div>

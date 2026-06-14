@@ -4,6 +4,7 @@ import { createServerSupabaseClient, createServerSupabaseAdminClient } from '@/l
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
+import { normalizeRegistrationEmail } from '@/lib/registration-utils'
 
 // ==========================================
 // CONSTANTS AND TYPES
@@ -394,7 +395,10 @@ export async function getRegistrations(
     }
 }
 
-export async function exportAllRegistrations(searchQuery: string = ''): Promise<Registration[]> {
+export async function exportAllRegistrations(
+    searchQuery: string = '',
+    removeDuplicates: boolean = false,
+): Promise<Registration[]> {
     try {
         const supabase = await createServerSupabaseClient()
 
@@ -432,7 +436,23 @@ export async function exportAllRegistrations(searchQuery: string = ''): Promise<
             throw error
         }
 
-        return data || []
+        const registrations = data || []
+
+        if (!removeDuplicates) {
+            return registrations
+        }
+
+        const seenEmails = new Set<string>()
+        return registrations.filter((registration) => {
+            const normalizedEmail = normalizeRegistrationEmail(registration.email)
+
+            if (!normalizedEmail || seenEmails.has(normalizedEmail)) {
+                return false
+            }
+
+            seenEmails.add(normalizedEmail)
+            return true
+        })
     } catch (e) {
         console.error('Permanent error fetching all registrations after retries:', e)
         return []
