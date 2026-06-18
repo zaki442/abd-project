@@ -178,6 +178,29 @@ create policy "Authenticated Users Can Delete Images"
 on storage.objects for delete
 using ( bucket_id = 'formations' );
 
+-- Allow public read access to the 'blogs' bucket
+drop policy if exists "Public Access to Blogs Images" on storage.objects;
+create policy "Public Access to Blogs Images"
+on storage.objects for select
+using ( bucket_id = 'blogs' );
+
+-- Allow authenticated uploads to the 'blogs' bucket
+drop policy if exists "Authenticated Users Can Upload Blogs Images" on storage.objects;
+create policy "Authenticated Users Can Upload Blogs Images"
+on storage.objects for insert
+with check ( bucket_id = 'blogs' );
+
+-- Allow authenticated updates/deletes for blogs
+drop policy if exists "Authenticated Users Can Update Blogs Images" on storage.objects;
+create policy "Authenticated Users Can Update Blogs Images"
+on storage.objects for update
+using ( bucket_id = 'blogs' );
+
+drop policy if exists "Authenticated Users Can Delete Blogs Images" on storage.objects;
+create policy "Authenticated Users Can Delete Blogs Images"
+on storage.objects for delete
+using ( bucket_id = 'blogs' );
+
 -- =============================================
 -- JOBS TABLE
 -- =============================================
@@ -251,5 +274,31 @@ with check (true);
 
 create policy "Enable read and write for feedbacks admins"
 on feedbacks
+for all
+using (true);
+
+-- =============================================
+-- BLOGS TABLE
+-- =============================================
+
+create table blogs (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  title text not null,
+  content text not null,
+  image_url text,
+  author text not null,
+  status text default 'DRAFT' not null check (status in ('PUBLISHED', 'DRAFT'))
+);
+
+alter table blogs enable row level security;
+
+create policy "Enable read for all"
+on blogs
+for select
+using (true);
+
+create policy "Enable write for admins"
+on blogs
 for all
 using (true);

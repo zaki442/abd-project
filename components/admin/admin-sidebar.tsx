@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings, Briefcase, ChevronDown, ChevronRight, MessageSquare } from 'lucide-react'
+import { X, Home, Users as UsersIcon, BookOpen as BookIcon, FolderOpen, Settings, Briefcase, ChevronDown, ChevronRight, MessageSquare, FileText } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import Link from 'next/link'
@@ -35,6 +35,7 @@ export function AdminSidebar({ adminName, isMobileMenuOpen = false, onMobileMenu
         },
         { id: 'formations', label: 'Formations', href: '/admin/formations', icon: BookIcon },
         { id: 'categories', label: 'Categories', href: '/admin/categories', icon: FolderOpen },
+        { id: 'blogs', label: 'Blogs', href: '/admin/blogs', icon: FileText },
         { id: 'feedbacks', label: 'Feedbacks', href: '/admin/feedbacks', icon: MessageSquare },
         { id: 'admins', label: 'Admins', href: '/admin/admins', icon: Settings },
     ]

@@ -69,6 +69,11 @@ export function Navbar() {
                     {t("feedbacks")}
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/blogs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] hover:bg-[#1A3761]/10 hover:text-[#0F172A] focus:bg-[#1A3761]/10 focus:text-[#0F172A]">
+                    Blog
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -117,6 +122,13 @@ export function Navbar() {
                 className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
               >
                 {t("feedbacks")}
+              </Link>
+              <Link
+                href="/blogs"
+                onClick={() => setIsOpen(false)}
+                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
+              >
+                Blog
               </Link>
 
             </div>

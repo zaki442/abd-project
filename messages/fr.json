@@ -121,6 +121,13 @@
         "specialite": "Spécialité",
         "ville": "Ville"
     },
+    "Blogs": {
+        "title": "Notre Blog",
+        "description": "Lisez les dernières nouvelles, mises à jour et informations de la communauté Agile B Darija.",
+        "readMore": "Lire la suite",
+        "noBlogs": "Aucun article pour le moment.",
+        "backToBlogs": "Retour aux blogs"
+    },
     "Admin": {
         "dashboard": "Tableau de Bord",
         "manageRegistrations": "Gérer les inscriptions aux formations.",
@@ -173,6 +180,22 @@
             "saving": "Enregistrement...",
             "add": "Ajouter",
             "save": "Sauvegarder"
+        },
+        "blogs": {
+            "title": "Articles de Blog",
+            "add": "Ajouter un article",
+            "edit": "Modifier l'article",
+            "create": "Créer un article",
+            "save": "Enregistrer les modifications",
+            "delete": "Supprimer",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet article ?",
+            "titleLabel": "Titre",
+            "content": "Contenu",
+            "author": "Auteur",
+            "status": "Statut",
+            "published": "Publié",
+            "draft": "Brouillon",
+            "image": "Image"
         },
         "jobs": {
             "title": "Appel aux volontaires",

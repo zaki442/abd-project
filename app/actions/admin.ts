@@ -53,6 +53,16 @@ interface Formation {
     categories: Array<{ id: string; name: string }>
 }
 
+interface Blog {
+    id: string
+    title: string
+    content: string
+    image_url: string | null
+    author: string
+    status: string
+    created_at: string
+}
+
 interface Category {
     id: string
     name: string
@@ -116,6 +126,9 @@ function revalidateAllPaths() {
     revalidatePath('/en/formations')
     revalidatePath('/fr/formations')
     revalidatePath('/ar/formations')
+    revalidatePath('/en/blogs')
+    revalidatePath('/fr/blogs')
+    revalidatePath('/ar/blogs')
 }
 
 // Retry utility removed since fetchWithRetry handles it globally in lib/supabase.ts
@@ -842,6 +855,158 @@ export async function deleteFormation(id: string): Promise<ApiResponse> {
         return createSuccessResponse('Formation deleted successfully')
     } catch (e) {
         return createErrorResponse('Failed to delete formation')
+    }
+}
+
+// ==========================================
+// BLOGS MANAGEMENT
+// ==========================================
+
+export async function ensureBlogsBucket(): Promise<void> {
+    try {
+        const supabase = await createServerSupabaseAdminClient()
+        const { data: buckets } = await supabase.storage.listBuckets()
+        const exists = buckets?.some(b => b.name === 'blogs')
+        if (!exists) {
+            await supabase.storage.createBucket('blogs', { public: true })
+        }
+    } catch (e) {
+        console.error('Error ensuring blogs bucket:', e)
+    }
+}
+
+export async function getBlogs(page: number = 1, pageSize: number = 1000, publishedOnly: boolean = false): Promise<PaginatedResponse<Blog>> {
+    try {
+        const supabase = await createServerSupabaseClient()
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
+
+        let query = supabase
+            .from('blogs')
+            .select('*', { count: 'exact' })
+            .order('created_at', { ascending: false })
+            .range(from, to)
+
+        if (publishedOnly) {
+            query = query.eq('status', 'PUBLISHED')
+        }
+
+        const { data, error, count } = await query
+
+        if (error) {
+            console.error('Error fetching blogs:', error)
+            throw error
+        }
+
+        const totalPages = Math.ceil((count || 0) / pageSize)
+        return { data: data || [], count: count || 0, page, pageSize, totalPages }
+    } catch (e) {
+        console.error('Permanent error fetching blogs after retries:', e)
+        return { data: [], count: 0, page, pageSize, totalPages: 0 }
+    }
+}
+
+export async function getBlog(id: string): Promise<Blog | null> {
+    try {
+        const supabase = await createServerSupabaseClient()
+
+        const { data, error } = await supabase
+            .from('blogs')
+            .select('*')
+            .eq('id', id)
+            .single()
+
+        if (error) {
+            throw error
+        }
+
+        return data
+    } catch (e) {
+        console.error('Permanent error fetching blog after retries:', e)
+        return null
+    }
+}
+
+export async function createBlog(data: {
+    title: string
+    content: string
+    image_url: string | null
+    author: string
+    status: string
+}): Promise<ApiResponse> {
+    try {
+        const supabase = await createServerSupabaseClient()
+
+        const { error } = await supabase
+            .from('blogs')
+            .insert({
+                title: data.title,
+                content: data.content,
+                image_url: data.image_url,
+                author: data.author,
+                status: data.status,
+            })
+
+        if (error) {
+            return createErrorResponse(`Failed to create blog: ${error.message}`)
+        }
+
+        revalidateAllPaths()
+        return createSuccessResponse('Blog created successfully')
+    } catch (e) {
+        return createErrorResponse('Failed to create blog')
+    }
+}
+
+export async function updateBlog(id: string, data: {
+    title: string
+    content: string
+    image_url: string | null
+    author: string
+    status: string
+}): Promise<ApiResponse> {
+    try {
+        const supabase = await createServerSupabaseClient()
+
+        const { error } = await supabase
+            .from('blogs')
+            .update({
+                title: data.title,
+                content: data.content,
+                image_url: data.image_url,
+                author: data.author,
+                status: data.status,
+            })
+            .eq('id', id)
+
+        if (error) {
+            return createErrorResponse(`Failed to update blog: ${error.message}`)
+        }
+
+        revalidateAllPaths()
+        return createSuccessResponse('Blog updated successfully')
+    } catch (e) {
+        return createErrorResponse('Failed to update blog')
+    }
+}
+
+export async function deleteBlog(id: string): Promise<ApiResponse> {
+    try {
+        const supabase = await createServerSupabaseClient()
+
+        const { error } = await supabase
+            .from('blogs')
+            .delete()
+            .eq('id', id)
+
+        if (error) {
+            return createErrorResponse('Failed to delete blog')
+        }
+
+        revalidateAllPaths()
+        return createSuccessResponse('Blog deleted successfully')
+    } catch (e) {
+        return createErrorResponse('Failed to delete blog')
     }
 }
 

@@ -23,6 +23,11 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('formations', 'formations', true)
 ON CONFLICT (id) DO NOTHING;
 
+-- Create the 'blogs' storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('blogs', 'blogs', true)
+ON CONFLICT (id) DO NOTHING;
+
 -- Optional: Insert a test registration to verify the table works
 -- Uncomment if you want test data (replace FORMATION_UUID with a real formation id from formations table)
 /*
