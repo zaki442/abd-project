@@ -59,18 +59,18 @@ export function Navbar() {
                 {t("others")} <ChevronDown className="ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-[#F5F2EC] border-[#C7C0B6]/80 shadow-xl">
-                <DropdownMenuItem asChild>
-                  <Link href="/jobs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] hover:bg-[#1A3761]/10 hover:text-[#0F172A] focus:bg-[#1A3761]/10 focus:text-[#0F172A]">
+                <DropdownMenuItem asChild className="hover:bg-[#1A3761] hover:text-white focus:bg-[#1A3761] focus:text-white">
+                  <Link href="/jobs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
                     {t("jobs")}
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/feedbacks" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] hover:bg-[#1A3761]/10 hover:text-[#0F172A] focus:bg-[#1A3761]/10 focus:text-[#0F172A]">
+                <DropdownMenuItem asChild className="hover:bg-[#1A3761] hover:text-white focus:bg-[#1A3761] focus:text-white">
+                  <Link href="/feedbacks" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
                     {t("feedbacks")}
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/blogs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] hover:bg-[#1A3761]/10 hover:text-[#0F172A] focus:bg-[#1A3761]/10 focus:text-[#0F172A]">
+                <DropdownMenuItem asChild className="hover:bg-[#1A3761] hover:text-white focus:bg-[#1A3761] focus:text-white">
+                  <Link href="/blogs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
                     Blog
                   </Link>
                 </DropdownMenuItem>
