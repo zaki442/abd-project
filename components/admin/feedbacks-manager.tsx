@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, Trash2, Loader2, MessageSquare } from 'lucide-react'
+import { Search, Trash2, Loader2, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react'
 import {
     Table,
     TableBody,
@@ -35,6 +35,7 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
     const [feedbacks, setFeedbacks] = useState<Feedback[]>(initialFeedbacks)
     const [searchQuery, setSearchQuery] = useState('')
     const [isDeleting, setIsDeleting] = useState<string | null>(null)
+    const [expandedFeedback, setExpandedFeedback] = useState<string | null>(null)
 
     // Filter feedbacks based on search
     const filteredFeedbacks = feedbacks.filter(fb =>
@@ -127,7 +128,16 @@ export function FeedbacksManager({ feedbacks: initialFeedbacks }: { feedbacks: F
                                         )}
                                     </TableCell>
                                     <TableCell className="text-zinc-300 max-w-[400px]">
-                                        <p className="line-clamp-3 text-sm">{fb.feedback}</p>
+                                        <div className="flex items-start gap-2">
+                                            <p className={`text-sm ${expandedFeedback === fb.id ? '' : 'line-clamp-1'}`}>{fb.feedback}</p>
+                                            <button
+                                                onClick={() => setExpandedFeedback(expandedFeedback === fb.id ? null : fb.id)}
+                                                className="shrink-0 mt-0.5 text-zinc-500 hover:text-white transition-colors"
+                                                title={expandedFeedback === fb.id ? 'Show less' : 'Show full message'}
+                                            >
+                                                {expandedFeedback === fb.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                            </button>
+                                        </div>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <ConfirmDeleteDialog

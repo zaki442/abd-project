@@ -26,7 +26,7 @@ export function Navbar() {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1A3761]/90 backdrop-blur-lg border-b border-[#C7C0B6]/30 shadow-lg">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1A3761]/90 backdrop-blur-lg border-b border-[#C7C0B6]/40 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-2">
@@ -59,17 +59,17 @@ export function Navbar() {
                 {t("others")} <ChevronDown className="ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-[#F5F2EC] border-[#C7C0B6]/80 shadow-xl">
-                <DropdownMenuItem asChild className="hover:bg-[#1A3761] hover:text-white focus:bg-[#1A3761] focus:text-white">
+                <DropdownMenuItem asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
                   <Link href="/jobs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
                     {t("jobs")}
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="hover:bg-[#1A3761] hover:text-white focus:bg-[#1A3761] focus:text-white">
+                <DropdownMenuItem asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
                   <Link href="/feedbacks" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
                     {t("feedbacks")}
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="hover:bg-[#1A3761] hover:text-white focus:bg-[#1A3761] focus:text-white">
+                <DropdownMenuItem asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
                   <Link href="/blogs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
                     Blog
                   </Link>
@@ -92,7 +92,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-[#C7C0B6]/30">
+          <div className="md:hidden py-4 border-t border-[#C7C0B6]/40">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
@@ -105,7 +105,7 @@ export function Navbar() {
                 </Link>
               ))}
 
-              <div className="h-px bg-[#C7C0B6]/30 my-2" />
+              <div className="h-px bg-[#C7C0B6]/40 my-2" />
               <div className="text-xs font-semibold text-[#C7C0B6] uppercase tracking-wider">
                 {t("others")}
               </div>
