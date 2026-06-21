@@ -19,10 +19,17 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/", label: t("home") },
-    { href: "/#team", label: t("team") },
-    { href: "/formations", label: t("formations") },
-    { href: "/donate", label: t("donate") },
     { href: "/#about", label: t("about") },
+    { href: "/formations", label: t("formations") },
+    { href: "/blogs", label: t("blog") },
+    { href: "/#team", label: t("team") },
+  ]
+
+  const moreLinks = [
+    { href: "/jobs", label: t("jobs") },
+    { href: "/feedbacks", label: t("feedbacks") },
+    { href: "/roadmap", label: t("roadmap") },
+    { href: "/faq", label: t("faq") },
   ]
 
   return (
@@ -43,7 +50,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -56,26 +63,25 @@ export function Navbar() {
 
             <DropdownMenu>
               <DropdownMenuTrigger className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium flex items-center outline-none">
-                {t("others")} <ChevronDown className="ml-1 h-4 w-4" />
+                {t("more")} <ChevronDown className="ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-[#F5F2EC] border-[#C7C0B6]/80 shadow-xl">
-                <DropdownMenuItem asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
-                  <Link href="/jobs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
-                    {t("jobs")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
-                  <Link href="/feedbacks" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
-                    {t("feedbacks")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
-                  <Link href="/blogs" className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
-                    Blog
-                  </Link>
-                </DropdownMenuItem>
+                {moreLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
+                    <Link href={link.href} className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Link
+              href="/donate"
+              className="rounded-md px-5 py-2 text-sm font-semibold bg-[#C7C0B6] text-[#1A3761] hover:bg-white hover:text-[#1A3761] transition-all duration-200 shadow-md"
+            >
+              {t("donate")}
+            </Link>
 
             <LanguageSwitcher />
 
@@ -83,6 +89,12 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-4 md:hidden">
+            <Link
+              href="/donate"
+              className="rounded-md px-4 py-1.5 text-xs font-semibold bg-[#C7C0B6] text-[#1A3761] hover:bg-white transition-all duration-200"
+            >
+              {t("donate")}
+            </Link>
             <LanguageSwitcher />
             <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-foreground" aria-label="Toggle menu">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -107,30 +119,18 @@ export function Navbar() {
 
               <div className="h-px bg-[#C7C0B6]/40 my-2" />
               <div className="text-xs font-semibold text-[#C7C0B6] uppercase tracking-wider">
-                {t("others")}
+                {t("more")}
               </div>
-              <Link
-                href="/jobs"
-                onClick={() => setIsOpen(false)}
-                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
-              >
-                {t("jobs")}
-              </Link>
-              <Link
-                href="/feedbacks"
-                onClick={() => setIsOpen(false)}
-                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
-              >
-                {t("feedbacks")}
-              </Link>
-              <Link
-                href="/blogs"
-                onClick={() => setIsOpen(false)}
-                className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
-              >
-                Blog
-              </Link>
-
+              {moreLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium pl-2"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         )}
@@ -138,5 +138,3 @@ export function Navbar() {
     </nav>
   )
 }
-
-

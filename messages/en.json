@@ -5,12 +5,14 @@
         "team": "Team",
         "roadmap": "Roadmap",
         "formations": "Formations",
+        "blog": "Blog",
         "jobs": "Join us!",
         "joinDiscord": "Join Discord",
         "joinTelegram": "Join Telegram",
         "donate": "Donate",
-        "others": "Others",
-        "feedbacks": "Feedbacks"
+        "more": "More",
+        "feedbacks": "Feedbacks",
+        "faq": "FAQ"
     },
     "Hero": {
         "community": "Moroccan Agile Community",
@@ -86,9 +88,11 @@
         }
     },
     "Roadmap": {
-        "title": "Live Roadmap",
-        "description": "Real-time view of our progress fetched directly from our Trello board.",
-        "noItems": "No active items"
+        "title": "Our Journey",
+        "description": "Follow our path — from where we started to where we're headed next.",
+        "past": "Past",
+        "present": "Present",
+        "future": "Future"
     },
     "Community": {
         "title": "Community Love",
@@ -280,6 +284,10 @@
             "copied": "Copied!",
             "copy": "Copy"
         }
+    },
+    "FAQ": {
+        "title": "Frequently Asked Questions",
+        "description": "Find answers to the most common questions about our community."
     },
     "Feedback": {
         "title": "Share your feedback",

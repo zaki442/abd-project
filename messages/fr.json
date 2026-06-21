@@ -5,12 +5,14 @@
         "team": "Équipe",
         "roadmap": "Roadmap",
         "formations": "Formations",
+        "blog": "Blog",
         "jobs": "Rejoignez-nous !",
         "joinDiscord": "Rejoindre Discord",
         "joinTelegram": "Rejoindre Telegram",
         "donate": "Faire un don",
-        "others": "Autre",
-        "feedbacks": "Avis"
+        "more": "Plus",
+        "feedbacks": "Avis",
+        "faq": "FAQ"
     },
     "Hero": {
         "community": "Communauté Agile Marocaine",
@@ -86,9 +88,11 @@
         }
     },
     "Roadmap": {
-        "title": "Feuille de Route en Direct",
-        "description": "Vue en temps réel de nos progrès directement depuis notre tableau Trello.",
-        "noItems": "Aucun élément actif"
+        "title": "Notre Parcours",
+        "description": "Suivez notre chemin — de nos débuts à nos prochaines étapes.",
+        "past": "Passé",
+        "present": "Présent",
+        "future": "Futur"
     },
     "Community": {
         "title": "Amour de la Communauté",
@@ -254,6 +258,10 @@
             "copied": "Copié !",
             "copy": "Copier"
         }
+    },
+    "FAQ": {
+        "title": "Questions Fréquentes",
+        "description": "Trouvez les réponses aux questions les plus courantes sur notre communauté."
     },
     "Feedback": {
         "title": "Partagez votre avis",
