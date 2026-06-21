@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, FlaskConical, Heart, Briefcase } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
 
 export function FeaturesSection() {
   const t = useTranslations("Features")
@@ -40,7 +41,7 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {features.map((feature, index) => (
             <Card
               key={index}
@@ -55,6 +56,15 @@ export function FeaturesSection() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        <div className="text-center">
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#1A3761] text-[#F5F2EC] hover:bg-[#1A3761]/90 transition-all duration-200 font-medium text-sm"
+          >
+            {t("learnMore")}
+          </Link>
         </div>
       </div>
     </section>

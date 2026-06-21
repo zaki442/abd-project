@@ -23,9 +23,46 @@
         "joinTelegram": "Join Telegram",
         "viewTrello": "View Trello Board"
     },
+    "About": {
+        "title": "About Us",
+        "description": "Agile B Darija is a Moroccan community dedicated to making Agile methodologies accessible to everyone through education in Darija, hands-on practice, and social impact.",
+        "mission": "Our Mission",
+        "missionDesc": "Empower the Moroccan Agile community by providing free, accessible education in Darija and creating opportunities for collaboration, experimentation, and professional growth.",
+        "objectives": "Our Objectives",
+        "objectivesList": [
+            "Democratize Agile knowledge by offering free formations in Moroccan Darija",
+            "Build a strong network of Agile practitioners across Morocco",
+            "Create social impact through community-driven Agile projects",
+            "Bridge the gap between Agile education and industry needs"
+        ],
+        "values": "Our Values",
+        "valuesList": [
+            {
+                "title": "Collaboration",
+                "desc": "We believe in the power of community and collective intelligence."
+            },
+            {
+                "title": "Inclusion",
+                "desc": "Everyone is welcome regardless of background or experience level."
+            },
+            {
+                "title": "Continuous Learning",
+                "desc": "We grow together through practice, feedback, and iteration."
+            },
+            {
+                "title": "Social Impact",
+                "desc": "Agile can and should be a force for positive change in society."
+            },
+            {
+                "title": "Excellence",
+                "desc": "We strive for quality in everything we do — from formations to community events."
+            }
+        ]
+    },
     "Features": {
         "mission": "Our Mission",
         "description": "Empowering the Moroccan Agile community through collaboration, education, and real-world impact.",
+        "learnMore": "Learn more about us",
         "culture": {
             "title": "Community Culture",
             "desc": "A vibrant space where Agile enthusiasts connect, share experiences, and build lasting relationships."

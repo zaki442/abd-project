@@ -23,9 +23,46 @@
         "joinTelegram": "Rejoindre Telegram",
         "viewTrello": "Voir le Trello"
     },
+    "About": {
+        "title": "À Propos",
+        "description": "Agile B Darija est une communauté marocaine dédiée à rendre les méthodologies Agile accessibles à tous grâce à la formation en Darija, à la pratique et à l'impact social.",
+        "mission": "Notre Mission",
+        "missionDesc": "Autonomiser la communauté Agile marocaine en offrant une éducation gratuite et accessible en Darija, et en créant des opportunités de collaboration, d'expérimentation et de croissance professionnelle.",
+        "objectives": "Nos Objectifs",
+        "objectivesList": [
+            "Démocratiser le savoir Agile en proposant des formations gratuites en Darija marocaine",
+            "Construire un réseau solide de praticiens Agile à travers le Maroc",
+            "Créer un impact social à travers des projets Agile communautaires",
+            "Combler le fossé entre la formation Agile et les besoins de l'industrie"
+        ],
+        "values": "Nos Valeurs",
+        "valuesList": [
+            {
+                "title": "Collaboration",
+                "desc": "Nous croyons au pouvoir de la communauté et de l'intelligence collective."
+            },
+            {
+                "title": "Inclusion",
+                "desc": "Tout le monde est le bienvenu, indépendamment de son parcours ou de son niveau."
+            },
+            {
+                "title": "Apprentissage Continu",
+                "desc": "Nous grandissons ensemble grâce à la pratique, au feedback et à l'itération."
+            },
+            {
+                "title": "Impact Social",
+                "desc": "L'Agile peut et doit être une force de changement positif dans la société."
+            },
+            {
+                "title": "Excellence",
+                "desc": "Nous visons la qualité dans tout ce que nous faisons — des formations aux événements."
+            }
+        ]
+    },
     "Features": {
         "mission": "Notre Mission",
         "description": "Autonomiser la communauté Agile marocaine par la collaboration, l'éducation et l'impact réel.",
+        "learnMore": "En savoir plus sur nous",
         "culture": {
             "title": "Culture Communautaire",
             "desc": "Un espace dynamique où les passionnés d'Agile se connectent, partagent leurs expériences et tissent des liens durables."

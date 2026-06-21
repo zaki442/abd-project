@@ -19,7 +19,7 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/", label: t("home") },
-    { href: "/#about", label: t("about") },
+    { href: "/about", label: t("about") },
     { href: "/formations", label: t("formations") },
     { href: "/blogs", label: t("blog") },
     { href: "/#team", label: t("team") },
@@ -28,7 +28,7 @@ export function Navbar() {
   const moreLinks = [
     { href: "/jobs", label: t("jobs") },
     { href: "/feedbacks", label: t("feedbacks") },
-    { href: "/roadmap", label: t("roadmap") },
+
     { href: "/faq", label: t("faq") },
   ]
 
