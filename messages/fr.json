@@ -70,8 +70,8 @@
         }
     },
     "Team": {
-        "title": "Notre Équipe",
-        "description": "Rencontrez les personnes passionnées qui font avancer la communauté Agile B Darija.",
+        "title": "Nos Experts",
+        "description": "Rencontrez les experts passionnés qui font avancer la communauté Agile B Darija.",
         "roles": {
             "Community Lead": "Responsable Communauté",
             "Operations": "Opérations",
@@ -220,7 +220,7 @@
     },
     "Jobs": {
         "title": "Appel aux volontaires",
-        "description": "Rejoignez notre équipe ! Découvrez les opportunités de bénévolat ci-dessous.",
+        "description": "Rejoignez nos experts ! Découvrez les opportunités de bénévolat ci-dessous.",
         "noJobs": "Aucune opportunité pour le moment.",
         "apply": "Postuler",
         "showMore": "Voir plus",

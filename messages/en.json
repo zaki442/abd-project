@@ -70,8 +70,8 @@
         }
     },
     "Team": {
-        "title": "Our Team",
-        "description": "Meet the passionate individuals driving the Agile B Darija community forward.",
+        "title": "Our Experts",
+        "description": "Meet the passionate experts driving the Agile B Darija community forward.",
         "roles": {
             "Community Lead": "Community Lead",
             "Operations": "Operations Manager",
@@ -246,7 +246,7 @@
     },
     "Jobs": {
         "title": "Call for volunteers",
-        "description": "Join our team! Check out the volunteer opportunities below.",
+        "description": "Join our experts! Check out the volunteer opportunities below.",
         "noJobs": "No volunteer opportunities at the moment.",
         "apply": "Apply Now",
         "showMore": "Show more",
