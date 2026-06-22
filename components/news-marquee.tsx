@@ -9,7 +9,8 @@ export async function NewsMarquee() {
   ])
 
   const blogs = Array.isArray(blogsRes) ? blogsRes : blogsRes.data || []
-  const formations = Array.isArray(formationsRes) ? formationsRes : formationsRes.data || []
+  const allFormations = Array.isArray(formationsRes) ? formationsRes : formationsRes.data || []
+  const formations = allFormations.filter((f: { status?: string }) => f.status === "ACTIVE")
 
   return <NewsMarqueeClient blogs={blogs} formations={formations} />
 }

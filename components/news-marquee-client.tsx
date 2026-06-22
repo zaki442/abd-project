@@ -25,7 +25,7 @@ export function NewsMarqueeClient({ blogs, formations }: { blogs: Blog[]; format
       id: f.id,
       title: f.title,
       type: "formation" as const,
-      href: `/formations/${f.id}`,
+      href: `/formations/${f.id}/register`,
       meta: f.date,
     })),
     ...blogs.map((b) => ({
