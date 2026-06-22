@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Award } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface FormationCardProps {
@@ -15,9 +15,10 @@ interface FormationCardProps {
     date: string
     price: string
     status?: string
+    isCertified?: boolean
 }
 
-export function FormationCard({ id, title, description, imageSrc, date, price, status = 'ACTIVE' }: FormationCardProps) {
+export function FormationCard({ id, title, description, imageSrc, date, price, status = 'ACTIVE', isCertified }: FormationCardProps) {
     const t = useTranslations('Formations')
     const isActive = status === 'ACTIVE'
 
@@ -31,6 +32,14 @@ export function FormationCard({ id, title, description, imageSrc, date, price, s
                     unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                {isCertified && (
+                  <div className="absolute top-3 right-3 z-10">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500 text-white text-xs font-bold shadow-lg">
+                      <Award className="w-3.5 h-3.5" />
+                      Certified
+                    </div>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     <p className="font-bold">{price}</p>

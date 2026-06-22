@@ -26,6 +26,7 @@ type Formation = {
     price: string
     image_url: string
     status?: string
+    is_certified?: boolean
     categories: Category[]
 }
 
@@ -108,6 +109,7 @@ export function FormationsSlider({ formations = [], categories = [] }: Formation
                                                 price={formation.price}
                                                 imageSrc={formation.image_url}
                                                 status={formation.status}
+                                                isCertified={formation.is_certified}
                                             />
                                         </div>
                                     </CarouselItem>

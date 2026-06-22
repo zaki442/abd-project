@@ -50,6 +50,7 @@ interface Formation {
     price: string
     image_url: string
     status: string
+    is_certified: boolean
     categories: Array<{ id: string; name: string }>
 }
 
@@ -698,6 +699,7 @@ export async function createFormation(data: {
     price: string
     image_url: string
     status: string
+    is_certified: boolean
     category_ids: string[]
 }): Promise<ApiResponse> {
     try {
@@ -713,6 +715,7 @@ export async function createFormation(data: {
                 price: data.price,
                 image_url: data.image_url,
                 status: data.status,
+                is_certified: data.is_certified,
             })
             .select()
             .single()
@@ -764,6 +767,7 @@ export async function updateFormation(id: string, data: {
     price: string
     image_url: string
     status: string
+    is_certified: boolean
     category_ids: string[]
 }): Promise<ApiResponse> {
     try {
@@ -780,6 +784,7 @@ export async function updateFormation(id: string, data: {
                     price: data.price,
                     image_url: data.image_url,
                     status: data.status,
+                    is_certified: data.is_certified,
                 })
                 .eq('id', id),
             supabase

@@ -48,6 +48,7 @@ type Formation = {
     price: string
     image_url: string
     status: string
+    is_certified: boolean
     categories: Category[]
 }
 
@@ -70,6 +71,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         category_ids: string[]
         image_url: string
         status: string
+        is_certified: boolean
     }>({
         title: '',
         description: '',
@@ -77,7 +79,8 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
         price: '',
         category_ids: [],
         image_url: '',
-        status: 'ACTIVE'
+        status: 'ACTIVE',
+        is_certified: false
     })
     const [uploading, setUploading] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null) // Track editing state
@@ -130,7 +133,8 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             price: '',
             category_ids: [],
             image_url: '',
-            status: 'ACTIVE'
+            status: 'ACTIVE',
+            is_certified: false
         })
         setEditingId(null)
     }
@@ -151,7 +155,8 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
             price: formation.price,
             category_ids: formation.categories.map(c => c.id),
             image_url: formation.image_url,
-            status: formation.status || 'ACTIVE'
+            status: formation.status || 'ACTIVE',
+            is_certified: formation.is_certified || false
         })
         setEditingId(formation.id)
         setIsDialogOpen(true)
@@ -285,6 +290,23 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                 </Select>
                             </div>
 
+                            <div className="flex items-center justify-between p-3 rounded-md bg-zinc-900 border border-zinc-700">
+                                <label className="text-sm font-medium cursor-pointer">Certified Formation</label>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, is_certified: !formData.is_certified })}
+                                    className={`relative w-11 h-6 rounded-full transition-colors ${
+                                        formData.is_certified ? 'bg-amber-500' : 'bg-zinc-700'
+                                    }`}
+                                >
+                                    <span
+                                        className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                                            formData.is_certified ? 'translate-x-[22px]' : 'translate-x-[2px]'
+                                        }`}
+                                    />
+                                </button>
+                            </div>
+
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Categories</label>
                                 <div className="grid grid-cols-2 gap-2 bg-zinc-900 p-3 rounded-md border border-zinc-700">
@@ -349,6 +371,7 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                             <TableHead className="text-zinc-400">Category</TableHead>
                             <TableHead className="text-zinc-400">Date</TableHead>
                             <TableHead className="text-zinc-400">Status</TableHead>
+                            <TableHead className="text-zinc-400">Certified</TableHead>
                             <TableHead className="text-right text-zinc-400">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -383,6 +406,15 @@ export function FormationsManager({ formations, categories }: FormationsManagerP
                                         }`}>
                                             {f.status === 'ACTIVE' ? 'Active' : 'Inactive'}
                                         </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        {f.is_certified ? (
+                                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500">
+                                                Certified
+                                            </span>
+                                        ) : (
+                                            <span className="text-zinc-600">—</span>
+                                        )}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button

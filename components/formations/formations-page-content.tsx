@@ -22,6 +22,7 @@ type Formation = {
   price: string
   image_url: string
   status?: string
+  is_certified?: boolean
   categories: Category[]
 }
 
@@ -115,6 +116,7 @@ export function FormationsPageContent({ formations, categories }: FormationsPage
                     date={formation.date}
                     price={formation.price}
                     status={formation.status}
+                    isCertified={formation.is_certified}
                   />
                 ))}
               </div>
@@ -146,6 +148,7 @@ export function FormationsPageContent({ formations, categories }: FormationsPage
                     date={formation.date}
                     price={formation.price}
                     status={formation.status}
+                    isCertified={formation.is_certified}
                   />
                 ))}
               </div>
