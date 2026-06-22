@@ -26,9 +26,9 @@ export function Navbar() {
   ]
 
   const moreLinks = [
+    { href: "/activities", label: t("activities") },
     { href: "/jobs", label: t("jobs") },
     { href: "/feedbacks", label: t("feedbacks") },
-
     { href: "/faq", label: t("faq") },
   ]
 
@@ -65,10 +65,10 @@ export function Navbar() {
               <DropdownMenuTrigger className="rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium flex items-center outline-none">
                 {t("more")} <ChevronDown className="ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-[#F5F2EC] border-[#C7C0B6]/80 shadow-xl">
+              <DropdownMenuContent align="end" className="bg-[#1A3761]/95 backdrop-blur-lg border-[#C7C0B6]/40 shadow-xl">
                 {moreLinks.map((link) => (
-                  <DropdownMenuItem key={link.href} asChild className="hover:bg-[#1A3761]/40 hover:text-white focus:bg-[#1A3761]/40 focus:text-white">
-                    <Link href={link.href} className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#173A64] transition-colors">
+                  <DropdownMenuItem key={link.href} asChild className="focus:bg-white/10">
+                    <Link href={link.href} className="w-full cursor-pointer rounded-md px-2 py-1.5 text-[#EAE6DF] hover:bg-white/10 hover:text-white transition-all duration-200">
                       {link.label}
                     </Link>
                   </DropdownMenuItem>

@@ -12,7 +12,8 @@
         "donate": "Donate",
         "more": "More",
         "feedbacks": "Feedbacks",
-        "faq": "FAQ"
+        "faq": "FAQ",
+        "activities": "Activities"
     },
     "Hero": {
         "community": "Moroccan Agile Community",
@@ -59,8 +60,32 @@
             }
         ]
     },
+    "Activities": {
+        "title": "Our Activities",
+        "description": "Discover the pillars that drive our community forward.",
+        "social": {
+            "title": "Social Impact & Associative Framework",
+            "desc": "We leverage Agile methodologies to drive social change through associative projects, community initiatives, and partnerships with non-profit organizations."
+        },
+        "practice": {
+            "title": "Practice & Experimentation",
+            "desc": "Hands-on workshops, hackathons, and real-world projects where members apply Agile principles in a safe, collaborative environment."
+        },
+        "community": {
+            "title": "Community & Culture",
+            "desc": "A vibrant ecosystem of Agile enthusiasts sharing knowledge, experiences, and best practices through regular meetups and discussions."
+        },
+        "entrepreneurship": {
+            "title": "Entrepreneurship",
+            "desc": "Supporting Agile-driven entrepreneurship through mentorship, networking, and resources for building startups and innovative projects."
+        },
+        "history": {
+            "title": "Past Activities",
+            "desc": "A look back at the formations, events, and initiatives we've delivered."
+        }
+    },
     "Features": {
-        "mission": "Our Mission",
+        "mission": "About Us",
         "description": "Empowering the Moroccan Agile community through collaboration, education, and real-world impact.",
         "learnMore": "Learn more about us",
         "culture": {

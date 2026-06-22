@@ -12,7 +12,8 @@
         "donate": "Faire un don",
         "more": "Plus",
         "feedbacks": "Avis",
-        "faq": "FAQ"
+        "faq": "FAQ",
+        "activities": "Activités"
     },
     "Hero": {
         "community": "Communauté Agile Marocaine",
@@ -59,8 +60,32 @@
             }
         ]
     },
+    "Activities": {
+        "title": "Nos Activités",
+        "description": "Découvrez les piliers qui portent notre communauté.",
+        "social": {
+            "title": "Impact Social & Cadre Associatif",
+            "desc": "Nous utilisons les méthodologies Agile pour générer un changement social à travers des projets associatifs, des initiatives communautaires et des partenariats."
+        },
+        "practice": {
+            "title": "Pratique & Expérimentation",
+            "desc": "Ateliers pratiques, hackathons et projets réels où les membres appliquent les principes Agile dans un environnement collaboratif et sécurisé."
+        },
+        "community": {
+            "title": "Communauté & Culture",
+            "desc": "Un écosystème dynamique de passionnés d'Agile partageant connaissances, expériences et bonnes pratiques lors de rencontres régulières."
+        },
+        "entrepreneurship": {
+            "title": "Entreprenariat",
+            "desc": "Soutien à l'entrepreneuriat Agile via le mentorat, le réseautage et les ressources pour construire des startups et des projets innovants."
+        },
+        "history": {
+            "title": "Activités Passées",
+            "desc": "Un regard sur les formations, événements et initiatives que nous avons réalisés."
+        }
+    },
     "Features": {
-        "mission": "Notre Mission",
+        "mission": "À Propos",
         "description": "Autonomiser la communauté Agile marocaine par la collaboration, l'éducation et l'impact réel.",
         "learnMore": "En savoir plus sur nous",
         "culture": {
