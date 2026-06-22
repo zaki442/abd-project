@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Award, Clock, History, Send, ArrowRight } from "lucide-react"
+import { Clock, History, Send, ArrowRight } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { FormationCard } from "@/components/formations/formation-card"
@@ -30,39 +30,26 @@ interface FormationsPageProps {
   categories: Category[]
 }
 
-function parseFormationDate(dateStr: string): Date {
-  const parsed = new Date(dateStr)
-  return isNaN(parsed.getTime()) ? new Date(0) : parsed
-}
-
 export function FormationsPageContent({ formations, categories }: FormationsPageProps) {
   const t = useTranslations("Formations")
-  const now = new Date()
 
-  const { upcomingFormations, pastFormations } = useMemo(() => {
-    const upcoming: Formation[] = []
-    const past: Formation[] = []
-    formations.forEach((f) => {
-      if (f.status === "INACTIVE") {
-        past.push(f)
-      } else {
-        const d = parseFormationDate(f.date)
-        if (d < now) past.push(f)
-        else upcoming.push(f)
-      }
-    })
-    return { upcomingFormations: upcoming, pastFormations: past }
-  }, [formations, now])
+  const currentFormations = useMemo(() => {
+    return formations.filter((f) => f.status === "ACTIVE")
+  }, [formations])
+
+  const pastFormations = useMemo(() => {
+    return formations.filter((f) => f.status !== "ACTIVE")
+  }, [formations])
 
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
 
-  const filteredUpcoming =
+  const filteredCurrent =
     selectedCategory === "all"
-      ? upcomingFormations
-      : upcomingFormations.filter((f) => f.categories.some((c) => c.id === selectedCategory))
+      ? currentFormations
+      : currentFormations.filter((f) => f.categories.some((c) => c.id === selectedCategory))
 
   const activeCategories = categories.filter((cat) =>
-    formations.some((f) => f.categories.some((c) => c.id === cat.id))
+    currentFormations.some((f) => f.categories.some((c) => c.id === cat.id))
   )
 
   return (
@@ -116,9 +103,9 @@ export function FormationsPageContent({ formations, categories }: FormationsPage
               </Tabs>
             </div>
 
-            {filteredUpcoming.length > 0 ? (
+            {filteredCurrent.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredUpcoming.map((formation) => (
+                {filteredCurrent.map((formation) => (
                   <FormationCard
                     key={formation.id}
                     id={formation.id}
@@ -136,24 +123,6 @@ export function FormationsPageContent({ formations, categories }: FormationsPage
                 No formations found.
               </div>
             )}
-          </div>
-
-          {/* Certified Formation */}
-          <div className="relative overflow-hidden rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-400/5 via-transparent to-amber-400/5 p-8">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl" />
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-              <div className="p-3 rounded-xl bg-amber-400/10">
-                <Award className="w-8 h-8 text-amber-400" />
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl font-bold text-foreground mb-2">{t("certified")}</h3>
-                <p className="text-muted-foreground">{t("certifiedDesc")}</p>
-              </div>
-              <Button className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white">
-                {t("certifiedCta")}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
           </div>
 
           {/* Past Formations */}
@@ -193,7 +162,7 @@ export function FormationsPageContent({ formations, categories }: FormationsPage
             <h3 className="text-xl font-bold text-foreground mb-2">{t("request")}</h3>
             <p className="text-muted-foreground max-w-md mx-auto mb-6">{t("requestDesc")}</p>
             <Button asChild>
-              <a href="mailto:contact@agilebdarija.com">
+              <a href="mailto:agilebdarija@gmail.com">
                 {t("requestCta")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </a>
