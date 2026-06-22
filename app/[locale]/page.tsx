@@ -6,6 +6,7 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 import { DonateSection } from "@/components/donate-section"
 import { Footer } from "@/components/footer"
 import { FormationsSlider } from "@/components/formations/formations-slider"
+import { NewsMarquee } from "@/components/news-marquee"
 import { getFormations, getCategories } from "@/app/actions/admin"
 
 export default async function Home() {
@@ -23,6 +24,7 @@ export default async function Home() {
       <HeroSection />
       <FeaturesSection />
       <FormationsSlider formations={formationsArray} categories={categories} />
+      <NewsMarquee />
       <TeamSection />
       <TestimonialsSection />
       <DonateSection />

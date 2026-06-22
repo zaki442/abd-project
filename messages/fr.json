@@ -85,6 +85,15 @@
         "description": "Choisissez la formation qui vous convient et commencez votre parcours d'apprentissage avec nous.",
         "free": "Gratuit",
         "register": "S'inscrire",
+        "upcoming": "Actuelles & À Venir",
+        "certified": "Formation Certifiante",
+        "certifiedDesc": "Obtenez une certification officielle en méthodologies Agile. Notre programme certifiant arrive bientôt — inscrivez votre intérêt pour être le premier informé.",
+        "certifiedCta": "M'avertir quand disponible",
+        "history": "Formations Passées",
+        "historyDesc": "Revoyez les formations que nous avons déjà dispensées.",
+        "request": "Demander une Formation",
+        "requestDesc": "Vous ne trouvez pas ce que vous cherchez ? Dites-nous quel sujet vous aimeriez que nous abordions.",
+        "requestCta": "Demander une Formation",
         "items": {
             "agile-darija": {
                 "title": "Agile B Darija",
@@ -130,6 +139,10 @@
         "past": "Passé",
         "present": "Présent",
         "future": "Futur"
+    },
+    "News": {
+        "title": "Dernières Nouvelles",
+        "description": "Restez informé de nos dernières formations, événements et actualités."
     },
     "Community": {
         "title": "Amour de la Communauté",
